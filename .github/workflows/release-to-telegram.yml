@@ -6,6 +6,7 @@ on:
 
 jobs:
   notify:
+    if: github.repository == 'jayfunc/BetterLyrics'
     runs-on: ubuntu-latest
     steps:
       - name: Send release info to Telegram

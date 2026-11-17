@@ -15,7 +15,8 @@ namespace BetterLyrics.Core.Implementations.Services;
 /// </summary>
 public class LastFmService : ILastFmService
 {
-    private readonly LastfmClient _client;
+    private const string SessionKeyCredentialKey = "LastFMSessionKey";
+    private readonly LastfmClient? _client;
     private readonly IGlobalToastProvider _globalToastProvider;
     private readonly ILastFmDialogProvider _lastFmDialogProvider;
     private readonly IPasswordVaultProvider _passwordVaultProvider;
@@ -46,8 +47,13 @@ public class LastFmService : ILastFmService
         _lastFmDialogProvider = lastFmDialogProvider;
         _logger = logger;
 
-        _client = new LastfmClient(LastFM.ApiKey, LastFM.SharedSecret);
-        _sessionKey = _passwordVaultProvider.Get(Core.Constants.App.AppName, LastFM.SessionKeyCredentialKey);
+        var apiKey = IntegrationCredentials.Get("BETTERLYRICS_LASTFM_API_KEY");
+        var secret = IntegrationCredentials.Get("BETTERLYRICS_LASTFM_SHARED_SECRET");
+        if (apiKey != null && secret != null)
+        {
+            _client = new LastfmClient(apiKey, secret);
+            _sessionKey = _passwordVaultProvider.Get(Core.Constants.App.AppName, SessionKeyCredentialKey);
+        }
         _logger.LogDebug("Last.fm service initialized. Session key present: {HasSessionKey}.",
             !string.IsNullOrEmpty(_sessionKey));
         _ = UpdateAuthStatusAsync();
@@ -55,13 +61,14 @@ public class LastFmService : ILastFmService
 
     public async Task ConfirmAuthAsync()
     {
+        if (_client == null) return;
         try
         {
             await _client.AuthenticateViaWebAsync();
             if (_client.Session != null && _client.Session.Authenticated)
             {
                 _sessionKey = _client.Session.SessionKey;
-                _passwordVaultProvider.Save(Core.Constants.App.AppName, LastFM.SessionKeyCredentialKey, _sessionKey);
+                _passwordVaultProvider.Save(Core.Constants.App.AppName, SessionKeyCredentialKey, _sessionKey);
                 _logger.LogInformation("Last.fm authentication succeeded.");
                 await UpdateAuthStatusAsync();
                 return;
@@ -78,13 +85,21 @@ public class LastFmService : ILastFmService
     public async Task ConfirmUnAuthAsync()
     {
         _sessionKey = null;
-        _passwordVaultProvider.Delete(Core.Constants.App.AppName, LastFM.SessionKeyCredentialKey);
+        _passwordVaultProvider.Delete(Core.Constants.App.AppName, SessionKeyCredentialKey);
         _logger.LogInformation("Last.fm authentication cleared by the user.");
         await UpdateAuthStatusAsync();
     }
 
     public async Task AuthAsync()
     {
+        if (_client == null)
+        {
+            _globalToastProvider.Show("LastFMAuthFailed",
+                "Set BETTERLYRICS_LASTFM_API_KEY and BETTERLYRICS_LASTFM_SHARED_SECRET, then restart BetterLyrics.",
+                MessageSeverity.Warning);
+            return;
+        }
+
         var url = await _client.GetWebAuthenticationUrlAsync();
 
         _ = _launcherProvider.LaunchUriAsync(new Uri(url));
@@ -94,13 +109,13 @@ public class LastFmService : ILastFmService
 
     public async Task UnAuthAsync()
     {
-        await _launcherProvider.LaunchUriAsync(new Uri(LastFM.UnAuthUrl));
+        await _launcherProvider.LaunchUriAsync(new Uri("https://www.last.fm/settings/applications"));
         await _lastFmDialogProvider.ShowUnAuthDialogAsync(ConfirmUnAuthAsync);
     }
 
     public async Task TrackAsync(SongInfo songInfo)
     {
-        if (IsAuthenticated)
+        if (_client != null && IsAuthenticated)
         {
             var (mappedTitle, mappedArtist, mappedAlbum) = await _songSearchMapService.GetMappingAsync(songInfo);
 
@@ -139,7 +154,7 @@ public class LastFmService : ILastFmService
 
     public async Task UpdateNowPlayingAsync(SongInfo songInfo)
     {
-        if (IsAuthenticated)
+        if (_client != null && IsAuthenticated)
         {
             var (mappedTitle, mappedArtist, mappedAlbum) = await _songSearchMapService.GetMappingAsync(songInfo);
 
@@ -173,13 +188,13 @@ public class LastFmService : ILastFmService
 
     private async Task UpdateAuthStatusAsync()
     {
-        IsAuthenticated = !string.IsNullOrEmpty(_sessionKey);
-        if (IsAuthenticated)
+        IsAuthenticated = _client != null && !string.IsNullOrEmpty(_sessionKey);
+        if (_client != null && IsAuthenticated)
         {
             _client.Session.SessionKey = _sessionKey;
         }
         IsAuthenticatedChanged?.Invoke(this, new LastFMIsAuthenticatedChangedEventArgs(IsAuthenticated));
-        if (IsAuthenticated)
+        if (_client != null && IsAuthenticated)
         {
             try
             {
@@ -204,6 +219,7 @@ public class LastFmService : ILastFmService
 
     public async Task<string?> GetAlbumArtUrlAsync(SongInfo songInfo)
     {
+        if (_client == null) return null;
         try
         {
             var artist = songInfo.Artist ?? "";

@@ -27,11 +27,14 @@ public class DiscordService : IDiscordService
 
     public void Enable()
     {
+        var appId = IntegrationCredentials.Get("BETTERLYRICS_DISCORD_APP_ID");
+        if (appId == null) return;
+
         if (_client == null)
         {
             try
             {
-                _client = new DiscordRpcClient(Discord.AppID);
+                _client = new DiscordRpcClient(appId);
                 _client.OnReady += (sender, args) =>
                 {
                     CurrentUser = args.User;

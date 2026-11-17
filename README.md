@@ -1,81 +1,90 @@
-**English** | [**中文**](README.CN.md)
+**简体中文** | [English](README.en.md)
 
 <div align="center">
   <img src="docs/assets/promotion/logo.png" alt="BetterLyrics Logo" width="120">
-  
-  <h1>BetterLyrics</h1>
 
-  <h3>Strums the Heartstrings, Graces the Wordscapes</h3>
+  <h1>BetterLyrics HDR</h1>
+
+  <h3>曲拨心弦，词落云笺</h3>
 
   <p>
-    An elegant, highly customizable lyrics visualizer and versatile music player built with WinUI 3 & Win2D
+    一款优雅且高度自定义的歌词可视化与全能音乐播放应用，<br>基于 WinUI 3 & Win2D 构建
   </p>
 
   <p>
-    <a href="https://github.com/jayfunc/BetterLyrics/stargazers"><img src="https://img.shields.io/github/stars/jayfunc/BetterLyrics" alt="Stars"></a>
-    <a href="https://github.com/jayfunc/BetterLyrics/releases/latest"><img src="https://img.shields.io/github/downloads/jayfunc/BetterLyrics/total?label=Downloads" alt="Downloads"></a>
-    <img src="https://img.shields.io/badge/Language-C%23-purple" alt="C#">
-    <a href="https://github.com/jayfunc/BetterLyrics/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-GPL_v3.0-blue" alt="License"></a>
-    <a href="https://betterlyrics.github.io"><img alt="Official Website" src="https://img.shields.io/github/actions/workflow/status/BetterLyrics/BetterLyrics.github.io/pages%2Fpages-build-deployment?label=Official%20Website"></a>
+    <a href="https://github.com/jayfunc/BetterLyrics/stargazers"><img src="https://img.shields.io/github/stars/jayfunc/BetterLyrics?label=%E6%98%9F%E6%A0%87" alt="Stars"></a>
+    <a href="https://github.com/jayfunc/BetterLyrics/releases/latest"><img src="https://img.shields.io/github/downloads/jayfunc/BetterLyrics/total?label=%E4%B8%8B%E8%BD%BD%E9%87%8F" alt="Downloads"></a>
+    <img src="https://img.shields.io/badge/%E8%AF%AD%E8%A8%80-C%23-purple" alt="C#">
+    <a href="https://github.com/jayfunc/BetterLyrics/blob/main/LICENSE"><img src="https://img.shields.io/badge/%E8%AE%B8%E5%8F%AF%E8%AF%81-GPL_v3.0-blue" alt="License"></a>
+    <a href="https://betterlyrics.github.io/zh-cn"><img alt="Official Website" src="https://img.shields.io/github/actions/workflow/status/BetterLyrics/BetterLyrics.github.io/pages%2Fpages-build-deployment?label=%E5%AE%98%E7%BD%91"></a>
   </p>
+
   <p>
     <a href="https://trendshift.io/repositories/16452" target="_blank"><img src="https://trendshift.io/api/badge/repositories/16452" alt="Trendshift" height="40"/></a>
     <a href="https://trendshift.io/repositories/16452?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-16452" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/16452/daily?language=C%23" alt="jayfunc%2FBetterLyrics | Trendshift" height="40"/></a>
   </p>
 
   <img src="docs/assets/promotion/banner.png" alt="Banner" width="100%" style="border-radius: 10px;">
-  
+
 </div>
 
----
+BetterLyrics HDR 是 [jayfunc/BetterLyrics](https://github.com/jayfunc/BetterLyrics) 的分支，在原有 Windows 播放器、歌词窗口和插件系统上加入 HDR 逐字高光。普通歌词的变白前沿最高比 SDR 白色亮 25%，有辉光的歌词可达到屏幕报告的峰值。
 
-## Table of Contents
-
-- [Highlighted Features](#highlighted-features)
-- [Download & Install](#download--install)
-- [Screenshots](#screenshots)
-- [Community](#community)
-- [Contribute & Build](#contribute--build)
-- [Donations](#donations)
-- [Star History](#star-history)
-- [Media Mentions & Community Features](#media-mentions--community-features)
-- [License & Credits](#license--credits)
-- [Share on Social Media](#share-on-social-media)
+[下载 BetterLyrics HDR](https://github.com/DrivingGodJ/BetterLyrics-HDR/releases/latest) · [安装和配置](docs/INSTALL.HDR.md)
 
 ---
 
-## Highlighted Features
+## 目录
 
-### Stunning Visuals & Fluid Interactions
-- **Powered by WinUI 3 & Win2D:** Experience buttery-smooth animations and hardware-accelerated rendering tailored for the modern Windows 11 design language.
-- **Advanced Lyric Motion:** Breathe life into every word with **per-syllable karaoke highlighting**, trailing long-note glows, and spatial perspective fading for distant lyrics.
-- **Immersive Dynamic Backgrounds:** Elevate your music with real-time audio visualizers and striking backgrounds—from fluid gradients to blur, fog, and snowflake particles.
-- **Chameleon Adaptive Engine:** Intelligently samples colors from your screen edges or album art, ensuring the player perfectly blends with your desktop environment.
-
-### Ultimate Ecosystem & Smart Automation
-- **Universal Visualizer:** Flawlessly syncs with local libraries, SMB/FTP streams, and dozens of major platforms including Spotify, Apple Music, and NetEase.
-- **Any-Scenario Layouts:** Choose your vibe: immersive Full Screen, floating Desktop mode, a discreet Taskbar integration, or a Wallpaper mode that embeds right beneath your icons (Wallpaper Engine friendly).
-- **Precision Matching & AI-Ready:** High-accuracy lyric matching with automatic metadata correction and noise reduction. Built with a modular architecture ready for offline translations and Local LLM integrations.
-- **Community Plugin System:** Expand BetterLyrics endlessly. Add custom lyric sources, transliterations (like Romaji), and translation engines via community-built plugins.
-- **Artistic Lyrics Cards & Analytics:** Share your favorite lines using 10+ artistic templates (Vinyl, Polaroid, Cyberpunk), and explore your listening habits through a beautiful "Wrapped-style" stats story.
+- [核心特性](#核心特性)
+- [下载与安装](#下载与安装)
+- [软件截图](#软件截图)
+- [社区](#社区)
+- [贡献与构建](#贡献与构建)
+- [赞助与捐赠](#赞助与捐赠)
+- [Star 历史趋势](#star-历史趋势)
+- [社区提及与媒体推荐](#社区提及与媒体推荐)
+- [许可与致谢](#许可与致谢)
+- [分享到社交媒体](#分享到社交媒体)
 
 ---
 
-## Download & Install
+## 核心特性
+
+### 惊艳视觉与灵动交互
+- **WinUI 3 & Win2D 驱动：** 丝滑的现代 UI 与硬件加速渲染，带来极致流畅的动画反馈与原生的 Windows 11 视觉体验。
+- **高阶歌词动效：** 完美支持逐字、逐音节高亮（卡拉OK 效果）与长音余韵，远端歌词更有空间透视与模糊淡出特效，让每个字符随律动呼吸。
+- **沉浸式动态背景：** 引入流体渐变、专辑封面模糊、迷雾及雪花粒子等多种视觉流派，结合实时音频频谱，音乐氛围瞬间拉满。
+- **环境自适应变色龙：** 智能采样屏幕边缘或专辑封面的色彩，让播放器面板完美融入你的桌面环境。
+
+### 全能生态与智能管理
+- **海量音源可视化：** 不仅支持本地、SMB/FTP 流媒体播放，更无缝联动 Spotify、Apple Music、网易云等数十款主流播放器。
+- **全场景窗口模式：** 纯粹的全屏专注模式、嵌入图标底层的壁纸模式（兼容 Wallpaper Engine）、极简的任务栏模式及灵活的侧边停靠，满足所有桌面布局。
+- **精准匹配与 AI 赋能：** 智能元数据修正与本地缓存记忆。内置翻译引擎支持，更预留了本地大语言模型（LLM）的接入框架，探索前沿体验。
+- **开放插件架构：** 强大的社区驱动能力，支持通过插件无限扩展歌词源、音译（如罗马音）及更多扩展功能。
+- **你的专属音乐画报：** 一键生成黑胶、拍立得、赛博朋克等 10+ 款艺术歌词卡片，更有“年度听歌报告”揭秘你的专属音乐人设。
+
+---
+
+## 下载与安装
+
+本分支的 Windows x64 安装包与发布者证书随 [GitHub Release](https://github.com/DrivingGodJ/BetterLyrics-HDR/releases/latest) 提供。首次安装步骤见[安装指南](docs/INSTALL.HDR.md)。
+
+以下是 BetterLyrics 原版的下载入口。
 
 <div align="center">
 
-| Microsoft Store (Recommended) | Manual Install |
+| Microsoft Store (推荐) | 手动安装 |
 | :---: | :---: |
-| <a href="https://apps.microsoft.com/detail/9P1WCD1P597R?referrer=appbadge&mode=direct"><img src="https://get.microsoft.com/images/en-us%20dark.svg" width="160" alt="Get it from Microsoft"/></a><br>Unlimited free trial (Same as paid) | [**Latest Release (.zip)**](https://github.com/jayfunc/BetterLyrics/releases/latest)<br>See [Installation Guide](https://betterlyrics.github.io/docs/get-started/install) |
+| <a href="https://apps.microsoft.com/detail/9P1WCD1P597R?referrer=appbadge&mode=direct"><img src="https://get.microsoft.com/images/en-us%20dark.svg" width="160" alt="Get it from Microsoft"/></a><br>无限期免费试用（功能与付费版一致） | [**最新版本 (.zip)**](https://github.com/jayfunc/BetterLyrics/releases/latest)<br>[查看安装指南](https://betterlyrics.github.io/zh-cn/docs/get-started/install) |
 
-**[Docs](https://betterlyrics.github.io) | [Plugin Store](https://betterlyrics.github.io/docs/add-ons/plugins-store) | [Privacy Policy](docs/PRIVACY_POLICY.md) | [Terms of Service](docs/TERMS_OF_SERVICE.md)**
+**[使用文档](https://betterlyrics.github.io/zh-cn) | [插件商店](https://betterlyrics.github.io/zh-cn/docs/add-ons/plugins-store) | [隐私政策](docs/PRIVACY_POLICY.CN.md) | [服务条款](docs/TERMS_OF_SERVICE.CN.md)**
 
 </div>
 
 ---
 
-## Screenshots
+## 软件截图
 
 <p align="center">
   <img src="docs/assets/screenshots/std.png" width="49%">
@@ -83,7 +92,7 @@
 </p>
 
 <details>
-<summary><b>Click here to view more screenshots</b></summary>
+<summary><b>点击此处查看更多截图</b></summary>
 <br>
 
 <p align="center">
@@ -99,81 +108,81 @@
 
 </details>
 
-### Lyrics Card
+### 歌词卡片
 
 <p align="center">
   <img src="docs/assets/screenshots/card-feat.png" alt="Lyrics Card Feature">
 </p>
 
 <details>
-<summary><b>Click here to view all card styles</b></summary>
+<summary><b>点击此处查看所有样式</b></summary>
 <br>
 
-#### Classic Design
+#### 经典设计
 <img src="docs/assets/screenshots/card-0.png">
 
-#### Physical
+#### 实体质感
 <img src="docs/assets/screenshots/card-1.png">
 
-#### Digital Retro
+#### 数码怀旧
 <img src="docs/assets/screenshots/card-2.png">
 
-#### Atmosphere
+#### 氛围创意
 <img src="docs/assets/screenshots/card-3.png">
 
-#### Chinese Elegance
+#### 国风雅韵
 <img src="docs/assets/screenshots/card-4.png">
 
-#### Traces of Time
+#### 时光印记
 <img src="docs/assets/screenshots/card-5.png">
 
 </details>
 
-### Demonstration
+### 演示视频
 
-> Watch our demo video on Bilibili [here](https://www.bilibili.com/video/BV1QRstz1EGt/).
+> 观看我们在 Bilibili 发布的演示视频（上传于 2025 年 10 月 21 日）：[点击观看](https://www.bilibili.com/video/BV1QRstz1EGt/)。
 
 ---
 
-## Community
+## 社区
 
-Join our communities to get support, share your layouts, and stay updated:
+加入我们的社区，获取支持、分享你的布局并了解最新动态：
 
 <div align="center">
 
-**[Discord](https://discord.gg/5yAQPnyCKv) | [Telegram](https://t.me/+svhSLZ7awPsxNGY1) | [QQ Group 1](https://qm.qq.com/q/yArcw3n8pq) (1054700388) | [QQ Group 2](https://qm.qq.com/q/27rzSjFXt6) (1076554669) | [QQ Channel](https://pd.qq.com/s/1u1ntkyzr?b=9)**
+**[QQ 群 1](https://qm.qq.com/q/yArcw3n8pq) (1054700388) | [QQ 群 2](https://qm.qq.com/q/27rzSjFXt6) (1076554669) | [QQ 频道](https://pd.qq.com/s/1u1ntkyzr?b=9) | [Discord](https://discord.gg/5yAQPnyCKv) | [Telegram](https://t.me/+svhSLZ7awPsxNGY1)**
 
 </div>
 
 ---
 
-## Contribute & Build
+## 贡献与构建
 
-We welcome community contributions! Here is how you can help:
+欢迎社区的任何贡献！你可以通过以下方式帮助我们：
 
-- **Help us translate:** Cannot find your language? [Start translating here](https://crowdin.com/project/betterlyrics).
-- **Develop Plugins:** Want to extend functionality? [Read the Developer Guide](https://betterlyrics.github.io/docs/plugin-dev/intro).
-- **Build from source:** [View build instructions](https://betterlyrics.github.io/docs/get-started/download.html#visual-studio).
+- **协助翻译：** 找不到你的语言？[点此开始翻译](https://zh.crowdin.com/project/betterlyrics)。
+- **开发插件：** 想要扩展功能？[查看插件开发指南](https://betterlyrics.github.io/zh-cn/docs/plugin-dev/intro)。
+- [从源码构建 BetterLyrics HDR](docs/INSTALL.HDR.md#从源码构建)。
 
 ---
 
-## Donations
+## 赞助与捐赠
 
-If you enjoy using BetterLyrics, please consider supporting the project. Your contributions help keep the development active!
+如果你喜欢 BetterLyrics，请考虑支持它。你的支持有助于项目持续发展！
 
 <div align="center">
 
-| Web Platforms | Alipay / WeChat Pay |
+| 网页平台 | 支付宝 / 微信支付 |
 | :---: | :---: |
-| [PayPal](https://paypal.me/zhefangpay)<br><br>[Buy Me a Coffee](https://buymeacoffee.com/founchoo)<br><br>[爱发电 (Afdian)](https://afdian.com/a/jayfunc) | <img src="docs/assets/donation/alipay_wechatpay.png" height="250" alt="Alipay and WeChat Pay QR Codes"> |
+| [PayPal](https://paypal.me/zhefangpay)<br><br>[Buy Me a Coffee](https://buymeacoffee.com/founchoo)<br><br>[爱发电 (Afdian)](https://afdian.com/a/jayfunc) | <img src="docs/assets/donation/alipay_wechatpay.png" height="240" alt="Alipay and WeChat Pay QR Codes"> |
 
-**[View the full Hall of Fame (Sponsors)](docs/SPONSORS.md)**
+**[查看完整的赞助者名单 (Hall of Fame)](docs/SPONSORS.md)**
 
 </div>
 
 ---
 
-## Star History
+## Star 历史趋势
 
 <a href="https://star-history.dera.page/#jayfunc/BetterLyrics&type=Date">
  <picture>
@@ -185,7 +194,7 @@ If you enjoy using BetterLyrics, please consider supporting the project. Your co
 
 ---
 
-## Media Mentions & Community Features
+## 社区提及与媒体推荐
 
 <div align="center">
 
@@ -196,27 +205,27 @@ If you enjoy using BetterLyrics, please consider supporting the project. Your co
 
 </div>
 
-Discover what the community and media are saying about BetterLyrics! Check out our full [Media & Community Features List](docs/MEDIA.md).
+了解媒体与社区对 BetterLyrics 的评价，请参见 [社区提及与媒体推荐列表](docs/MEDIA.CN.md)。
 
 ---
 
-## License & Credits
+## 许可与致谢
 
-This project is licensed under the **[GNU General Public License v3.0](LICENSE)**.
+本项目采用 **[GNU General Public License v3.0](LICENSE)** 许可证。
 
-### Special Thanks, Credits & Inspiration
+### 特别致谢、引用与灵感
 
-#### Contributors
+#### 贡献者
 
-##### Core Maintainer
+##### 核心维护者
 
-| Maintainer | Roles |
+| 维护者 | 角色 / 贡献 |
 | :--- | :--- |
-| **[jayfunc](https://github.com/jayfunc)** | Core Developer / Project Lead (`C` `I` `Q` `D`) |
+| **[jayfunc](https://github.com/jayfunc)** | 核心开发者 / 项目发起人 (`C` `I` `Q` `D`) |
 
-##### Contributors (Alphabetical)
+##### 贡献者 (按字母顺序)
 
-| Contributor | Contributions |
+| 贡献者 | 贡献类型 |
 | :--- | :--- |
 | [borcolasky](https://crowdin.com/profile/borcolasky) | `I` |
 | [H-MAli](https://github.com/H-MAli) | `C` |
@@ -229,51 +238,51 @@ This project is licensed under the **[GNU General Public License v3.0](LICENSE)*
 | [ZHider](https://github.com/ZHider) | `C` |
 | [zxbmmmmmmmmm](https://github.com/zxbmmmmmmmmm) | `C` |
 
-> `C` Code ╹ `I` i18n ╹ `Q` QA ╹ `D` Docs
+> `C` 代码 (Code) ╹ `I` 国际化 (i18n) ╹ `Q` 测试 (QA) ╹ `D` 文档 (Docs)
 
-#### Dependencies
+#### 依赖 (Dependencies)
 
-| Projects / Packages | Description |
+| 项目/包 (Projects / Packages) | 描述 (Description) |
 | :--- | :--- |
-| [ComputeSharp](https://github.com/Sergio0694/ComputeSharp) | .NET library to run HLSL compute shaders, used for dynamic fluid backgrounds |
-| [Dubya.WindowsMediaController](https://github.com/DubyaDude/WindowsMediaController) | Interacts with Windows 10/11 Media Transport Controls (SMTC) |
-| [Lyricify-Lyrics-Helper](https://github.com/WXRIW/Lyricify-Lyrics-Helper) | Lyrics fetch, decryption, and parsing for various sources |
-| [NAudio](https://github.com/naudio/NAudio) | Audio playback and WASAPI loopback for spectrum visualization |
-| [Win2D](https://github.com/microsoft/Win2D) | Hardware-accelerated 2D graphics rendering for WinUI |
+| [ComputeSharp](https://github.com/Sergio0694/ComputeSharp) | 用于运行 HLSL 着色器的 .NET 库，实现动态流体背景 |
+| [Dubya.WindowsMediaController](https://github.com/DubyaDude/WindowsMediaController) | 与 Windows 10/11 系统媒体传输控制 (SMTC) 交互 |
+| [Lyricify-Lyrics-Helper](https://github.com/WXRIW/Lyricify-Lyrics-Helper) | 提供 QQ、网易云音乐和酷狗音乐源的歌词抓取、解密及解析功能 |
+| [NAudio](https://github.com/naudio/NAudio) | 用于音频播放以及音频频谱可视化的 WASAPI 环回采集 |
+| [Win2D](https://github.com/microsoft/Win2D) | WinUI 的硬件加速 2D 图形渲染库 |
 
-*See [dependencies](https://github.com/jayfunc/BetterLyrics/network/dependencies) for the full list.*
+*查看 [完整依赖列表](https://github.com/jayfunc/BetterLyrics/network/dependencies)。*
 
-#### References
+#### 引用 (References)
 
-| Projects / Repositories | Description |
+| 项目/仓库 (Projects / Repositories) | 描述 (Description) |
 | :--- | :--- |
-| [Isolation](https://github.com/Storyteller-Studios/Isolation) | Dynamic fluid background implementation |
-| [LibreTranslate](https://github.com/LibreTranslate/LibreTranslate) | Offline lyrics translation provider |
-| [lrclib](https://github.com/tranxuanthang/lrclib) | LRCLIB lyrics API provider |
-| [Manzana-Apple-Music-Lyrics](https://github.com/dropcreations/Manzana-Apple-Music-Lyrics) | Apple Music lyrics fetch using Python |
-| [original-sound-hq-player](https://github.com/Johnwikix/original-sound-hq-player) | Apple Music style spring animation for lyrics scrolling reference |
-| [SpectrumVisualization](https://github.com/Johnwikix/SpectrumVisualization) | Audio visualization reference |
+| [Isolation](https://github.com/Storyteller-Studios/Isolation) | 动态流体背景的实现 |
+| [LibreTranslate](https://github.com/LibreTranslate/LibreTranslate) | 提供离线歌词翻译功能 |
+| [lrclib](https://github.com/tranxuanthang/lrclib) | LRCLIB 歌词 API 数据源 |
+| [Manzana-Apple-Music-Lyrics](https://github.com/dropcreations/Manzana-Apple-Music-Lyrics) | 使用 Python 获取 Apple Music 歌词 |
+| [original-sound-hq-player](https://github.com/Johnwikix/original-sound-hq-player) | 类 Apple Music 的歌词滚动弹簧动画参考 |
+| [SpectrumVisualization](https://github.com/Johnwikix/SpectrumVisualization) | 音频频谱可视化参考 |
 
-#### Inspired By
+#### 灵感来源
 
-Some design ideas are referenced from the following projects (design inspiration only):
+部分设计理念参考了以下插件/软件（仅作为设计思路参考，不涉及代码引用）：
 
-| Projects / Software | Description |
+| 项目/软件 (Projects / Software) | 描述 (Description) |
 | :--- | :--- |
-| [FluentFlyout](https://github.com/unchihugo/FluentFlyout) `FOSS` | Interaction and visual design concepts of the Now Playing flyout |
-| [refined-now-playing-netease](https://github.com/solstice23/refined-now-playing-netease) `FOSS` | Overall layout and typography design of the standard mode lyrics interface |
-| [Lyricify-App](https://github.com/WXRIW/Lyricify-App) `Prop` | Architectural approach to monitoring and handling multiple media sessions via SMTC |
-| [Salt Player for Windows](https://moriafly.com/program/spw.html) `Paid` `Prop` | Mouse hover parallax animation for album covers, and UI element designs in the now-playing bar |
-| [MyToolBar](https://github.com/TwilightLemon/MyToolBar) `FOSS` | AppBar concept, which inspired the interaction logic of the "Docked Mode" in this project |
+| [FluentFlyout](https://github.com/unchihugo/FluentFlyout) `FOSS` | Now Playing 弹窗的交互与视觉设计理念 |
+| [refined-now-playing-netease](https://github.com/solstice23/refined-now-playing-netease) `FOSS` | 标准模式下歌词界面的整体布局与排版设计 |
+| [Lyricify-App](https://github.com/WXRIW/Lyricify-App) `Prop` | 基于 SMTC (系统媒体传输控制) 监听与处理多媒体会话的架构思路 |
+| [Salt Player for Windows](https://moriafly.com/program/spw) `Paid` `Prop` | 专辑封面的鼠标悬浮视差动画，以及底部正在播放栏的 UI 元素设计 |
+| [MyToolBar](https://github.com/TwilightLemon/MyToolBar) `FOSS` | AppBar (应用栏) 理念，并由此衍生出本项目的“停靠模式”交互逻辑 |
 
-> `FOSS` Free and Open Source Software ╹ `Prop` Proprietary ╹ `Paid` Paid
+> `FOSS` 开源 ╹ `Prop` 闭源 ╹ `Paid` 付费
 
 ---
 
-## Share on Social Media
+## 分享到社交媒体
 
 <details>
-<summary><b>Click to expand</b></summary>
+<summary><b>点击展开</b></summary>
 <br>
 <div align="center">
   <img src="https://socialify.git.ci/jayfunc/BetterLyrics/image?description=1&forks=1&issues=1&language=1&name=1&owner=1&pulls=1&stargazers=1&theme=Light" width="48%">
@@ -284,7 +293,7 @@ Some design ideas are referenced from the following projects (design inspiration
 <br>
 
 <div align="center">
-  <sub>Thunder Bay × Wuhan</sub><br>
-  <sub>© 2025-2026 The BetterLyrics Contributors. All rights reserved.</sub><br>
-  <sub>Disclaimer: This project is provided "as is". All third-party resources belong to their respective owners.</sub>
+  <sub>桑德贝 × 武汉</sub><br>
+  <sub>© 2025-2026 BetterLyrics 贡献者。保留所有权利。</sub><br>
+  <sub>免责声明：本项目“按原样”提供。所有第三方资源归其各自所有者所有。</sub>
 </div>

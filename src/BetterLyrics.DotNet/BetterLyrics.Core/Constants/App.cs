@@ -13,7 +13,12 @@ public static class App
     public const string SloganEN = "Strums the Heartstrings, Graces the Wordscapes.";
 
 #if WINDOWS
-    public static string AppName = Windows.ApplicationModel.Package.Current.Id.FamilyName == "37412.BetterLyrics_rd1g0rsrrtxw8" ? "BetterLyrics" : "BetterLyrics (Dev)";
+    public static string AppName = Windows.ApplicationModel.Package.Current.Id.Name switch
+    {
+        "DrivingGodJ.BetterLyricsHDR" => "BetterLyrics HDR",
+        "37412.BetterLyrics" => "BetterLyrics",
+        _ => "BetterLyrics (Dev)"
+    };
 #else
     public static string AppName = "BetterLyrics";
 #endif
