@@ -179,17 +179,13 @@ internal sealed class HdrLyricsPresenter : IDisposable
             var peak = color.MaxLuminanceInNits;
             if (!double.IsFinite(white) || !double.IsFinite(peak) || white <= 0 || peak <= white) return;
 
-            // Scene colors stay sRGB until the final draw, so encode the highlight gain in sRGB as well.
-            _levels = ((float)(white / ScRgbWhiteNits), EncodeHdrGain(peak / white));
+            _levels = ((float)(white / ScRgbWhiteNits), (float)(peak / white));
         }
         catch (Exception error) when (IsGraphicsError(error))
         {
             Debug.WriteLine(error);
         }
     }
-
-    internal static float EncodeHdrGain(double whiteMultiplier) =>
-        (float)(1.055 * Math.Pow(whiteMultiplier, 1 / 2.4) - 0.055);
 
     public void Reset()
     {

@@ -28,7 +28,7 @@
 
 </div>
 
-BetterLyrics HDR 是 [jayfunc/BetterLyrics](https://github.com/jayfunc/BetterLyrics) 的分支，在原有 Windows 播放器、歌词窗口和插件系统上加入 HDR 逐字高光。普通歌词的变白前沿最高比 SDR 白色亮 25%，有辉光的歌词可达到屏幕报告的峰值。
+BetterLyrics HDR 是 [jayfunc/BetterLyrics](https://github.com/jayfunc/BetterLyrics) 的分支，在原有 Windows 歌词窗口上加入 HDR 逐字高光。普通歌词前沿最高提高 50% 的亮度，白色辉光可达到屏幕报告的峰值。高光与光晕均跟随歌词颜色。
 
 [下载 BetterLyrics HDR](https://github.com/DrivingGodJ/BetterLyrics-HDR/releases/latest) · [安装和配置](docs/INSTALL.HDR.md)
 

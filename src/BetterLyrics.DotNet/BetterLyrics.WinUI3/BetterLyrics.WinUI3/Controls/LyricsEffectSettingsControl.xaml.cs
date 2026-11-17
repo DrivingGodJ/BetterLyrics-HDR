@@ -42,10 +42,6 @@ public sealed partial class LyricsEffectSettingsControl : UserControl
         set => SetValue(LyricsWindowStatusProperty, value);
     }
 
-    public Uri HdrSettingsUri { get; } = new(OperatingSystem.IsWindowsVersionAtLeast(10, 0, 22000)
-        ? "ms-settings:display-hdr"
-        : "ms-settings:display");
-
     public LyricsEffectSettingsControl()
     {
         InitializeComponent();

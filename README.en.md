@@ -27,7 +27,7 @@
 
 </div>
 
-BetterLyrics HDR is a fork of [jayfunc/BetterLyrics](https://github.com/jayfunc/BetterLyrics) that adds HDR karaoke highlights to the Windows player, lyrics windows, and plugin system. The moving front can be up to 25% brighter than SDR white for ordinary lyrics. Lyrics with glow can reach the display's reported peak.
+BetterLyrics HDR is a fork of [jayfunc/BetterLyrics](https://github.com/jayfunc/BetterLyrics) that adds HDR karaoke highlights to Windows lyrics windows. The moving front can be up to 50% brighter for ordinary lyrics, while white glow can reach the display's reported peak. Both highlights and halos follow the lyric color.
 
 [Download BetterLyrics HDR](https://github.com/DrivingGodJ/BetterLyrics-HDR/releases/latest) · [Install and configure](docs/INSTALL.HDR.en.md)
 

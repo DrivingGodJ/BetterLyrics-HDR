@@ -15,9 +15,9 @@ This fork uses a self-signed certificate. Later versions signed with the same ce
 
 ## HDR lyrics
 
-Open **Lyrics Window Manager → Lyrics Effects → Glow Effect → HDR lyrics glow**. The switch is disabled when HDR is off on the display assigned to the lyrics window. The **Windows HDR settings** link opens the system controls for your displays.
+Open **Lyrics Window Manager → Lyrics Effects → Glow Effect → HDR lyrics glow**. The switch is disabled when HDR is off on the display assigned to the lyrics window.
 
-The moving front of ordinary timed lyrics can be up to 25% brighter than SDR reference white. A glowing front can reach the display's reported HDR peak. The letters behind it fade with the glow.
+The moving front of ordinary timed lyrics can be up to 50% brighter than the original lyric color. A white glowing front can reach the display's reported HDR peak. The front and outer halo follow the lyric color, and the letters behind the front fade with the glow.
 
 ## Optional services
 

@@ -1767,9 +1767,6 @@
   <data name="SettingsPageLyricsHdrGlow.Description" xml:space="preserve">
     <value>所選顯示器開啟 Windows HDR 後即可使用。</value>
   </data>
-  <data name="SettingsPageOpenHdrSettings.Content" xml:space="preserve">
-    <value>Windows HDR 設定</value>
-  </data>
   <data name="SettingsPageLyricsLight.Content" xml:space="preserve">
     <value>細體</value>
   </data>

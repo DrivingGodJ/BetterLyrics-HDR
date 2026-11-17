@@ -83,13 +83,10 @@
                         <ToggleSwitch IsOn="{x:Bind LyricsEffectSettings.IsLyricsGlowEffectEnabled, Mode=TwoWay}" />
                         <controls:SettingsExpander.Items>
                             <controls:SettingsCard x:Uid="SettingsPageLyricsHdrGlow">
-                                <StackPanel Orientation="Horizontal" Spacing="12">
-                                    <HyperlinkButton x:Uid="SettingsPageOpenHdrSettings" NavigateUri="{x:Bind HdrSettingsUri}" />
-                                    <ToggleSwitch
-                                        x:Name="HdrGlowToggle"
-                                        IsEnabled="False"
-                                        IsOn="{x:Bind LyricsEffectSettings.IsLyricsHdrGlowEnabled, Mode=TwoWay}" />
-                                </StackPanel>
+                                <ToggleSwitch
+                                    x:Name="HdrGlowToggle"
+                                    IsEnabled="False"
+                                    IsOn="{x:Bind LyricsEffectSettings.IsLyricsHdrGlowEnabled, Mode=TwoWay}" />
                             </controls:SettingsCard>
                             <controls:SettingsCard x:Uid="SettingsPageScope">
                                 <ComboBox SelectedIndex="{x:Bind LyricsEffectSettings.LyricsGlowEffectScope, Mode=TwoWay, Converter={StaticResource EnumToIntConverter}}">

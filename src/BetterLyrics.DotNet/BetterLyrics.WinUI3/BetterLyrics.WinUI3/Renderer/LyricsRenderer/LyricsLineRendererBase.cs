@@ -15,7 +15,7 @@ namespace BetterLyrics.WinUI3.Renderer.LyricsRenderer;
 
 public abstract class LyricsLineRendererBase
 {
-    private static readonly float NormalFrontGain = HdrLyricsPresenter.EncodeHdrGain(1.25);
+    private const float NormalFrontGain = 1.5f;
 
     public bool IsPlaying { get; set; }
     public int StrokeWidth { get; set; }
@@ -208,13 +208,14 @@ public abstract class LyricsLineRendererBase
         using var hdrFrontFill = hdrFrontMask != null && Line.CachedFill != null
             ? new AlphaMaskEffect { Source = hdrFrontMask, AlphaMask = Line.CachedFill }
             : null;
+        var hdrColor = fillStops[0].Color;
         var normalFrontGain = Math.Min(HdrHighlightGain, NormalFrontGain);
         using var hdrFront = hdrFrontFill != null
-            ? RenderLyricsChar.CreateHdrPeakEffect(hdrFrontFill, normalFrontGain)
+            ? RenderLyricsChar.CreateHdrTintEffect(hdrFrontFill, normalFrontGain, hdrColor)
             : null;
         using var hdrGlowFront = hdrFrontFill != null && HdrHighlightGain > normalFrontGain &&
                                  LyricsWindowStatus.LyricsEffectSettings.IsLyricsGlowEffectEnabled
-            ? RenderLyricsChar.CreateHdrPeakEffect(hdrFrontFill, HdrHighlightGain)
+            ? RenderLyricsChar.CreateHdrTintEffect(hdrFrontFill, HdrHighlightGain, hdrColor)
             : null;
 
         if (hdrFront == null && !LyricsWindowStatus.LyricsEffectSettings.IsLyricsFloatAnimationEnabled &&
@@ -227,12 +228,12 @@ public abstract class LyricsLineRendererBase
         {
             var endCharIndex = subLineRegion.CharacterIndex + subLineRegion.CharacterCount;
             for (var i = subLineRegion.CharacterIndex; i < endCharIndex; i++)
-                DrawSingleCharacter(ds, i, finalOutputImage, hdrFront, hdrGlowFront);
+                DrawSingleCharacter(ds, i, finalOutputImage, hdrFront, hdrGlowFront, hdrColor);
         }
     }
 
     private void DrawSingleCharacter(CanvasDrawingSession ds, int charIndex, ICanvasImage source,
-        ICanvasImage? hdrFront, ICanvasImage? hdrGlowFront)
+        ICanvasImage? hdrFront, ICanvasImage? hdrGlowFront, Color hdrColor)
     {
         if (LyricsWindowStatus == null || Line?.PrimaryTextLayout == null ||
             charIndex >= Line.PrimaryRenderChars.Count) return;
@@ -253,7 +254,8 @@ public abstract class LyricsLineRendererBase
             var glowDestination = destCharRect.Extend(destCharRect.Height);
             ds.DrawImage(renderChar.Glow, glowDestination, glowSource);
             if (HdrHighlightGain > 1 && LyricsWindowStatus.LyricsEffectSettings.IsLyricsGlowEffectEnabled)
-                (hdrGlowFill, hdrGlowStrength) = renderChar.DrawHdrGlow(ds, glowSource, glowDestination, HdrHighlightGain);
+                (hdrGlowFill, hdrGlowStrength) =
+                    renderChar.DrawHdrGlow(ds, glowSource, glowDestination, HdrHighlightGain, hdrColor);
         }
 
         ds.DrawImage(source, destCharRect, sourceCharRect);
