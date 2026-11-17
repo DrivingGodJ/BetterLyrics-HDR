@@ -37,7 +37,6 @@ namespace BetterLyrics.WinUI3.Views;
 
 public sealed partial class NowPlayingWindow : BaseWindow,
     IRecipient<CurrentIsPlayingChangedMessage>,
-    IRecipient<AlbumArtBytesChangedMessage>,
     IRecipient<LyricsStyleColorConfigChangedMessage>,
     IRecipient<LyricsBackgroundColorConfigChangedMessage>,
     IRecipient<LyricsWindowPaletteConfigChangedMessage>,
@@ -99,6 +98,9 @@ public sealed partial class NowPlayingWindow : BaseWindow,
 
         AppWindow.Closing += AppWindow_Closing;
 
+        // An embedded lyrics window can stay visible without ever being activated.
+        WeakReferenceMessenger.Default.Register<NowPlayingWindow, AlbumArtBytesChangedMessage>(
+            this, static (window, _) => window.RequestUpdateAlbumArtThemeColors());
         RequestUpdateAlbumArtThemeColors();
 
         LyricsWindowStatus.WindowState = LyricsWindowState.Opened;
@@ -263,12 +265,15 @@ public sealed partial class NowPlayingWindow : BaseWindow,
 
     private void RequestUpdateAlbumArtThemeColors()
     {
-        _ = _albumArtThemeColorsDebounder.RunAsync(async () =>
+        _ = _albumArtThemeColorsDebounder.RunAsync(async token =>
         {
-            var result = await _gsmtcService.CalculateAlbumArtThemeColorsAsync(LyricsWindowStatus, _backdropAccentColor);
+            var albumArt = _gsmtcService.AlbumArtBytes;
+            var result = await _gsmtcService.CalculateAlbumArtThemeColorsAsync(LyricsWindowStatus, _backdropAccentColor, token);
 
             _appUIThreadProvider.Execute(() =>
             {
+                if (token.IsCancellationRequested || !ReferenceEquals(albumArt, _gsmtcService.AlbumArtBytes)) return;
+
                 NowPlayingPage.LyricsWindowStatus?.WindowPalette = result;
                 RootGrid.RequestedTheme = result.ThemeType.ToElementTheme();
             });
@@ -998,11 +1003,6 @@ public sealed partial class NowPlayingWindow : BaseWindow,
     {
         if (message.Sender == LyricsWindowStatus)
             UpdateNowPlayingBarStatus();
-    }
-
-    public void Receive(AlbumArtBytesChangedMessage message)
-    {
-        RequestUpdateAlbumArtThemeColors();
     }
 
     public void Receive(LyricsWindowWorkAreaConfigChangedMessage message)
