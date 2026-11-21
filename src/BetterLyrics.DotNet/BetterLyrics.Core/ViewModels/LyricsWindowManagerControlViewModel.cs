@@ -25,12 +25,15 @@ public partial class LyricsWindowManagerControlViewModel : ObservableRecipient, 
     private readonly IWindowManagerProvider _windowManagerProvider;
     private readonly ILocalizationService _localizationService;
     private readonly ILauncherProvider _launcherProvider;
-    private readonly IMonitorBindingService _monitorBindingService;
 
     [ObservableProperty] public partial AppSettings AppSettings { get; set; }
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(SelectedLayoutProfile))]
     public partial LyricsWindowStatus? SelectedWindowStatus { get; set; }
+
+    public LayoutProfile? SelectedLayoutProfile =>
+        AppSettings.LayoutProfiles.FirstOrDefault(profile => profile.Id == SelectedWindowStatus?.LayoutProfileId);
 
     public ObservableCollection<LyricsWindowManagerSettingsNavMenuItem> NavItems = [];
 
@@ -42,13 +45,12 @@ public partial class LyricsWindowManagerControlViewModel : ObservableRecipient, 
 
     public LyricsWindowManagerControlViewModel(ISettingsService settingsService,
         IWindowManagerProvider windowManagerProvider, ILocalizationService localizationService,
-        ILauncherProvider launcherProvider, IMonitorBindingService monitorBindingService)
+        ILauncherProvider launcherProvider)
     {
         _settingsService = settingsService;
         _windowManagerProvider = windowManagerProvider;
         _localizationService = localizationService;
         _launcherProvider = launcherProvider;
-        _monitorBindingService = monitorBindingService;
 
         AppSettings = _settingsService.AppSettings;
 
@@ -94,21 +96,6 @@ public partial class LyricsWindowManagerControlViewModel : ObservableRecipient, 
             this, SettingsSection.LyricsWindowMgr, SelectedNavItem?.Section, SelectedWindowStatus));
 
     [RelayCommand]
-    private void CreateLyricsWindowStatus(LyricsWindowMode mode)
-    {
-        var status = new LyricsWindowStatus(mode);
-        status.LayoutProfileId =
-            AppSettings.LayoutProfiles.First(x => x.Mode == status.GetDefaultLayoutProfileMode()).Id;
-
-        // Persist the stable monitor identity for the newly created mode as well.
-        _monitorBindingService.Normalize(status);
-
-        AppSettings.WindowBoundsRecords.Add(status);
-    }
-
-    public void NormalizeMonitorBinding(LyricsWindowStatus status) => _monitorBindingService.Normalize(status);
-
-    [RelayCommand]
     private void CloseConfigPanel()
     {
         SelectedWindowStatus = null;
@@ -129,21 +116,13 @@ public partial class LyricsWindowManagerControlViewModel : ObservableRecipient, 
         IsConfigPanelOpen = status != null;
     }
 
-    [RelayCommand]
-    private void ShowEmbeddedConfigPanel()
-    {
-        _settingsService.AppSettings.MusicGallerySettings.LyricsWindowStatus.Name =
-            _localizationService.GetLocalizedString("LyricsWindowSettingsControlConfigMusicGalleryLyrics/Text");
-        ShowConfigPanel(_settingsService.AppSettings.MusicGallerySettings.LyricsWindowStatus);
-    }
-
     public void Receive(MultiNowPlayingWindowModeChangedMessage message)
     {
         if (!message.Value &&
             AppSettings.WindowBoundsRecords.Any(x => x.WindowState == LyricsWindowState.Opened))
         {
             var windows = _windowManagerProvider.GetWindows(WindowType.NowPlayingWindow);
-            var latest = windows.Last();
+            var latest = windows.LastOrDefault();
             foreach (var item in windows)
                 if (item != latest)
                     _windowManagerProvider.CloseWindow(item);

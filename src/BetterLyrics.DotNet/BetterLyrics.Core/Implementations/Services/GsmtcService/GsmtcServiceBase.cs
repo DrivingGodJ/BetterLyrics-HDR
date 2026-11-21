@@ -45,8 +45,6 @@ public abstract partial class GsmtcServiceBase : ObservableObject, IGsmtcService
 
     private readonly Debouncer _onMediaPropsChangedDebouncer = new();
     protected readonly ISettingsService _settingsService;
-    private readonly ITranslationService _translationService;
-    private readonly ITransliterationService _transliterationService;
     protected readonly IWindowManagerProvider _windowManagerProvider;
 
     protected IMediaSessionProvider? _currentDesiredSession;
@@ -93,8 +91,6 @@ public abstract partial class GsmtcServiceBase : ObservableObject, IGsmtcService
     ISettingsService settingsService,
     IAlbumArtSearchService albumArtSearchService,
     ILyricsSearchService lyricsSearchService,
-    ITranslationService libreTranslateService,
-    ITransliterationService transliterationService,
     IAppUIThreadProvider appUiThreadProvider,
     ILogger logger, IGlobalToastProvider globalToastProvider,
     IWindowManagerProvider windowManagerProvider)
@@ -102,8 +98,6 @@ public abstract partial class GsmtcServiceBase : ObservableObject, IGsmtcService
         _settingsService = settingsService;
         _albumArtSearchService = albumArtSearchService;
         _lyrcsSearchService = lyricsSearchService;
-        _translationService = libreTranslateService;
-        _transliterationService = transliterationService;
         _appUIThreadProvider = appUiThreadProvider;
         _logger = logger;
         _globalToastProvider = globalToastProvider;
@@ -321,7 +315,7 @@ public abstract partial class GsmtcServiceBase : ObservableObject, IGsmtcService
     {
         if (message.PropertyName == nameof(TranslationSettings.SelectedTargetLanguageCode))
         {
-            _logger.LogInformation("Target LibreTranslate language code changed: {code}",
+            _logger.LogInformation("Target lyrics translation language code changed: {code}",
                 _settingsService.AppSettings.TranslationSettings.SelectedTargetLanguageCode);
         }
 
@@ -339,13 +333,7 @@ public abstract partial class GsmtcServiceBase : ObservableObject, IGsmtcService
     private static bool IsPresentationTranslationProperty(string propertyName) =>
         propertyName is
             nameof(TranslationSettings.IsTranslationEnabled) or
-            nameof(TranslationSettings.SelectedTargetLanguageCode) or
-            nameof(TranslationSettings.IsMandarinRomanizationEnabled) or
-            nameof(TranslationSettings.IsCantoneseRomanizationEnabled) or
-            nameof(TranslationSettings.IsJapaneseRomanizationEnabled) or
-            nameof(TranslationSettings.IsKoreanRomanizationEnabled) or
-            nameof(TranslationSettings.IsLibreTranslateEnabled) or
-            nameof(TranslationSettings.LibreTranslateServer);
+            nameof(TranslationSettings.SelectedTargetLanguageCode);
 
     public void Receive(MediaFolderEnabledChangedMessage message)
     {

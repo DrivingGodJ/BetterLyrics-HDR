@@ -1,4 +1,4 @@
-﻿using BetterLyrics.Core.Enums;
+using BetterLyrics.Core.Enums;
 using BetterLyrics.Core.Interfaces.Providers;
 using BetterLyrics.Core.Interfaces.Services;
 using BetterLyrics.Core.Interfaces.ViewModels;
@@ -48,9 +48,6 @@ public partial class SystemTrayViewModel : ObservableRecipient, ISingletonViewMo
                 break;
             case SystemTrayClickCallback.LyricsWindowSwitchWindow:
                 _windowManagerProvider.OpenOrShowWindow(WindowType.LyricsWindowSwitchWindow);
-                break;
-            case SystemTrayClickCallback.LyricsSearchWindow:
-                _windowManagerProvider.OpenOrShowWindow(WindowType.LyricsSearchWindow);
                 break;
             case SystemTrayClickCallback.StatsWindow:
                 _windowManagerProvider.OpenOrShowWindow(WindowType.StatsDashboardWindow);

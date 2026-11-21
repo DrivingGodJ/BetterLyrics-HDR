@@ -685,7 +685,7 @@
     <value>Impostazioni</value>
   </data>
   <data name="LyricsPageTranslationEnabled.Description" xml:space="preserve">
-    <value>Dai priorità alle traduzioni già presenti nei testi; se non sono disponibili, richiedi la traduzione automatica al server LibreTranslate.</value>
+    <value>Mostra le traduzioni incluse nei testi, se disponibili.</value>
   </data>
   <data name="LyricsPageTranslationEnabled.Header" xml:space="preserve">
     <value>Abilita traduzione</value>

@@ -685,7 +685,7 @@
     <value>الإعدادات</value>
   </data>
   <data name="LyricsPageTranslationEnabled.Description" xml:space="preserve">
-    <value>ستُعطى الأولوية لقراءة الترجمة داخل ملف الكلمات، وإذا لم يوجد تطابق، سيتم طلب ترجمة آلية من خادم LibreTranslate</value>
+    <value>يعرض الترجمات المرفقة بكلمات الأغنية عند توفرها.</value>
   </data>
   <data name="LyricsPageTranslationEnabled.Header" xml:space="preserve">
     <value>تفعيل الترجمة</value>

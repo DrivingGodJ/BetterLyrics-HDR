@@ -33,14 +33,12 @@ public class GsmtcService : GsmtcServiceBase,
     ISettingsService settingsService,
     IAlbumArtSearchService albumArtSearchService,
     ILyricsSearchService lyricsSearchService,
-    ITranslationService libreTranslateService,
-    ITransliterationService transliterationService,
     IPlayHistoryService playHistoryService,
     IAppUIThreadProvider appUiThreadProvider,
     ILogger<GsmtcService> logger, IGlobalToastProvider globalToastProvider,
     IWindowManagerProvider windowManagerProvider)
-        : base(settingsService, albumArtSearchService, lyricsSearchService, libreTranslateService,
-            transliterationService, appUiThreadProvider, logger, globalToastProvider, windowManagerProvider)
+        : base(settingsService, albumArtSearchService, lyricsSearchService,
+            appUiThreadProvider, logger, globalToastProvider, windowManagerProvider)
     {
         _playHistoryService = playHistoryService;
 

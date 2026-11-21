@@ -261,14 +261,6 @@
                             <controls:SettingsCard x:Uid="SettingsPageAutoAdjust">
                                 <ToggleSwitch IsOn="{x:Bind LyricsWindowStatus.LyricsStyleSettings.IsDynamicLyricsFontSize, Mode=TwoWay}" />
                             </controls:SettingsCard>
-                            <controls:SettingsCard x:Uid="SettingsPagePhoneticText" IsEnabled="{x:Bind LyricsWindowStatus.LyricsStyleSettings.IsDynamicLyricsFontSize, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}">
-                                <local:ExtendedSlider
-                                    Frequency="2"
-                                    Maximum="256"
-                                    Minimum="12"
-                                    ResetButtonVisibility="Collapsed"
-                                    Value="{x:Bind LyricsWindowStatus.LyricsStyleSettings.PhoneticLyricsFontSize, Mode=TwoWay}" />
-                            </controls:SettingsCard>
                             <controls:SettingsCard x:Uid="SettingsPageOriginalText" IsEnabled="{x:Bind LyricsWindowStatus.LyricsStyleSettings.IsDynamicLyricsFontSize, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}">
                                 <local:ExtendedSlider
                                     Frequency="2"
@@ -291,14 +283,6 @@
                     <!--  Font opacity  -->
                     <controls:SettingsExpander x:Uid="SettingsPageLyricsOpacity" HeaderIcon="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons}, Glyph=&#xEF20;}">
                         <controls:SettingsExpander.Items>
-                            <controls:SettingsCard x:Uid="SettingsPagePhoneticText">
-                                <local:ExtendedSlider
-                                    Default="60"
-                                    Frequency="1"
-                                    Maximum="100"
-                                    Minimum="0"
-                                    Value="{x:Bind LyricsWindowStatus.LyricsStyleSettings.PhoneticLyricsOpacity, Mode=TwoWay}" />
-                            </controls:SettingsCard>
                             <controls:SettingsCard x:Uid="SettingsPagePlayedOriginalText">
                                 <local:ExtendedSlider
                                     Default="100"

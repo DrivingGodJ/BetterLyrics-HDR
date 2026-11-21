@@ -86,8 +86,8 @@ public partial class LyricsContentParser
             // 计算最大语言数量
             languageCount = grouped.Max(g => g.Count());
 
-        // 如果既没有开启翻译，也没有开启任何音译，那么只保留第一轨（原文）
-        if (rule != null && !rule.IsTranslationEnabled && rule.AllowedRomanizationTags.Count == 0)
+        // 未开启翻译时只保留原文
+        if (rule != null && !rule.IsTranslationEnabled)
         {
             languageCount = Math.Min(languageCount, 1);
         }

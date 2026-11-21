@@ -15,9 +15,6 @@ public partial class LyricsSaveConfig : ObservableObject
     public partial bool IncludeTranslation { get; set; } = true;
 
     [ObservableProperty]
-    public partial bool IncludeTransliteration { get; set; } = false;
-
-    [ObservableProperty]
     public partial bool InOneLine { get; set; } = false;
 
     [ObservableProperty]

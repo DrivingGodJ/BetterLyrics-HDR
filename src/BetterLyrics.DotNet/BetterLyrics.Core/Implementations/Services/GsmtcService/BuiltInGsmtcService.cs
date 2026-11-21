@@ -15,14 +15,12 @@ public sealed class BuiltInGsmtcService : GsmtcServiceBase, IBuiltInGsmtcService
     ISettingsService settingsService,
     IAlbumArtSearchService albumArtSearchService,
     ILyricsSearchService lyricsSearchService,
-    ITranslationService translationService,
-    ITransliterationService transliterationService,
     IAppUIThreadProvider appUiThreadProvider,
     ILogger<BuiltInGsmtcService> logger,
     IGlobalToastProvider globalToastProvider,
     IWindowManagerProvider windowManagerProvider)
-        : base(settingsService, albumArtSearchService, lyricsSearchService, translationService,
-            transliterationService, appUiThreadProvider, logger, globalToastProvider, windowManagerProvider)
+        : base(settingsService, albumArtSearchService, lyricsSearchService,
+            appUiThreadProvider, logger, globalToastProvider, windowManagerProvider)
     {
         Initialize();
     }

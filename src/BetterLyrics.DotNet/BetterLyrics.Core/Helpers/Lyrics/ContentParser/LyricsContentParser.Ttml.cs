@@ -17,7 +17,6 @@ public partial class LyricsContentParser
 
             List<LyricsLine> originalLines = [];
             Dictionary<string, List<LyricsLine>> translations = [];
-            Dictionary<string, List<LyricsLine>> romanizations = [];
             foreach (var line in document.Lines)
             {
                 AddVocal(line, line.AgentId);
@@ -28,41 +27,31 @@ public partial class LyricsContentParser
                 Provider = provider,
                 LanguageTag = ParseLanguage(document.Metadata.Language)
             };
-            List<LyricsData> tracks = [original];
-            AddTracks(translations, LyricsTrackType.Translation);
-            AddTracks(romanizations, LyricsTrackType.Transliteration);
-            foreach (var track in tracks) AddLyricsData(track);
+            AddLyricsData(original);
+            foreach (var (language, lines) in translations)
+            {
+                var tag = ParseLanguage(language);
+                if (rule.IsTranslationAllowed(tag))
+                    AddLyricsData(new LyricsData(lines)
+                    {
+                        Provider = provider,
+                        TrackType = LyricsTrackType.Translation,
+                        LanguageTag = tag
+                    });
+            }
 
             void AddVocal(TtmlVocal vocal, string? agent)
             {
                 if (!string.IsNullOrWhiteSpace(vocal.Text))
                     originalLines.Add(TtmlLyricsAdapter.ToLine(vocal, vocal.StartTime, vocal.EndTime, agent));
-                AddAuxiliary(vocal.Translations, translations, false);
-                AddAuxiliary(vocal.Romanizations, romanizations, true);
+                if (!rule.IsTranslationEnabled) return;
 
-                void AddAuxiliary(List<TtmlSubLyric>? contents, Dictionary<string, List<LyricsLine>> destination, bool roman)
+                foreach (var content in vocal.Translations ?? [])
                 {
-                    foreach (var content in contents ?? [])
-                    {
-                        if (string.IsNullOrWhiteSpace(content.Text)) continue;
-                        var language = content.Language ?? "";
-                        if (!destination.TryGetValue(language, out var lines)) destination[language] = lines = [];
-                        lines.Add(TtmlLyricsAdapter.ToLine(content, vocal.StartTime, vocal.EndTime, agent, roman));
-                    }
-                }
-            }
-
-            void AddTracks(Dictionary<string, List<LyricsLine>> source, LyricsTrackType type)
-            {
-                foreach (var (language, lines) in source)
-                {
-                    var tag = ParseLanguage(language);
-                    if (type == LyricsTrackType.Transliteration)
-                        tag = LanguageHelper.GetPhoneticTag(tag ?? original.LanguageTag);
-                    var allowed = type == LyricsTrackType.Translation
-                        ? rule.IsTranslationEnabled && rule.IsTranslationAllowed(tag)
-                        : rule.IsRomanizationAllowed(tag, original.LanguageTag);
-                    if (allowed) tracks.Add(new LyricsData(lines) { Provider = provider, TrackType = type, LanguageTag = tag });
+                    if (string.IsNullOrWhiteSpace(content.Text)) continue;
+                    var language = content.Language ?? "";
+                    if (!translations.TryGetValue(language, out var lines)) translations[language] = lines = [];
+                    lines.Add(TtmlLyricsAdapter.ToLine(content, vocal.StartTime, vocal.EndTime, agent));
                 }
             }
         }

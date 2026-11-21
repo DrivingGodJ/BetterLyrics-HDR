@@ -685,7 +685,7 @@
     <value>การตั้งค่า</value>
   </data>
   <data name="LyricsPageTranslationEnabled.Description" xml:space="preserve">
-    <value>จะให้ความสำคัญกับการอ่านคำแปลในเนื้อเพลงก่อน หากไม่พบจะขอคำแปลจากเครื่องผ่านเซิร์ฟเวอร์ LibreTranslate</value>
+    <value>แสดงคำแปลที่มาพร้อมกับเนื้อเพลงเมื่อมีให้ใช้งาน</value>
   </data>
   <data name="LyricsPageTranslationEnabled.Header" xml:space="preserve">
     <value>เปิดใช้งานการแปล</value>

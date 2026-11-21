@@ -685,7 +685,7 @@
     <value>Настройки</value>
   </data>
   <data name="LyricsPageTranslationEnabled.Description" xml:space="preserve">
-    <value>Приоритет отдается переводу внутри текста песни; если совпадений нет, запрашивается машинный перевод у сервера LibreTranslate</value>
+    <value>Показывает перевод, прилагаемый к тексту песни, если он доступен.</value>
   </data>
   <data name="LyricsPageTranslationEnabled.Header" xml:space="preserve">
     <value>Включить перевод</value>

@@ -47,7 +47,7 @@ public abstract partial class GsmtcServiceBase : IGsmtcService
         _ = _lyricsPresentationDebouncer.RunAsync(async token =>
         {
             var lyricsParser = new LyricsContentParser();
-            var lyricsData = await Task.Run(async () => await lyricsParser.ParseAsync(searchResult, token), token);
+            var lyricsData = await Task.Run(() => lyricsParser.Parse(searchResult, token), token);
 
             token.ThrowIfCancellationRequested();
 
@@ -104,7 +104,7 @@ public abstract partial class GsmtcServiceBase : IGsmtcService
             {
                 var lyricsParser = new LyricsContentParser();
 
-                CurrentLyricsData = await Task.Run(async () => await lyricsParser.ParseAsync(CurrentLyricsSearchResult, token), token);
+                CurrentLyricsData = await Task.Run(() => lyricsParser.Parse(CurrentLyricsSearchResult, token), token);
             }
         }
         else

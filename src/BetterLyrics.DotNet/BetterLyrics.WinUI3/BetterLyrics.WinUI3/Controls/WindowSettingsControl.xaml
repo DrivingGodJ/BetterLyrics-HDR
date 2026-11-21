@@ -164,9 +164,6 @@
                         </controls:SettingsExpander.Items>
                     </controls:SettingsExpander>
 
-                    <controls:SettingsCard x:Uid="WindowSettingsControlSpoutOutput" HeaderIcon="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons}, Glyph=&#xE8AD;}">
-                        <ToggleSwitch IsOn="{x:Bind LyricsWindowStatus.IsSpoutOutputEnabled, Mode=TwoWay}" />
-                    </controls:SettingsCard>
 
                     <TextBlock
                         x:Uid="WindowSettingsControlShowAndHide"
@@ -203,119 +200,8 @@
                             Value="{x:Bind LyricsWindowStatus.AutoShowOrHideWindowDelay, Mode=TwoWay}" />
                     </controls:SettingsCard>
 
-                    <TextBlock
-                        x:Uid="WindowSettingsControlWallpaperEngine"
-                        Style="{StaticResource SettingsSectionHeaderTextBlockStyle}"
-                        Visibility="{x:Bind ViewModel.IsManaged, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}" />
 
                     <!--  跟随 Wallpaper Engine 壁纸显示/隐藏  -->
-                    <controls:SettingsExpander
-                        x:Uid="WindowSettingsControlWallpaperEngineBinding"
-                        HeaderIcon="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons},
-                                                 Glyph=&#xE7F4;}"
-                        IsExpanded="True"
-                        Visibility="{x:Bind ViewModel.IsManaged, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
-                        <controls:SettingsExpander.Items>
-                            <controls:SettingsCard HorizontalContentAlignment="Stretch" ContentAlignment="Vertical">
-                                <Grid ColumnSpacing="6">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-                                    <ComboBox
-                                        Grid.Column="0"
-                                        HorizontalAlignment="Stretch"
-                                        ItemsSource="{x:Bind ViewModel.WallpaperOptions}"
-                                        SelectedItem="{x:Bind ViewModel.SelectedWallpaperOption, Mode=TwoWay}">
-                                        <ComboBox.ItemTemplate>
-                                            <DataTemplate x:DataType="models:WallpaperEngineBindingOption">
-                                                <Grid ColumnSpacing="8">
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="Auto" />
-                                                        <ColumnDefinition Width="*" />
-                                                        <ColumnDefinition Width="Auto" />
-                                                    </Grid.ColumnDefinitions>
-                                                    <Border
-                                                        Width="80"
-                                                        Height="45"
-                                                        Background="{ThemeResource ControlFillColorSecondaryBrush}"
-                                                        BorderBrush="{ThemeResource ControlStrokeColorDefaultBrush}"
-                                                        BorderThickness="1"
-                                                        CornerRadius="4">
-                                                        <Grid>
-                                                            <FontIcon
-                                                                HorizontalAlignment="Center"
-                                                                VerticalAlignment="Center"
-                                                                FontFamily="{StaticResource SegoeFluentIcons}"
-                                                                FontSize="16"
-                                                                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                                                                Glyph="&#xE7F4;" />
-                                                            <Image
-                                                                Source="{x:Bind PreviewImagePath, Converter={StaticResource PathToImageConverter}, ConverterParameter=160}"
-                                                                Stretch="UniformToFill"
-                                                                Visibility="{x:Bind PreviewImagePath, Converter={StaticResource StringToVisibilityConverter}}" />
-                                                        </Grid>
-                                                    </Border>
-                                                    <TextBlock
-                                                        Grid.Column="1"
-                                                        VerticalAlignment="Center"
-                                                        Text="{x:Bind DisplayName}"
-                                                        TextWrapping="Wrap" />
-                                                    <Button
-                                                        Grid.Column="2"
-                                                        VerticalAlignment="Center"
-                                                        Click="CopyWallpaperName_Click"
-                                                        Content="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons},
-                                                                              FontSize=14,
-                                                                              Glyph=&#xE8C8;}"
-                                                        Style="{ThemeResource GhostButtonStyle}"
-                                                        Tag="{x:Bind CopyName}">
-                                                        <ToolTipService.ToolTip>
-                                                            <TextBlock x:Uid="WindowSettingsControlCopyWallpaperName" />
-                                                        </ToolTipService.ToolTip>
-                                                    </Button>
-                                                </Grid>
-                                            </DataTemplate>
-                                        </ComboBox.ItemTemplate>
-                                    </ComboBox>
-                                    <Button
-                                        Grid.Column="1"
-                                        Click="RefreshWallpaperButton_Click"
-                                        Content="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons},
-                                                              FontSize=14,
-                                                              Glyph=&#xE72C;}"
-                                        Style="{ThemeResource GhostButtonStyle}">
-                                        <ToolTipService.ToolTip>
-                                            <TextBlock x:Uid="WindowSettingsControlWallpaperEngineRefresh" />
-                                        </ToolTipService.ToolTip>
-                                    </Button>
-                                </Grid>
-                            </controls:SettingsCard>
-                        </controls:SettingsExpander.Items>
-                        <controls:SettingsExpander.ItemsFooter>
-                            <InfoBar
-                                BorderThickness="0"
-                                IsClosable="False"
-                                IsOpen="True"
-                                Message="{x:Bind ViewModel.StatusMessage, Mode=OneWay}"
-                                Severity="{x:Bind ViewModel.StatusSeverity, Mode=OneWay, Converter={StaticResource MessageSeverityToInfoBarSeverity}}">
-                                <InfoBar.ActionButton>
-                                    <Button
-                                        Margin="0,4,0,0"
-                                        Click="CopyCurrentWallpaperName_Click"
-                                        Content="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons},
-                                                              FontSize=14,
-                                                              Glyph=&#xE8C8;}"
-                                        Style="{ThemeResource GhostButtonStyle}"
-                                        Visibility="{x:Bind ViewModel.CurrentWallpaperNames, Mode=OneWay, Converter={StaticResource StringToVisibilityConverter}}">
-                                        <ToolTipService.ToolTip>
-                                            <TextBlock x:Uid="WindowSettingsControlCopyCurrentWallpaperName" />
-                                        </ToolTipService.ToolTip>
-                                    </Button>
-                                </InfoBar.ActionButton>
-                            </InfoBar>
-                        </controls:SettingsExpander.ItemsFooter>
-                    </controls:SettingsExpander>
 
                     <TextBlock x:Uid="WindowSettingsControlColor" Style="{StaticResource SettingsSectionHeaderTextBlockStyle}" />
 

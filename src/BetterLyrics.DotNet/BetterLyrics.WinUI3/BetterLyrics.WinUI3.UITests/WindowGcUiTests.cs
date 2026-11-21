@@ -19,7 +19,6 @@ public sealed class WindowGcUiTests
     private static readonly string[] _expectedWindows =
     [
         "SettingsWindow",
-        "LyricsSearchWindow",
         "LyricsShareWindow",
         "StatsDashboardWindow",
         "MusicGalleryWindow",

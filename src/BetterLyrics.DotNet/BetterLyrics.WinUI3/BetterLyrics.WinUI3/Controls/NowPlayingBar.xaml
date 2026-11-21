@@ -372,11 +372,6 @@
                             <Button.Flyout>
                                 <MenuFlyout>
                                     <!--  Lyrics search window  -->
-                                    <MenuFlyoutItem
-                                        x:Uid="LyricsPageLyricsSearch"
-                                        Command="{x:Bind ViewModel.NavigationService.OpenLyricsSearchWindowCommand}"
-                                        Icon="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons},
-                                                           Glyph=&#xE721;}" />
                                     <!--  Config current lyrics window shortcut settings  -->
                                     <MenuFlyoutItem
                                         x:Uid="NowPlayingBarConfigCurrentLyricsWindow"

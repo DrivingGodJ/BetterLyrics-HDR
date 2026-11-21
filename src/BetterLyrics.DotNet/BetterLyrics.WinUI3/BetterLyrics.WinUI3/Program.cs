@@ -32,7 +32,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Activation;
-using Windows.Foundation;
 using WinRT;
 
 namespace BetterLyrics.WinUI3;
@@ -72,10 +71,8 @@ public class Program
                     "BetterLyrics starting. Version: {Version}; log level: {LogLevel}; process id: {ProcessId}.",
                     MetadataHelper.AppVersion, AppLogging.MinimumLevel, Environment.ProcessId);
 
-                _ = new App();
-
-                var args = AppInstance.GetCurrent().GetActivatedEventArgs();
-                HandleActivation(args, true);
+                var activationArgs = AppInstance.GetCurrent().GetActivatedEventArgs();
+                _ = new App(() => HandleActivation(activationArgs, true));
             });
 
             // 正常关闭（非 ExitApp 路径）时释放容器；DisposeServices 可重复调用
@@ -148,7 +145,7 @@ public class Program
             {
                 var segments = protocolArgs.Uri.Segments.Select(s => s.Trim('/')).Where(s => !string.IsNullOrEmpty(s)).ToArray();
                 if (segments.Length > 0 && Enum.TryParse<SettingsSection>(segments[0], true, out var section) &&
-                    section is SettingsSection.PlaybackLib or SettingsSection.MediaLib)
+                    section is SettingsSection.PlaybackLib or SettingsSection.LyricsWindowMgr)
                 {
                     windowManagerProvider.OpenOrShowWindow<SettingsWindow>();
                     var settingsPageViewModel = Ioc.Default.GetRequiredService<SettingsPageViewModel>();
@@ -157,12 +154,12 @@ public class Program
                     string? param = segments.Length > 2 ? segments[2] : null;
 
                     // Support both Tag/Param and Param/Tag formats
-                    if (segments.Length > 2 && !TryParseSettingsSubsection(subsectionString, out _) && TryParseSettingsSubsection(param, out _))
+                    if (segments.Length > 2 && !TryParseSettingsSubsection(section, subsectionString, out _) && TryParseSettingsSubsection(section, param, out _))
                     {
                         (subsectionString, param) = (param, subsectionString);
                     }
 
-                    if (!string.IsNullOrEmpty(subsectionString) && TryParseSettingsSubsection(subsectionString, out var subsection))
+                    if (!string.IsNullOrEmpty(subsectionString) && TryParseSettingsSubsection(section, subsectionString, out var subsection))
                     {
                         var searchItem = new SettingSearchItem
                         {
@@ -183,27 +180,6 @@ public class Program
                     {
                         settingsPageViewModel.NavigateToSection(section);
                     }
-                }
-            }
-            else if (protocolArgs.Uri.Host == "lyrics")
-            {
-                var targetSegment = protocolArgs.Uri.Segments.LastOrDefault()?.Trim('/');
-                if (targetSegment == "search")
-                {
-                    windowManagerProvider.OpenOrShowWindow<LyricsSearchWindow>();
-
-                    var decoder = new WwwFormUrlDecoder(protocolArgs.Uri.Query);
-                    var title = decoder.FirstOrDefault(p => p.Name == "title")?.Value ?? "";
-                    var artist = decoder.FirstOrDefault(p => p.Name == "artist")?.Value ?? "";
-                    var album = decoder.FirstOrDefault(p => p.Name == "album")?.Value ?? "";
-
-                    var lyricsSearchControlViewModel =
-                        Ioc.Default.GetRequiredService<LyricsSearchControlViewModel>();
-                    lyricsSearchControlViewModel.MappedSongSearchQuery?.MappedTitle = title;
-                    lyricsSearchControlViewModel.MappedSongSearchQuery?.MappedArtist = artist;
-                    lyricsSearchControlViewModel.MappedSongSearchQuery?.MappedAlbum = album;
-                    if (!lyricsSearchControlViewModel.IsSearching)
-                        lyricsSearchControlViewModel.SearchCommand.Execute(null);
                 }
             }
             else if (protocolArgs.Uri.Host == "stats")
@@ -250,13 +226,10 @@ public class Program
             .AddSingleton<IBuiltInGsmtcService, BuiltInGsmtcService>()
             .AddSingleton<IAlbumArtSearchService, AlbumArtSearchService>()
             .AddSingleton<ILyricsSearchService, LyricsSearchService>()
-            .AddSingleton<ITranslationService, TranslationService>()
-            .AddSingleton<ITransliterationService, TransliterationService>()
             .AddSingleton<ILastFmService, LastFmService>()
             .AddSingleton<ILocalizationService, LocalizationService>()
             .AddSingleton<ILyricsCacheService, LyricsCacheService>()
             .AddSingleton<IPluginService, PluginService>()
-            .AddSingleton<IFileWatchService, FileWatchService>()
             .AddSingleton<INavigationService, NavigationService>()
             .AddSingleton<IAppLifecycleService, AppLifecycleService>()
             .AddSingleton<IAudioMixerService, AudioMixerService>()
@@ -290,12 +263,12 @@ public class Program
             // ViewModels
             // 应用级单例：需要被视图之外的代码解析，或在窗口重建后保留状态
             .AddSingleton<SettingsPageViewModel>()
-            .AddSingleton<LyricsSearchControlViewModel>()
             .AddSingleton<SystemTrayViewModel>()
 
             // 视图级实例：每个 Window/Page/Control 生命周期内独立，随视图创建与释放
             .AddTransient<PlaybackSettingsControlViewModel>()
-            .AddTransient<MediaSettingsControlViewModel>()
+            .AddTransient<LyricsWindowManagerControlViewModel>()
+            .AddTransient<WindowSettingsControlViewModel>()
             .AddTransient<LyricsWindowSwitchControlViewModel>()
             .AddTransient<LyricsWindowSwitchWindowViewModel>()
             .AddTransient<StatsDashboardControlViewModel>()
@@ -359,13 +332,16 @@ public class Program
         SetForegroundWindow(process.MainWindowHandle);
     }
 
-    private static bool TryParseSettingsSubsection(string? value, out Enum? parsedSubsection)
+    private static bool TryParseSettingsSubsection(SettingsSection section, string? value, out Enum? parsedSubsection)
     {
-        if (value == null) { parsedSubsection = null; return false; }
-        if (Enum.TryParse<AppSettingsSection>(value, true, out var appSubsection)) { parsedSubsection = appSubsection; return true; }
-        if (Enum.TryParse<PlaybackLibSettingsSection>(value, true, out var playSubsection)) { parsedSubsection = playSubsection; return true; }
-        if (Enum.TryParse<LyricsWindowManagerSettingsSection>(value, true, out var mgrSubsection)) { parsedSubsection = mgrSubsection; return true; }
-        parsedSubsection = null;
-        return false;
+        parsedSubsection = section switch
+        {
+            SettingsSection.PlaybackLib when Enum.TryParse<PlaybackLibSettingsSection>(value, true, out var playback) &&
+                                             Enum.IsDefined(playback) && playback != PlaybackLibSettingsSection.Integration => playback,
+            SettingsSection.LyricsWindowMgr when Enum.TryParse<LyricsWindowManagerSettingsSection>(value, true, out var window) &&
+                                                Enum.IsDefined(window) => window,
+            _ => null
+        };
+        return parsedSubsection != null;
     }
 }

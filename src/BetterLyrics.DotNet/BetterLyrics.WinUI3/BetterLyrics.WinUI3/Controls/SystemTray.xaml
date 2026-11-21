@@ -39,11 +39,6 @@
                     Icon="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons},
                                        Glyph=&#xE8AB;}" />
                 <MenuFlyoutItem
-                    x:Uid="SystemTraySearch"
-                    Command="{x:Bind ViewModel.NavigationService.OpenLyricsSearchWindowCommand}"
-                    Icon="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons},
-                                       Glyph=&#xE721;}" />
-                <MenuFlyoutItem
                     x:Uid="SystemTrayStats"
                     Command="{x:Bind ViewModel.NavigationService.OpenStatsDashboardWindowCommand}"
                     Icon="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons},

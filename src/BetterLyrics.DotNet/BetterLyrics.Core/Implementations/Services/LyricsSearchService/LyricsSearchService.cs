@@ -241,7 +241,7 @@ public class LyricsSearchService : ILyricsSearchService
 
         var searchTasks = new List<Task<LyricsCacheItem>>();
 
-        foreach (var provider in Enum.GetValues<LyricsProvider>().Where(p => !p.IsInternal()))
+        foreach (var provider in Enum.GetValues<LyricsProvider>().Where(p => !p.IsInternal() && !p.IsLocal()))
             searchTasks.Add(SearchSingleAsync(songInfo, provider, checkCache, cancellationToken));
 
         foreach (var plugin in _settingsService.AppSettings.PluginsInfo)
@@ -284,7 +284,7 @@ public class LyricsSearchService : ILyricsSearchService
     {
         List<LyricsProvider> providers = [];
 
-        foreach (var provider in Enum.GetValues<LyricsProvider>().Where(p => !p.IsInternal())) providers.Add(provider);
+        foreach (var provider in Enum.GetValues<LyricsProvider>().Where(p => !p.IsInternal() && !p.IsLocal())) providers.Add(provider);
 
         foreach (var plugin in _settingsService.AppSettings.PluginsInfo)
             if (plugin.Plugin is ILyricsSource)
@@ -313,7 +313,7 @@ public class LyricsSearchService : ILyricsSearchService
         try
         {
             using var response = await _client.GetAsync(
-                $"{_settingsService.AppSettings.GeneralSettings.AmllTtmlDbBaseUrl}/{AmllTTmlDB.IndexSuffix}",
+                $"{AmllTTmlDB.BaseUrl}/{AmllTTmlDB.IndexSuffix}",
                 HttpCompletionOption.ResponseHeadersRead, token);
 
             if (!response.IsSuccessStatusCode) return false;
@@ -341,7 +341,7 @@ public class LyricsSearchService : ILyricsSearchService
         catch (Exception ex)
         {
             _logger.LogWarning(ex, "Failed to download AMLL TTML DB index from {BaseUrl}.",
-                _settingsService.AppSettings.GeneralSettings.AmllTtmlDbBaseUrl);
+                AmllTTmlDB.BaseUrl);
             return false;
         }
     }
@@ -590,7 +590,7 @@ public class LyricsSearchService : ILyricsSearchService
         if (string.IsNullOrWhiteSpace(rawLyricFile)) return lyricsSearchResult;
 
         var url =
-            $"{_settingsService.AppSettings.GeneralSettings.AmllTtmlDbBaseUrl}/{AmllTTmlDB.QueryPrefix}/{rawLyricFile}";
+            $"{AmllTTmlDB.BaseUrl}/{AmllTTmlDB.QueryPrefix}/{rawLyricFile}";
         lyricsSearchResult.Reference = url;
 
         // 下载写入歌词
@@ -747,7 +747,6 @@ public class LyricsSearchService : ILyricsSearchService
 
             lyricsSearchResult.Raw = response?.Lrc?.Lyric;
             lyricsSearchResult.Translation = response?.Tlyric?.Lyric;
-            lyricsSearchResult.Transliteration = response?.Romalrc?.Lyric;
             lyricsSearchResult.Reference = $"https://music.163.com/song?id={neteaseResult.Id}";
         }
 

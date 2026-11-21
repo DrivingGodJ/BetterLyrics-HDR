@@ -685,7 +685,7 @@
     <value>Pengaturan</value>
   </data>
   <data name="LyricsPageTranslationEnabled.Description" xml:space="preserve">
-    <value>Akan memprioritaskan membaca terjemahan di dalam lirik, jika tidak ada kecocokan maka akan meminta terjemahan mesin dari server LibreTranslate</value>
+    <value>Menampilkan terjemahan yang disertakan bersama lirik jika tersedia.</value>
   </data>
   <data name="LyricsPageTranslationEnabled.Header" xml:space="preserve">
     <value>Aktifkan Terjemahan</value>

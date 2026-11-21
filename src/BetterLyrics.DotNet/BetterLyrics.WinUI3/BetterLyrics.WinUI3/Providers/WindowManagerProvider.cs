@@ -185,7 +185,6 @@ public class WindowManagerProvider : IWindowManagerProvider
 
     public object? GetWindow(WindowType windowType, object? windowParameter = null) => windowType switch
     {
-        WindowType.LyricsSearchWindow => GetWindow<LyricsSearchWindow>(),
         WindowType.LyricsWindowSwitchWindow => GetWindow<LyricsWindowSwitchWindow>(),
         WindowType.StatsDashboardWindow => GetWindow<StatsDashboardWindow>(),
         WindowType.SettingsWindow => GetWindow<SettingsWindow>(),
@@ -231,7 +230,6 @@ public class WindowManagerProvider : IWindowManagerProvider
     {
         WindowType.SettingsWindow => GetWindows<SettingsWindow>().Select(x => (object)x).ToList(),
         WindowType.NowPlayingWindow => GetWindows<NowPlayingWindow>().Select(x => (object)x).ToList(),
-        WindowType.LyricsSearchWindow => GetWindows<LyricsSearchWindow>().Select(x => (object)x).ToList(),
         WindowType.LyricsWindowSwitchWindow => GetWindows<LyricsWindowSwitchWindow>().Select(x => (object)x).ToList(),
         WindowType.StatsDashboardWindow => GetWindows<StatsDashboardWindow>().Select(x => (object)x).ToList(),
         _ => []
@@ -310,10 +308,6 @@ public class WindowManagerProvider : IWindowManagerProvider
             {
                 window = new SettingsWindow();
             }
-            else if (typeof(T) == typeof(LyricsSearchWindow))
-            {
-                window = new LyricsSearchWindow();
-            }
             else if (typeof(T) == typeof(LyricsWindowSwitchWindow))
             {
                 window = new LyricsWindowSwitchWindow();
@@ -380,7 +374,6 @@ public class WindowManagerProvider : IWindowManagerProvider
             ? OpenOrShowWindow<NowPlayingWindow>(lyricsWindowStatus)
             : OpenOrShowWindow<NowPlayingWindow>(),
         WindowType.LyricsWindowSwitchWindow => OpenOrShowWindow<LyricsWindowSwitchWindow>(),
-        WindowType.LyricsSearchWindow => OpenOrShowWindow<LyricsSearchWindow>(),
         WindowType.StatsDashboardWindow => OpenOrShowWindow<StatsDashboardWindow>(),
         _ => null
     };

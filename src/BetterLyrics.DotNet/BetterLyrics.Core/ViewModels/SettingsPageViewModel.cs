@@ -68,9 +68,9 @@ public partial class SettingsPageViewModel : ObservableRecipient, ISingletonView
         });
         NavItems.Add(new SettingsNavMenuItem
         {
-            Label = _localizationService.GetLocalizedString("SettingsPageMediaLib"),
-            Glyph = "\uE8B7",
-            Section = SettingsSection.MediaLib
+            Label = _localizationService.GetLocalizedString("SettingsPageLyricsWindowMgr"),
+            Glyph = "\uE61F",
+            Section = SettingsSection.LyricsWindowMgr
         });
         SelectedNavItem = NavItems[0];
 
@@ -141,7 +141,6 @@ public partial class SettingsPageViewModel : ObservableRecipient, ISingletonView
         {
             SettingsSection.App => "SettingsPageApp",
             SettingsSection.LyricsWindowMgr => "SettingsPageLyricsWindowMgr",
-            SettingsSection.MediaLib => "SettingsPageMediaLib",
             SettingsSection.PlaybackLib => "SettingsPagePlaybackLib",
             SettingsSection.Plugins => "SettingsPagePlugins",
             SettingsSection.About => "SettingsPageAbout",
@@ -169,7 +168,6 @@ public partial class SettingsPageViewModel : ObservableRecipient, ISingletonView
 
             PlaybackLibSettingsSection.General => "SettingsPageConfigPlaybackSource/Text",
             PlaybackLibSettingsSection.LyricsProcessing => "SettingsPageLyricsProcessing/Text",
-            PlaybackLibSettingsSection.Integration => "SettingsPageIntegration/Text",
             PlaybackLibSettingsSection.RealtimeStatus => "SettingsPageRealtimeStatus/Text",
 
             _ => ""
@@ -199,7 +197,7 @@ public partial class SettingsPageViewModel : ObservableRecipient, ISingletonView
 
                     foreach (var staticItem in SettingSearchItemExtensions.AllItems)
                     {
-                        if (staticItem.Section is not (SettingsSection.PlaybackLib or SettingsSection.MediaLib)) continue;
+                        if (staticItem.Section is not (SettingsSection.PlaybackLib or SettingsSection.LyricsWindowMgr)) continue;
                         if (staticItem.Uid.Contains("LastFM") || staticItem.Uid.Contains("Discord")) continue;
                         if (token.IsCancellationRequested) return null;
 

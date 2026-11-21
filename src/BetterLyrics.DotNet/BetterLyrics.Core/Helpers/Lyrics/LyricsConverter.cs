@@ -68,21 +68,6 @@ public class LyricsConverter
                     }
                 }
 
-                // 构建音译
-                if (lyricsSaveConfig.IncludeTransliteration)
-                {
-                    var transliteration = line.TertiaryText;
-                    if (!string.IsNullOrWhiteSpace(transliteration))
-                    {
-                        if (lyricsSaveConfig.InOneLine)
-                            stringBuilder.Append(" / ");
-                        else
-                            stringBuilder.AppendLine();
-                        stringBuilder.Append(lineTimestamp);
-                        stringBuilder.Append(transliteration);
-                    }
-                }
-
                 // 换行，为下一次遍历做准备
                 stringBuilder.AppendLine();
             }
@@ -167,10 +152,6 @@ public class LyricsConverter
                 if (lyricsSaveConfig.IncludeTranslation && !string.IsNullOrWhiteSpace(line.SecondaryText))
                     stringBuilder.Append(
                         $"<span ttm:role=\"x-translation\">{WebUtility.HtmlEncode(line.SecondaryText)}</span>");
-
-                if (lyricsSaveConfig.IncludeTransliteration && !string.IsNullOrWhiteSpace(line.TertiaryText))
-                    stringBuilder.Append(
-                        $"<span ttm:role=\"x-roman\">{WebUtility.HtmlEncode(line.TertiaryText)}</span>");
 
                 stringBuilder.AppendLine("</p>");
                 lineIndex++;

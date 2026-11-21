@@ -1,6 +1,5 @@
 ﻿using BetterLyrics.Core.Models;
 using BetterLyrics.Core.Models.Entities;
-using BetterLyrics.Core.Models.Http;
 using BetterLyrics.Core.Models.Memory;
 using BetterLyrics.Core.Models.Settings;
 using System.Text.Json;
@@ -8,7 +7,6 @@ using System.Text.Json.Serialization;
 
 namespace BetterLyrics.Core.Serialization;
 
-[JsonSerializable(typeof(LibreTranslateResponse))]
 [JsonSerializable(typeof(JsonElement))]
 [JsonSerializable(typeof(AppSettings))]
 [JsonSerializable(typeof(LyricsCacheItem))]

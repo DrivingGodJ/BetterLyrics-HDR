@@ -1,4 +1,4 @@
-﻿using BetterLyrics.Core.Enums;
+using BetterLyrics.Core.Enums;
 using BetterLyrics.Core.Interfaces.Providers;
 using BetterLyrics.Core.Interfaces.Services;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -24,12 +24,6 @@ public partial class NavigationService : ObservableObject, INavigationService
     private void OpenLyricsWindowSwitchWindow()
     {
         _windowManagerProvider.OpenOrShowWindow(WindowType.LyricsWindowSwitchWindow);
-    }
-
-    [RelayCommand]
-    private void OpenLyricsSearchWindow()
-    {
-        _windowManagerProvider.OpenOrShowWindow(WindowType.LyricsSearchWindow);
     }
 
     [RelayCommand]

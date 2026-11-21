@@ -42,6 +42,7 @@ public class SettingsService : ISettingsService
         _logger = logger;
 
         AppSettings = ReadAppSettings();
+        AppSettings.LocalMediaFolders.Clear();
         EnsureLyricsWindowStatus();
 
         AppSettings.PropertyChanged += AppSettings_PropertyChanged;
@@ -57,9 +58,6 @@ public class SettingsService : ISettingsService
 
         AppSettings.MediaSourceProvidersInfo.CollectionChanged += AppSettings_CollectionChanged;
         AppSettings.MediaSourceProvidersInfo.ItemPropertyChanged += AppSettings_ItemPropertyChanged;
-
-        AppSettings.LocalMediaFolders.CollectionChanged += AppSettings_CollectionChanged;
-        AppSettings.LocalMediaFolders.ItemPropertyChanged += AppSettings_ItemPropertyChanged;
 
         AppSettings.MappedSongSearchQueries.CollectionChanged += AppSettings_CollectionChanged;
         AppSettings.MappedSongSearchQueries.ItemPropertyChanged += AppSettings_ItemPropertyChanged;
@@ -85,8 +83,8 @@ public class SettingsService : ISettingsService
 
         _logger.LogInformation("Settings loaded from {SettingsPath}. App version: {AppVersion}.",
             PathHelper.SettingsFilePath, AppSettings.Version);
-        _logger.LogDebug("Settings snapshot: media folders={FolderCount}, playback sources={ProviderCount}, plugins={PluginCount}, debug logs={WriteDebugLogs}.",
-            AppSettings.LocalMediaFolders.Count, AppSettings.MediaSourceProvidersInfo.Count,
+        _logger.LogDebug("Settings snapshot: playback sources={ProviderCount}, plugins={PluginCount}, debug logs={WriteDebugLogs}.",
+            AppSettings.MediaSourceProvidersInfo.Count,
             AppSettings.PluginsInfo.Count, AppSettings.AdvancedSettings.WriteDebugLogs);
 
         EnsureMediaSourceProvidersInfo();
@@ -139,6 +137,9 @@ public class SettingsService : ISettingsService
             }
 
             AppSettings = importData;
+            AppSettings.LocalMediaFolders.Clear();
+            EnsureLyricsWindowStatus();
+            EnsureMediaSourceProvidersInfo();
             SaveAppSettings();
             _logger.LogInformation("Settings imported from {Path}.", importPath);
             return true;
@@ -159,35 +160,57 @@ public class SettingsService : ISettingsService
                 x.LyricsSearchProvidersInfo,
                 p => p.Provider,
                 p => new LyricsSearchProviderInfo(p, true),
-                p => p.IsInternal()
+                p => p.IsInternal() || p.IsLocal()
             );
 
             // 同步封面提供源
             SyncProviderInfo(
                 x.AlbumArtSearchProvidersInfo,
                 p => p.Provider,
-                p => new AlbumArtSearchProviderInfo(p, true)
+                p => new AlbumArtSearchProviderInfo(p, true),
+                p => p == AlbumArtProvider.Local
             );
         }
     }
 
     private void EnsureLyricsWindowStatus()
     {
-        if (AppSettings.WindowBoundsRecords.Count > 0 && AppSettings.LayoutProfiles.Count > 0) return;
-
         using var stream = typeof(SettingsService).Assembly.GetManifestResourceStream(
             "BetterLyrics.Core.Assets.LiteWindowProfiles.json")
             ?? throw new InvalidOperationException("The built-in lyrics window profiles are missing.");
         var presets = JsonSerializer.Deserialize(stream, SourceGenerationContext.Default.AppSettings)
             ?? throw new InvalidOperationException("The built-in lyrics window profiles are invalid.");
 
-        AppSettings.LayoutProfiles.Clear();
-        foreach (var layout in presets.LayoutProfiles)
-            AppSettings.LayoutProfiles.Add(layout);
+        var layoutIds = presets.LayoutProfiles.Select(x => x.Id).ToHashSet();
+        foreach (var layout in AppSettings.LayoutProfiles.ToArray())
+            if (!layoutIds.Remove(layout.Id))
+                AppSettings.LayoutProfiles.Remove(layout);
 
-        AppSettings.WindowBoundsRecords.Clear();
-        foreach (var window in presets.WindowBoundsRecords)
-            AppSettings.WindowBoundsRecords.Add(window);
+        foreach (var layout in presets.LayoutProfiles)
+            if (layoutIds.Contains(layout.Id))
+                AppSettings.LayoutProfiles.Add(layout);
+
+        var windowIds = presets.WindowBoundsRecords.Select(x => x.Id).ToHashSet();
+        foreach (var window in AppSettings.WindowBoundsRecords.ToArray())
+            if (!windowIds.Remove(window.Id))
+                AppSettings.WindowBoundsRecords.Remove(window);
+
+        foreach (var preset in presets.WindowBoundsRecords)
+        {
+            var window = AppSettings.WindowBoundsRecords.FirstOrDefault(x => x.Id == preset.Id);
+            if (window == null)
+            {
+                AppSettings.WindowBoundsRecords.Add(preset);
+                continue;
+            }
+
+            window.LayoutProfileId = preset.LayoutProfileId;
+            window.IsPinToTaskbar = preset.IsPinToTaskbar;
+            window.IsWallpaper = false;
+            window.IsWorkArea = false;
+            window.WallpaperEngineBindingPath = "";
+            window.IsSpoutOutputEnabled = false;
+        }
     }
 
     /// <summary>

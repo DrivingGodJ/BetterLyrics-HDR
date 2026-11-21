@@ -24,9 +24,6 @@ public partial class GeneralSettings : ObservableObject
     public partial string LXMusicServer { get; set; } = string.Empty;
 
     [ObservableProperty]
-    public partial string AmllTtmlDbBaseUrl { get; set; } = AmllTTmlDB.BaseUrl;
-
-    [ObservableProperty]
     public partial List<string> ShowOrHideLyricsWindowShortcut { get; set; } = new() { "Ctrl", "Alt", "H" };
 
     [ObservableProperty]

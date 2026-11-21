@@ -32,7 +32,6 @@ internal static class WindowGcTestRunner
     private static readonly WindowType[] _windowTypes =
     [
         WindowType.SettingsWindow,
-        WindowType.LyricsSearchWindow,
         WindowType.StatsDashboardWindow,
         WindowType.NowPlayingWindow
     ];

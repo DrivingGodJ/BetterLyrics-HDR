@@ -374,11 +374,6 @@ public sealed partial class NowPlayingBar : BaseUserControl
         ViewModel.ApplySystemVolume();
     }
 
-    private void LyricsSearchShortcutButton_Click(object sender, RoutedEventArgs e)
-    {
-        _windowManagerProvider.OpenOrShowWindow<LyricsSearchWindow>();
-    }
-
     private void SongInfoStackPanel_Tapped(object sender, TappedRoutedEventArgs e)
     {
         SongInfoTapped?.Invoke(sender, EventArgs.Empty);

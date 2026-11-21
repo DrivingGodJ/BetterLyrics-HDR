@@ -28,7 +28,6 @@ public partial class PlaybackSettingsControlViewModel : ObservableRecipient, ITr
     private readonly IAppUIThreadProvider _appUiThreadProvider;
     private readonly IGlobalToastProvider _globalToastProvider;
     private readonly IPasswordVaultProvider _passwordVaultProvider;
-    private readonly ITranslationService _translationService;
     private readonly IFilePickerProvider _filePickerProvider;
     private readonly ILocalizationService _localizationService;
     private readonly ILogger<PlaybackSettingsControlViewModel> _logger;
@@ -43,26 +42,20 @@ public partial class PlaybackSettingsControlViewModel : ObservableRecipient, ITr
 
     [ObservableProperty] public partial PlaybackLibSettingsNavMenuItem? SelectedNavItem { get; set; }
 
-    [ObservableProperty] public partial bool IsLibreTranslateServerTesting { get; set; } = false;
-
     [ObservableProperty] public partial bool IsLxMusicServerTesting { get; set; } = false;
 
     [ObservableProperty] public partial int SelectedTargetLanguageIndex { get; set; }
 
-    [ObservableProperty] public partial string AppleMusicMediaUserToken { get; set; }
-
     [ObservableProperty] public partial bool IsConfigPanelOpen { get; set; }
 
     public PlaybackSettingsControlViewModel(
-    ISettingsService settingsService, IGsmtcService gsmtcService, ITranslationService libreTranslationService,
-    IAppUIThreadProvider appUiThreadProvider, IPasswordVaultProvider passwordVaultProvider,
+    ISettingsService settingsService, IGsmtcService gsmtcService, IAppUIThreadProvider appUiThreadProvider, IPasswordVaultProvider passwordVaultProvider,
     IGlobalToastProvider globalToastProvider, IFilePickerProvider filePickerProvider,
     ILocalizationService localizationService, ILogger<PlaybackSettingsControlViewModel> logger)
     {
         GsmtcService = gsmtcService;
 
         _logger = logger;
-        _translationService = libreTranslationService;
         _appUiThreadProvider = appUiThreadProvider;
         _localizationService = localizationService;
         _passwordVaultProvider = passwordVaultProvider;
@@ -73,9 +66,6 @@ public partial class PlaybackSettingsControlViewModel : ObservableRecipient, ITr
 
         AppSettings = settingsService.AppSettings;
 
-        AppleMusicMediaUserToken =
-            _passwordVaultProvider.Get(App.AppName, AppleMusic.MediaUserTokenKey) ??
-            "";
 
         SelectedTargetLanguageIndex = LanguageHelper.SupportedTranslationTargetLanguages.ToList().FindIndex(x =>
             x.LanguageCode == AppSettings.TranslationSettings.SelectedTargetLanguageCode);
@@ -92,11 +82,6 @@ public partial class PlaybackSettingsControlViewModel : ObservableRecipient, ITr
         {
             Label = _localizationService.GetLocalizedString("SettingsPageLyricsProcessing/Text"),
             Section = PlaybackLibSettingsSection.LyricsProcessing
-        });
-        NavItems.Add(new PlaybackLibSettingsNavMenuItem
-        {
-            Label = _localizationService.GetLocalizedString("SettingsPageIntegration/Text"),
-            Section = PlaybackLibSettingsSection.Integration
         });
         NavItems.Add(new PlaybackLibSettingsNavMenuItem
         {
@@ -167,39 +152,6 @@ public partial class PlaybackSettingsControlViewModel : ObservableRecipient, ITr
     }
 
     [RelayCommand]
-    private void LibreTranslateServerTest()
-    {
-        IsLibreTranslateServerTesting = true;
-        _ = Task.Run(async () =>
-        {
-            try
-            {
-                await _translationService.TranslateTextAsync(
-                    "Hello, world!", AppSettings.TranslationSettings.SelectedTargetLanguageCode,
-                    CancellationToken.None);
-                _appUiThreadProvider.Execute(() =>
-                {
-                    _globalToastProvider.Show("SettingsPageServerTestSuccessInfo", null,
-                        MessageSeverity.Success);
-                });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning(ex, "LibreTranslate server connectivity test failed.");
-                _appUiThreadProvider.Execute(() =>
-                {
-                    _globalToastProvider.Show("SettingsPageServerTestFailedInfo", null, MessageSeverity.Error);
-                });
-            }
-
-            _appUiThreadProvider.Execute(() =>
-            {
-                IsLibreTranslateServerTesting = false;
-            });
-        });
-    }
-
-    [RelayCommand]
     private void LxMusicServerTest()
     {
         IsLxMusicServerTesting = true;
@@ -217,23 +169,6 @@ public partial class PlaybackSettingsControlViewModel : ObservableRecipient, ITr
                 IsLxMusicServerTesting = false;
             });
         });
-    }
-
-    [RelayCommand]
-    private void SaveAmllTtmlDbBaseUrl()
-    {
-        _globalToastProvider.Show("ActionCompleted", null, MessageSeverity.Success);
-        GsmtcService.UpdateLyrics();
-    }
-
-    [RelayCommand]
-    private void SaveAppleMusicMediaUserToken()
-    {
-        _passwordVaultProvider.Delete(App.AppName, AppleMusic.MediaUserTokenKey);
-        _passwordVaultProvider.Save(App.AppName, AppleMusic.MediaUserTokenKey,
-            AppleMusicMediaUserToken);
-        GsmtcService.UpdateLyrics();
-        _globalToastProvider.Show("ActionCompleted", null, MessageSeverity.Success);
     }
 
     [RelayCommand]

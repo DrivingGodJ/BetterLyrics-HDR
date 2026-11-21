@@ -100,8 +100,8 @@
                         </TransitionCollection>
                     </controls:SwitchPresenter.ContentTransitions>
 
-                    <controls:Case Value="{x:Bind enums:SettingsSection.MediaLib}">
-                        <uc:MediaSettingsControl />
+                    <controls:Case Value="{x:Bind enums:SettingsSection.LyricsWindowMgr}">
+                        <uc:LyricsWindowManagerControl />
                     </controls:Case>
                     <controls:Case Value="{x:Bind enums:SettingsSection.PlaybackLib}">
                         <uc:PlaybackSettingsControl />

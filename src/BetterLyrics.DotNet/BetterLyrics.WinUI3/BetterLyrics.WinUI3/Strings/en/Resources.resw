@@ -685,7 +685,7 @@
     <value>Settings</value>
   </data>
   <data name="LyricsPageTranslationEnabled.Description" xml:space="preserve">
-    <value>Prioritize reading translations within lyrics; if no match, request machine translation from LibreTranslate server</value>
+    <value>Shows translations included with the lyrics when available.</value>
   </data>
   <data name="LyricsPageTranslationEnabled.Header" xml:space="preserve">
     <value>Enable Translation</value>

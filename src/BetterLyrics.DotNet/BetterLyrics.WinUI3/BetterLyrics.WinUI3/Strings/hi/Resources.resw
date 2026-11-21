@@ -685,7 +685,7 @@
     <value>सेटिंग्स</value>
   </data>
   <data name="LyricsPageTranslationEnabled.Description" xml:space="preserve">
-    <value>बोल के भीतर अनुवाद पढ़ने को प्राथमिकता दी जाएगी, यदि कोई मेल नहीं मिलता है तो LibreTranslate सर्वर से मशीनी अनुवाद का अनुरोध किया जाएगा</value>
+    <value>उपलब्ध होने पर गीत के बोल के साथ दिया गया अनुवाद दिखाता है।</value>
   </data>
   <data name="LyricsPageTranslationEnabled.Header" xml:space="preserve">
     <value>अनुवाद सक्षम करें</value>

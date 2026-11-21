@@ -91,14 +91,14 @@ public partial class MediaSourceProviderInfo : ObservableObject
 
     [ObservableProperty]
     public partial FullyObservableCollection<LyricsSearchProviderInfo> LyricsSearchProvidersInfo { get; set; } =
-        [.. Enum.GetValues<LyricsProvider>().Where(p => !p.IsInternal()).Select(p => new LyricsSearchProviderInfo(p, true))];
+        [.. Enum.GetValues<LyricsProvider>().Where(p => !p.IsInternal() && !p.IsLocal()).Select(p => new LyricsSearchProviderInfo(p, true))];
 
     [ObservableProperty]
     public partial int TargetAlbumArtSize { get; set; } = 500;
 
     [ObservableProperty]
     public partial FullyObservableCollection<AlbumArtSearchProviderInfo> AlbumArtSearchProvidersInfo { get; set; } =
-        [.. Enum.GetValues<AlbumArtProvider>().Select(p => new AlbumArtSearchProviderInfo(p, true))];
+        [.. Enum.GetValues<AlbumArtProvider>().Where(p => p != AlbumArtProvider.Local).Select(p => new AlbumArtSearchProviderInfo(p, true))];
 
     [JsonIgnore] public bool IsLXMusic => PlayerIdHelper.IsLXMusic(Provider);
     [JsonIgnore] public bool IsBetterLyrics => PlayerIdHelper.IsBetterLyrics(Provider);

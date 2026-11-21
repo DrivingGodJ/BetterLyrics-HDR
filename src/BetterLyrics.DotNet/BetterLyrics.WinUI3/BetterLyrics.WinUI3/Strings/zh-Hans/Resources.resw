@@ -685,7 +685,7 @@
     <value>设置</value>
   </data>
   <data name="LyricsPageTranslationEnabled.Description" xml:space="preserve">
-    <value>将优先读取歌词内翻译，若无匹配则向 LibreTranslate 服务器请求机器翻译</value>
+    <value>有可用译文时，显示歌词自带的翻译。</value>
   </data>
   <data name="LyricsPageTranslationEnabled.Header" xml:space="preserve">
     <value>启用翻译</value>

@@ -685,7 +685,7 @@
     <value>설정</value>
   </data>
   <data name="LyricsPageTranslationEnabled.Description" xml:space="preserve">
-    <value>가사 내 번역을 우선 읽고, 일치하는 것이 없으면 LibreTranslate 서버에 기계 번역을 요청합니다</value>
+    <value>가사에 포함된 번역이 있으면 표시합니다.</value>
   </data>
   <data name="LyricsPageTranslationEnabled.Header" xml:space="preserve">
     <value>번역 활성화</value>

@@ -301,7 +301,7 @@ public sealed partial class LayoutEditorControl : UserControl
             return;
         }
 
-        var expectedTypes = Enum.GetValues<ComponentType>().Where(t => t != ComponentType.None).ToList();
+        var expectedTypes = Enum.GetValues<ComponentType>().Where(t => t is not (ComponentType.None or ComponentType.LyricsCard)).ToList();
         var typesToShow = expectedTypes.Where(t => !LayoutProfile.Placements.Any(p => p.ComponentType == t)).ToList();
 
         for (var i = AvailableToolboxItems.Count - 1; i >= 0; i--)

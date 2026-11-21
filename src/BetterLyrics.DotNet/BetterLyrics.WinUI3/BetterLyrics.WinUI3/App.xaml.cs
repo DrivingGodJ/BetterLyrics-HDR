@@ -24,10 +24,12 @@ namespace BetterLyrics.WinUI3;
 public partial class App : Application
 {
     private readonly ILogger<App> _logger;
+    private readonly Action _handleInitialActivation;
     private Window? m_window;
 
-    public App()
+    public App(Action handleInitialActivation)
     {
+        _handleInitialActivation = handleInitialActivation;
         InitializeComponent();
 
         ATL.Settings.NullAbsentValues = true;
@@ -127,6 +129,7 @@ public partial class App : Application
             var windows = Ioc.Default.GetRequiredService<IWindowManagerProvider>();
             windows.OpenOrShowWindow<LyricsWindowSwitchWindow>();
             windows.OpenOrShowWindow<SettingsWindow>();
+            _handleInitialActivation();
         }
         catch (Exception ex)
         {
@@ -159,21 +162,7 @@ public partial class App : Application
             obsoleteSongSearchMap.Clear();
         }
 
-        // 启动后台扫描
-        var fileSystemService = Ioc.Default.GetRequiredService<IFileSystemService>();
-        foreach (var item in settingsService.AppSettings.LocalMediaFolders)
-        {
-            _ = Task.Run(async () => await fileSystemService.ScanMediaFolderAsync(item, token: CancellationToken.None));
-        }
-
-        fileSystemService.StartAllFolderTimers();
-
-        // 实时扫描
-        _ = Ioc.Default.GetRequiredService<IFileWatchService>();
-
-        Ioc.Default.GetRequiredService<ILogger<App>>().LogInformation(
-            "Application services initialized. Media folders: {FolderCount}.",
-            settingsService.AppSettings.LocalMediaFolders.Count);
+        Ioc.Default.GetRequiredService<ILogger<App>>().LogInformation("Application services initialized.");
     }
 
     private static void UpdateGlobalStyles(bool useCustom)

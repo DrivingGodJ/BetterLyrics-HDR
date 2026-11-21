@@ -685,7 +685,7 @@
     <value>Tetapan</value>
   </data>
   <data name="LyricsPageTranslationEnabled.Description" xml:space="preserve">
-    <value>Akan mengutamakan pembacaan terjemahan dalam lirik, jika tiada padanan maka akan meminta terjemahan mesin daripada pelayan LibreTranslate</value>
+    <value>Memaparkan terjemahan yang disertakan bersama lirik jika tersedia.</value>
   </data>
   <data name="LyricsPageTranslationEnabled.Header" xml:space="preserve">
     <value>Dayakan Terjemahan</value>

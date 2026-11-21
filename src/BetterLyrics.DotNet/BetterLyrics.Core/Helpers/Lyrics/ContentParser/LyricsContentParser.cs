@@ -18,15 +18,6 @@ public partial class LyricsContentParser
     private static readonly ILogger<LyricsContentParser> _logger =
         Ioc.Default.GetRequiredService<ILogger<LyricsContentParser>>();
 
-    private static readonly IGlobalToastProvider _globalToastProvider =
-        Ioc.Default.GetRequiredService<IGlobalToastProvider>();
-
-    private static readonly ITransliterationService _transliterationService =
-        Ioc.Default.GetRequiredService<ITransliterationService>();
-
-    private static readonly ITranslationService _translationService =
-        Ioc.Default.GetRequiredService<ITranslationService>();
-
     private static readonly ISettingsService _settingsService =
         Ioc.Default.GetRequiredService<ISettingsService>();
 
@@ -35,7 +26,7 @@ public partial class LyricsContentParser
 
     public List<LyricsData> LyricsDataArr { get; private set; } = [];
 
-    private async Task<List<LyricsData>> PreParseAsync(LyricsCacheItem? lyricsSearchResult, LyricsParseRule rule, CancellationToken token)
+    private void PreParse(LyricsCacheItem? lyricsSearchResult, LyricsParseRule rule)
     {
         LyricsDataArr = [];
         if (string.IsNullOrWhiteSpace(lyricsSearchResult?.Raw))
@@ -65,15 +56,9 @@ public partial class LyricsContentParser
         }
 
         LoadTranslation(lyricsSearchResult, rule);
-        LoadTransliteration(lyricsSearchResult, rule);
-
-        await GenerateTranslationLyricsDataAsync(rule, token);
-        await GenerateTransliterationLyricsDataAsync(rule, token);
 
         EnsureSyllables(lyricsSearchResult?.Duration);
         EnsureEndMs(lyricsSearchResult?.Duration);
-
-        return LyricsDataArr;
     }
 
     private void AddLyricsData(LyricsData data)
@@ -93,8 +78,9 @@ public partial class LyricsContentParser
         LyricsDataArr.Add(data);
     }
 
-    public async Task<LyricsData> ParseAsync(LyricsCacheItem? lyricsSearchResult, CancellationToken token)
+    public LyricsData Parse(LyricsCacheItem? lyricsSearchResult, CancellationToken token)
     {
+        token.ThrowIfCancellationRequested();
         var settings = _settingsService.AppSettings.TranslationSettings;
         var rule = new LyricsParseRule(settings);
 
@@ -107,7 +93,7 @@ public partial class LyricsContentParser
             });
         }
 
-        await PreParseAsync(lyricsSearchResult, rule, token);
+        PreParse(lyricsSearchResult, rule);
 
         var original = LyricsDataArr.First();
 
@@ -116,31 +102,13 @@ public partial class LyricsContentParser
             original.LyricsLines.RemoveAll(x =>
                 InfoLines.IsInfoLine(x.PrimaryText));
 
-        // 应用音译
-        var phoneticTag = LanguageHelper.GetPhoneticTag(original.LanguageTag);
-        if (phoneticTag != null && rule.IsRomanizationAllowed(phoneticTag, original.LanguageTag))
-        {
-            var phoneticTracks = LyricsDataArr.Where(x => LanguageHelper.IsPhoneticTag(x.LanguageTag)).ToList();
-            var phoneticLyricsData = phoneticTracks.Count == 1
-                ? phoneticTracks.First()
-                : phoneticTracks.FirstOrDefault(x => LanguageHelper.IsLanguageMatch(x.LanguageTag, phoneticTag));
-
-            if (phoneticLyricsData != null)
-            {
-                original.SetPhoneticText(phoneticLyricsData);
-                _appUIThreadProvider.Execute(() =>
-                {
-                    lyricsSearchResult?.TransliterationProvider = phoneticLyricsData.Provider;
-                });
-            }
-        }
-
         // 应用翻译
         var targetTranslationLangTag = rule.TargetTranslationTag;
         var isOriginalAlreadyInTargetLanguage = LanguageHelper.IsLanguageMatch(original.LanguageTag, targetTranslationLangTag, true);
         if (rule.IsTranslationEnabled && !isOriginalAlreadyInTargetLanguage)
         {
-            var found = LyricsDataArr.Where(x => LanguageHelper.IsLanguageMatch(x.LanguageTag, targetTranslationLangTag, true))
+            var found = LyricsDataArr.Where(x => x.TrackType == LyricsTrackType.Translation &&
+                                              LanguageHelper.IsLanguageMatch(x.LanguageTag, targetTranslationLangTag, true))
                 .OrderByDescending(x => x.LyricsLines.Count).FirstOrDefault();
             if (found != null)
             {
@@ -202,155 +170,6 @@ public partial class LyricsContentParser
                 }
             }
         }
-    }
-
-    private void LoadTransliteration(LyricsCacheItem? lyricsSearchResult, LyricsParseRule rule)
-    {
-        if (rule.AllowedRomanizationTags.Count > 0)
-        {
-            if (!string.IsNullOrWhiteSpace(lyricsSearchResult?.Transliteration))
-            {
-                switch (lyricsSearchResult.Provider)
-                {
-                    case LyricsProvider.Netease:
-                        ParseLrc(lyricsSearchResult.Transliteration, lyricsSearchResult.Provider, rule);
-                        break;
-                }
-            }
-        }
-    }
-
-    private async Task GenerateTransliterationLyricsDataAsync(LyricsParseRule rule, CancellationToken token)
-    {
-        var main = LyricsDataArr.FirstOrDefault();
-        if (main == null || main == LyricsDataExtensions.NotFoundPlaceholder) return;
-
-        var phoneticTag = LanguageHelper.GetPhoneticTag(main.LanguageTag);
-        if (phoneticTag == null || !rule.IsRomanizationAllowed(phoneticTag, main.LanguageTag)) return;
-
-        // Generate via plugins first
-        if (!LyricsDataArr.Any(x => LanguageHelper.IsLanguageMatch(x.LanguageTag, phoneticTag)))
-        {
-            var (generatedRoman, transliterationSearchProvider) =
-                await _transliterationService.TransliterateTextAsync(main.WrappedPrimaryText, phoneticTag, token);
-            if (!string.IsNullOrEmpty(generatedRoman))
-            {
-                var generatedRomanSplited = generatedRoman.Split('\n');
-                AddLyricsData(new LyricsData
-                {
-                    LanguageTag = phoneticTag,
-                    Provider = transliterationSearchProvider,
-                    TrackType = LyricsTrackType.Transliteration,
-                    LyricsLines = main.LyricsLines.Select((line, index) => new LyricsLine
-                    {
-                        StartMs = line.StartMs,
-                        EndMs = line.EndMs,
-                        PrimaryText = generatedRomanSplited.Length > index ? generatedRomanSplited[index] : string.Empty,
-                    }).ToList()
-                });
-            }
-        }
-
-        // Generate via built-in methods if no plugin-generated lyrics exist
-        if (!LyricsDataArr.Any(x => LanguageHelper.IsLanguageMatch(x.LanguageTag, phoneticTag)))
-        {
-            if (LanguageHelper.IsLanguageMatch(phoneticTag, LanguageHelper.MandarinChineseLatnTag))
-                GeneratePinyinLyricsData(main);
-            else if (LanguageHelper.IsLanguageMatch(phoneticTag, LanguageHelper.YueChineseLatnTag))
-                GenerateJyutpingLyricsData(main);
-        }
-    }
-
-    private async Task GenerateTranslationLyricsDataAsync(LyricsParseRule rule, CancellationToken token)
-    {
-        var original = LyricsDataArr.FirstOrDefault();
-        if (original == null || original == LyricsDataExtensions.NotFoundPlaceholder) return;
-
-        var targetTranslationLangTag = rule.TargetTranslationTag;
-        if (!rule.IsTranslationEnabled || targetTranslationLangTag == null) return;
-
-        var translationSettings = _settingsService.AppSettings.TranslationSettings;
-        if (!translationSettings.IsLibreTranslateEnabled) return;
-
-        if (LanguageHelper.IsLanguageMatch(original.LanguageTag, targetTranslationLangTag, true)) return;
-        if (LyricsDataArr.Any(x => LanguageHelper.IsLanguageMatch(x.LanguageTag, targetTranslationLangTag, true))) return;
-
-        try
-        {
-            var translated = await _translationService.TranslateTextAsync(original.WrappedPrimaryText, targetTranslationLangTag, token);
-            token.ThrowIfCancellationRequested();
-
-            if (!string.IsNullOrEmpty(translated))
-            {
-                var translatedSplited = translated.Split('\n');
-                AddLyricsData(new LyricsData
-                {
-                    LanguageTag = targetTranslationLangTag,
-                    Provider = LyricsProvider.LibreTranslate,
-                    TrackType = LyricsTrackType.Translation,
-                    LyricsLines = original.LyricsLines.Select((line, index) => new LyricsLine
-                    {
-                        StartMs = line.StartMs,
-                        EndMs = line.EndMs,
-                        PrimaryText = translatedSplited.Length > index ? translatedSplited[index] : string.Empty,
-                    }).ToList()
-                });
-            }
-        }
-        catch (OperationCanceledException)
-        {
-            throw;
-        }
-        catch (Exception ex)
-        {
-            _globalToastProvider.Show("LibreTranslateFailed", ex.Message, MessageSeverity.Error);
-        }
-    }
-
-    private void GeneratePinyinLyricsData(LyricsData originalLyricsData)
-    {
-        AddLyricsData(new LyricsData
-        {
-            LanguageTag = LanguageHelper.MandarinChineseLatnTag,
-            Provider = LyricsProvider.BetterLyrics,
-            TrackType = LyricsTrackType.Transliteration,
-            LyricsLines = originalLyricsData.LyricsLines.Select(line => new LyricsLine
-            {
-                StartMs = line.StartMs,
-                EndMs = line.EndMs,
-                PrimaryText = LanguageHelper.ConvertHanziToPinyin(line.PrimaryText),
-                PrimarySyllables = line.PrimarySyllables.Select(c => new BaseLyrics
-                {
-                    StartMs = c.StartMs,
-                    EndMs = c.EndMs,
-                    Text = LanguageHelper.ConvertHanziToPinyin(c.Text),
-                    StartIndex = c.StartIndex
-                }).ToList()
-            }).ToList()
-        });
-    }
-
-    private void GenerateJyutpingLyricsData(LyricsData originalLyricsData)
-    {
-        AddLyricsData(new LyricsData
-        {
-            LanguageTag = LanguageHelper.YueChineseLatnTag,
-            Provider = LyricsProvider.BetterLyrics,
-            TrackType = LyricsTrackType.Transliteration,
-            LyricsLines = originalLyricsData.LyricsLines.Select(line => new LyricsLine
-            {
-                StartMs = line.StartMs,
-                EndMs = line.EndMs,
-                PrimaryText = LanguageHelper.ConvertHanziToJyutping(line.PrimaryText),
-                PrimarySyllables = line.PrimarySyllables.Select(c => new BaseLyrics
-                {
-                    StartMs = c.StartMs,
-                    EndMs = c.EndMs,
-                    Text = LanguageHelper.ConvertHanziToJyutping(c.Text),
-                    StartIndex = c.StartIndex
-                }).ToList()
-            }).ToList()
-        });
     }
 
     /// <summary>

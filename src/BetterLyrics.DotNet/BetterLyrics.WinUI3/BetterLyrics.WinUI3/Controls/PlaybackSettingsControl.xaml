@@ -488,35 +488,6 @@
                                                 </ComboBox.ItemTemplate>
                                             </ComboBox>
                                         </controls:SettingsCard>
-                                        <controls:SettingsCard x:Uid="SettingsPageTranslationConfig" IsEnabled="{x:Bind ViewModel.AppSettings.TranslationSettings.IsTranslationEnabled, Mode=OneWay}">
-                                            <controls:SettingsCard.Description>
-                                                <local:ExternalLinkButton
-                                                    Padding="0"
-                                                    Content="https://github.com/LibreTranslate/LibreTranslate"
-                                                    FontSize="12"
-                                                    NavigateUri="https://github.com/LibreTranslate/LibreTranslate" />
-                                            </controls:SettingsCard.Description>
-                                            <ToggleSwitch IsOn="{x:Bind ViewModel.AppSettings.TranslationSettings.IsLibreTranslateEnabled, Mode=TwoWay}" />
-                                        </controls:SettingsCard>
-                                        <controls:SettingsCard x:Uid="SettingsPageLibreTranslateServer" IsEnabled="{x:Bind ViewModel.AppSettings.TranslationSettings.IsLibreTranslateEnabled, Mode=OneWay}">
-                                            <Grid ColumnSpacing="6">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*" />
-                                                    <ColumnDefinition Width="Auto" />
-                                                </Grid.ColumnDefinitions>
-                                                <TextBox
-                                                    x:Uid="LibreTranslateServerTextBox"
-                                                    Grid.Column="0"
-                                                    IsEnabled="{x:Bind ViewModel.IsLibreTranslateServerTesting, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}"
-                                                    Text="{x:Bind ViewModel.AppSettings.TranslationSettings.LibreTranslateServer, Mode=TwoWay}"
-                                                    TextWrapping="Wrap" />
-                                                <Button
-                                                    x:Uid="SettingsPageServerTestButton"
-                                                    Grid.Column="1"
-                                                    Command="{x:Bind ViewModel.LibreTranslateServerTestCommand}"
-                                                    IsEnabled="{x:Bind ViewModel.IsLibreTranslateServerTesting, Converter={StaticResource BoolNegationConverter}, Mode=OneWay}" />
-                                            </Grid>
-                                        </controls:SettingsCard>
                                     </controls:SettingsExpander.Items>
                                 </controls:SettingsExpander>
                                 <controls:SettingsExpander x:Uid="PlaybackSettingsControlNoLyricsFoundHandling">
@@ -532,22 +503,6 @@
                                 </controls:SettingsExpander>
 
                                 <!--  Lyrics phonetic  -->
-                                <controls:SettingsExpander x:Uid="SettingsPagePhonetics" IsExpanded="True">
-                                    <controls:SettingsExpander.Items>
-                                        <controls:SettingsCard x:Uid="SettingsPagePinyin">
-                                            <ToggleSwitch IsOn="{x:Bind ViewModel.AppSettings.TranslationSettings.IsMandarinRomanizationEnabled, Mode=TwoWay}" />
-                                        </controls:SettingsCard>
-                                        <controls:SettingsCard x:Uid="SettingsPageJyutping">
-                                            <ToggleSwitch IsOn="{x:Bind ViewModel.AppSettings.TranslationSettings.IsCantoneseRomanizationEnabled, Mode=TwoWay}" />
-                                        </controls:SettingsCard>
-                                        <controls:SettingsCard x:Uid="SettingsPageJapanese">
-                                            <ToggleSwitch IsOn="{x:Bind ViewModel.AppSettings.TranslationSettings.IsJapaneseRomanizationEnabled, Mode=TwoWay}" />
-                                        </controls:SettingsCard>
-                                        <controls:SettingsCard x:Uid="SettingsPageKorean">
-                                            <ToggleSwitch IsOn="{x:Bind ViewModel.AppSettings.TranslationSettings.IsKoreanRomanizationEnabled, Mode=TwoWay}" />
-                                        </controls:SettingsCard>
-                                    </controls:SettingsExpander.Items>
-                                </controls:SettingsExpander>
 
                                 <!--  中文简体繁体偏好  -->
                                 <controls:SettingsCard x:Uid="SettingsPageChinesePreference">
@@ -575,74 +530,6 @@
                     </ScrollViewer>
                 </controls:Case>
 
-                <controls:Case Value="{x:Bind enums:PlaybackLibSettingsSection.Integration}">
-                    <ScrollViewer Style="{StaticResource SettingsScrollViewerStyle}">
-                        <Grid Style="{StaticResource SettingsGridStyle}">
-                            <StackPanel Spacing="{StaticResource SettingsCardSpacing}">
-
-                                <!--  amll-ttml-db  -->
-                                <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}" Text="amll-ttml-db" />
-                                <controls:SettingsCard x:Uid="SettingsPageAmllTtmlDbBaseUrl">
-                                    <Grid ColumnSpacing="6">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*" />
-                                            <ColumnDefinition Width="Auto" />
-                                        </Grid.ColumnDefinitions>
-                                        <TextBox
-                                            Grid.Column="0"
-                                            Text="{x:Bind ViewModel.AppSettings.GeneralSettings.AmllTtmlDbBaseUrl, Mode=TwoWay}"
-                                            TextWrapping="Wrap" />
-                                        <Button
-                                            Grid.Column="1"
-                                            Command="{x:Bind ViewModel.SaveAmllTtmlDbBaseUrlCommand}"
-                                            Content="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons},
-                                                                  FontSize=12,
-                                                                  Glyph=&#xE8FB;}"
-                                            Style="{ThemeResource GhostButtonStyle}" />
-                                    </Grid>
-                                </controls:SettingsCard>
-
-                                <!--  Apple Music token  -->
-                                <TextBlock Style="{StaticResource SettingsSectionHeaderTextBlockStyle}" Text="Apple Music media-user-token" />
-                                <Grid
-                                    Padding="16"
-                                    ColumnSpacing="6"
-                                    Style="{StaticResource CardGridStyle}">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-                                    <TextBox
-                                        Grid.Column="0"
-                                        PlaceholderText="media-user-token"
-                                        Text="{x:Bind ViewModel.AppleMusicMediaUserToken, Mode=TwoWay}"
-                                        TextWrapping="Wrap" />
-                                    <local:ExternalLinkButton
-                                        x:Uid="Help"
-                                        Grid.Column="1"
-                                        VerticalAlignment="Bottom"
-                                        NavigateUri="{x:Bind constants:Link.AppleMusicCfg}" />
-                                    <Button
-                                        Grid.Column="2"
-                                        VerticalAlignment="Bottom"
-                                        Command="{x:Bind ViewModel.SaveAppleMusicMediaUserTokenCommand}"
-                                        Content="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons},
-                                                              FontSize=12,
-                                                              Glyph=&#xE8FB;}"
-                                        Style="{ThemeResource GhostButtonStyle}" />
-                                </Grid>
-                                <InfoBar
-                                    IsClosable="False"
-                                    IsOpen="True"
-                                    Message="USE AT YOUR OWN RISK"
-                                    Severity="Warning" />
-
-
-                            </StackPanel>
-                        </Grid>
-                    </ScrollViewer>
-                </controls:Case>
 
                 <controls:Case Value="{x:Bind enums:PlaybackLibSettingsSection.RealtimeStatus}">
                     <ScrollViewer Style="{StaticResource SettingsScrollViewerStyle}">
@@ -695,7 +582,6 @@
                                             Link="{x:Bind ViewModel.GsmtcService.CurrentLyricsSearchResult.Reference, Mode=OneWay, Converter={StaticResource UriStringToDecodedAbsoluteUri}}"
                                             ToolTipService.ToolTip="{x:Bind ViewModel.GsmtcService.CurrentLyricsSearchResult.Reference, TargetNullValue=N/A, Mode=OneWay, Converter={StaticResource UriStringToDecodedAbsoluteUri}}"
                                             Value="{x:Bind ViewModel.GsmtcService.CurrentLyricsSearchResult.ProviderIfFound, TargetNullValue=N/A, FallbackValue=N/A, Mode=OneWay, Converter={StaticResource LyricsProviderToDisplayNameConverter}}" />
-                                        <local:PropertyRow x:Uid="LyricsPageTransliterationProviderPrefix" Value="{x:Bind ViewModel.GsmtcService.CurrentLyricsSearchResult.TransliterationProvider, TargetNullValue=N/A, FallbackValue=N/A, Mode=OneWay, Converter={StaticResource LyricsProviderToDisplayNameConverter}}" />
                                         <local:PropertyRow x:Uid="LyricsPageTranslationProviderPrefix" Value="{x:Bind ViewModel.GsmtcService.CurrentLyricsSearchResult.TranslationProvider, TargetNullValue=N/A, FallbackValue=N/A, Mode=OneWay, Converter={StaticResource LyricsProviderToDisplayNameConverter}}" />
                                         <local:PropertyRow
                                             x:Uid="LyricsPageMatchPercentage"
@@ -724,9 +610,6 @@
                                                     </controls:SettingsCard>
                                                     <controls:SettingsCard x:Uid="LyricsSaveConfigIncludeTranslation">
                                                         <ToggleSwitch IsOn="{x:Bind ViewModel.AppSettings.LyricsSaveConfig.IncludeTranslation, Mode=TwoWay}" />
-                                                    </controls:SettingsCard>
-                                                    <controls:SettingsCard x:Uid="LyricsSaveConfigIncludeTransliteration">
-                                                        <ToggleSwitch IsOn="{x:Bind ViewModel.AppSettings.LyricsSaveConfig.IncludeTransliteration, Mode=TwoWay}" />
                                                     </controls:SettingsCard>
                                                     <controls:SettingsCard x:Uid="LyricsSaveConfigInOneLine">
                                                         <ToggleSwitch IsOn="{x:Bind ViewModel.AppSettings.LyricsSaveConfig.InOneLine, Mode=TwoWay}" />

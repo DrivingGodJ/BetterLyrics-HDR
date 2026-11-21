@@ -129,14 +129,8 @@
     <ItemGroup>
     </ItemGroup>
     <ItemGroup>
-        <Page Update="Views\LyricsSearchWindow.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
     </ItemGroup>
     <ItemGroup>
-        <Page Update="Controls\LyricsSearchControl.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
     </ItemGroup>
     <ItemGroup>
         <Page Update="Controls\ShortcutTextBox.xaml">
@@ -154,9 +148,6 @@
         </Page>
     </ItemGroup>
     <ItemGroup>
-        <Page Update="Controls\MediaSettingsControl.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
     </ItemGroup>
     <ItemGroup>
         <Page Update="Controls\PlaybackSettingsControl.xaml">
@@ -239,9 +230,6 @@
             <Generator>MSBuild:Compile</Generator>
         </Page>
         <Page Update="Controls\LayoutPreviewControl.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
-        <Page Update="Controls\LayoutSettingsControl.xaml">
             <Generator>MSBuild:Compile</Generator>
         </Page>
         <Page Update="Controls\AlbumArtAreaSettingsControl.xaml">

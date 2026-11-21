@@ -685,7 +685,7 @@
     <value>設定</value>
   </data>
   <data name="LyricsPageTranslationEnabled.Description" xml:space="preserve">
-    <value>歌詞内の翻訳を優先して読み込みます。ない場合は、LibreTranslate サーバーに機械翻訳をリクエストします</value>
+    <value>歌詞に付属の翻訳がある場合に表示します。</value>
   </data>
   <data name="LyricsPageTranslationEnabled.Header" xml:space="preserve">
     <value>翻訳を有効にする</value>

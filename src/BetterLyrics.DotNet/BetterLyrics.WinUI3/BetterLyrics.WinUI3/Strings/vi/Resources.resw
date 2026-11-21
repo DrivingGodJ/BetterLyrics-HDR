@@ -685,7 +685,7 @@
     <value>Cài đặt</value>
   </data>
   <data name="LyricsPageTranslationEnabled.Description" xml:space="preserve">
-    <value>Sẽ ưu tiên đọc bản dịch trong lời bài hát, nếu không khớp sẽ yêu cầu dịch máy từ máy chủ LibreTranslate</value>
+    <value>Hiển thị bản dịch đi kèm lời bài hát nếu có.</value>
   </data>
   <data name="LyricsPageTranslationEnabled.Header" xml:space="preserve">
     <value>Bật dịch</value>

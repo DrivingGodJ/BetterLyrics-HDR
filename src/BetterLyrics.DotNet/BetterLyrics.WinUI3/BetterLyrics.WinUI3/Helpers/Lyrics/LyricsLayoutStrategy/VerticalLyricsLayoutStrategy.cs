@@ -69,10 +69,7 @@ public class VerticalLyricsLayoutStrategy : LyricsLayoutStrategyBase
 
             line.RecreateTextLayout(
                 resourceCreator,
-                appSettings.TranslationSettings.IsMandarinRomanizationEnabled ||
-                appSettings.TranslationSettings.IsCantoneseRomanizationEnabled ||
-                appSettings.TranslationSettings.IsJapaneseRomanizationEnabled ||
-                appSettings.TranslationSettings.IsKoreanRomanizationEnabled,
+                false,
                 appSettings.TranslationSettings.IsTranslationEnabled,
                 phoneticFontSize, originalFontSize, translatedFontSize,
                 fontWeight,

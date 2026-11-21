@@ -685,7 +685,7 @@
     <value>Ayarlar</value>
   </data>
   <data name="LyricsPageTranslationEnabled.Description" xml:space="preserve">
-    <value>Şarkı sözleri içindeki çevirileri okumaya öncelik verin; eşleşme yoksa LibreTranslate sunucusundan makine çevirisi isteyin</value>
+    <value>Varsa şarkı sözleriyle birlikte sunulan çevirileri gösterir.</value>
   </data>
   <data name="LyricsPageTranslationEnabled.Header" xml:space="preserve">
     <value>Çeviriyi Etkinleştir</value>

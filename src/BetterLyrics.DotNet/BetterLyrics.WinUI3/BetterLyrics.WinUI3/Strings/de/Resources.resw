@@ -685,7 +685,7 @@
     <value>Einstellungen</value>
   </data>
   <data name="LyricsPageTranslationEnabled.Description" xml:space="preserve">
-    <value>Priorisiere Übersetzungen innerhalb des Songtextes; falls keine Übereinstimmung gefunden wird, fordere maschinelle Übersetzung vom LibreTranslate-Server an</value>
+    <value>Zeigt mitgelieferte Liedtextübersetzungen an, sofern verfügbar.</value>
   </data>
   <data name="LyricsPageTranslationEnabled.Header" xml:space="preserve">
     <value>Übersetzung aktivieren</value>
