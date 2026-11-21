@@ -79,6 +79,7 @@
                             </Rectangle>
                         </controls:OpacityMaskView.OpacityMask>
                         <uc:ImageSwitcher
+                            x:Name="AlbumArtImageSwitcher"
                             Margin="32"
                             CornerRadiusAmount="{x:Bind LyricsWindowStatus.AlbumArtLayoutSettings.CoverImageRadius, Mode=OneWay}"
                             ShadowAmount="{x:Bind LyricsWindowStatus.AlbumArtLayoutSettings.CoverImageShadowAmount, Mode=OneWay}"
@@ -111,11 +112,14 @@
                         PointerCanceled="TitleAutoScrollHoverEffectView_PointerCanceled"
                         PointerEntered="TitleAutoScrollHoverEffectView_PointerEntered"
                         PointerExited="TitleAutoScrollHoverEffectView_PointerExited">
-                        <TextBlock
-                            x:Name="TitleTextBlock"
-                            Padding="2,0"
-                            FontWeight="{x:Bind LyricsWindowStatus.LyricsStyleSettings.LyricsFontWeight, Converter={StaticResource LyricsFontWeightToFontWeightConverter}, Mode=OneWay}"
-                            TextTrimming="None" />
+                        <Grid>
+                            <Grid x:Name="TitleShadowHost" IsHitTestVisible="False" />
+                            <TextBlock
+                                x:Name="TitleTextBlock"
+                                Padding="2,0"
+                                FontWeight="{x:Bind LyricsWindowStatus.LyricsStyleSettings.LyricsFontWeight, Converter={StaticResource LyricsFontWeightToFontWeightConverter}, Mode=OneWay}"
+                                TextTrimming="None" />
+                        </Grid>
                     </dev:AutoScrollView>
                 </controls:OpacityMaskView>
             </Grid>
@@ -143,12 +147,15 @@
                         PointerCanceled="ArtistsAutoScrollHoverEffectView_PointerCanceled"
                         PointerEntered="ArtistsAutoScrollHoverEffectView_PointerEntered"
                         PointerExited="ArtistsAutoScrollHoverEffectView_PointerExited">
-                        <TextBlock
-                            x:Name="ArtistsTextBlock"
-                            Padding="2,0"
-                            FontWeight="{x:Bind LyricsWindowStatus.LyricsStyleSettings.LyricsFontWeight, Converter={StaticResource LyricsFontWeightToFontWeightConverter}, Mode=OneWay}"
-                            Opacity="0.6"
-                            TextTrimming="None" />
+                        <Grid>
+                            <Grid x:Name="ArtistShadowHost" IsHitTestVisible="False" />
+                            <TextBlock
+                                x:Name="ArtistsTextBlock"
+                                Padding="2,0"
+                                FontWeight="{x:Bind LyricsWindowStatus.LyricsStyleSettings.LyricsFontWeight, Converter={StaticResource LyricsFontWeightToFontWeightConverter}, Mode=OneWay}"
+                                Opacity="0.6"
+                                TextTrimming="None" />
+                        </Grid>
                     </dev:AutoScrollView>
                 </controls:OpacityMaskView>
             </Grid>

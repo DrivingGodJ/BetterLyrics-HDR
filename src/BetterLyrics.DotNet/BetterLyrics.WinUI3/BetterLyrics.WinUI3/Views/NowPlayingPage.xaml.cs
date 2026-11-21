@@ -74,7 +74,6 @@ public sealed partial class NowPlayingPage : BasePage,
 
     private readonly Debouncer _layoutChangedDebouncer = new();
 
-
     private readonly ISettingsService _settingsService = Ioc.Default.GetRequiredService<ISettingsService>();
 
     private readonly ISongSearchMapService _songSearchMapService = Ioc.Default.GetRequiredService<ISongSearchMapService>();
@@ -83,6 +82,7 @@ public sealed partial class NowPlayingPage : BasePage,
     {
         InitializeComponent();
         DataContext = Ioc.Default.GetRequiredService<NowPlayingPageViewModel>();
+        AlbumArtImageSwitcher.RegisterPropertyChangedCallback(ImageSwitcher.SourceProperty, OnAlbumArtSourceChanged);
     }
 
     public NowPlayingPageViewModel ViewModel => (NowPlayingPageViewModel)DataContext;
@@ -108,7 +108,8 @@ public sealed partial class NowPlayingPage : BasePage,
     {
         if (message.Sender == _lyricsWindowStatus?.AlbumArtAreaEffectSettings)
         {
-            ToggleAlbumArtFadeOut();
+            if (UsesStandardLayout) ApplyStandardLayout();
+            else ToggleAlbumArtFadeOut();
         }
     }
 
@@ -116,7 +117,8 @@ public sealed partial class NowPlayingPage : BasePage,
     {
         if (message.Sender == _lyricsWindowStatus?.AlbumArtAreaEffectSettings)
         {
-            UpdateAlbumArtFadeOutDirection();
+            if (UsesStandardLayout) ApplyStandardLayout();
+            else UpdateAlbumArtFadeOutDirection();
         }
     }
 
@@ -198,13 +200,14 @@ public sealed partial class NowPlayingPage : BasePage,
                 await _songSearchMapService.GetMappingAsync(_gsmtcService.CurrentSongInfo);
 
 
-            var titleFontSize = SongTitleContainer.ActualHeight * 0.75;
-            var artistFontSize = SongArtistContainer.ActualHeight * 0.75;
+            var titleFontSize = UsesStandardLayout ? _standardLayout.TitleFontSize : SongTitleContainer.ActualHeight * 0.75;
+            var artistFontSize = UsesStandardLayout ? _standardLayout.ArtistFontSize : SongArtistContainer.ActualHeight * 0.75;
             var albumFontSize = SongAlbumContainer.ActualHeight * 0.75;
 
             RenderTextBlock(TitleTextBlock, mappedTitle, titleFontSize);
             RenderTextBlock(ArtistsTextBlock, mappedArtist, artistFontSize);
             RenderTextBlock(AlbumTextBlock, mappedAlbum, albumFontSize);
+            if (UsesStandardLayout) UpdateSongInfoShadows();
 
             if (double.IsNormal(titleFontSize))
                 TitleAutoScrollHoverEffectView.ScrollingPixelsPreSecond = (int)titleFontSize;
@@ -416,6 +419,13 @@ public sealed partial class NowPlayingPage : BasePage,
 
     private void OnLayoutChanged()
     {
+        if (UsesStandardLayout)
+        {
+            ApplyStandardLayout();
+            _ = RenderSongInfoAsync();
+            return;
+        }
+
         _ = _layoutChangedDebouncer.RunAsync(async () =>
         {
             HideContainers();
@@ -437,17 +447,18 @@ public sealed partial class NowPlayingPage : BasePage,
 
     private void RootGrid_SizeChanged(object sender, SizeChangedEventArgs e)
     {
-        OnLayoutChanged();
+        if (UsesStandardLayout) ApplyStandardLayout();
+        else OnLayoutChanged();
     }
 
     private void LyricsContainer_SizeChanged(object sender, SizeChangedEventArgs e)
     {
-        UpdateLyricsLayout();
+        if (!UsesStandardLayout) UpdateLyricsLayout();
     }
 
     private void AlbumArtContainer_SizeChanged(object sender, SizeChangedEventArgs e)
     {
-        UpdateAlbumArtLayout();
+        if (!UsesStandardLayout) UpdateAlbumArtLayout();
     }
 
     private void PlaybackControlContainer_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -600,6 +611,7 @@ public sealed partial class NowPlayingPage : BasePage,
 
     protected override void OnUnloaded()
     {
+        ClearSongInfoShadows();
         WeakReferenceMessenger.Default.UnregisterAll(this, GsmtcMessageToken.BuiltIn);
         _layoutChangedDebouncer.Dispose();
     }
@@ -616,6 +628,7 @@ public sealed partial class NowPlayingPage : BasePage,
 
         var maskWidth = AlbumArtMaskContainer.ActualWidth;
         var maskHeight = AlbumArtMaskContainer.ActualHeight;
+        if (maskWidth <= 0 || maskHeight <= 0) return;
 
         var startPointX = ((maskWidth - 32 * 2) * settings.FadeOutStartPointX + 32) / maskWidth;
         var startPointY = ((maskHeight - 32 * 2) * settings.FadeOutStartPointY + 32) / maskHeight;
