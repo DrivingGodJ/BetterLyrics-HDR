@@ -126,10 +126,16 @@ public class Program
         if (kind == ExtendedActivationKind.Protocol)
         {
             HandleProtocolActivation(args);
+            return;
         }
-        else if (!init)
+
+        var windows = Ioc.Default.GetRequiredService<IWindowManagerProvider>();
+        var profiles = Ioc.Default.GetRequiredService<ISettingsService>().AppSettings.WindowBoundsRecords;
+        var profile = init ? null : windows.GetWindows<NowPlayingWindow>().FirstOrDefault()?.LyricsWindowStatus;
+        profile ??= profiles.FirstOrDefault(candidate => candidate.IsDefault) ?? profiles.FirstOrDefault();
+        if (profile != null)
         {
-            Ioc.Default.GetRequiredService<IWindowManagerProvider>().OpenOrShowWindow<SettingsWindow>();
+            windows.OpenOrShowWindow<NowPlayingWindow>(profile);
         }
     }
 

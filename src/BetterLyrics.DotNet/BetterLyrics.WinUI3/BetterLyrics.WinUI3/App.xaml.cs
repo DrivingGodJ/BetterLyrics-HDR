@@ -123,9 +123,6 @@ public partial class App : Application
                 return;
             }
 
-            var windows = Ioc.Default.GetRequiredService<IWindowManagerProvider>();
-            windows.OpenOrShowWindow<LyricsWindowSwitchWindow>();
-            windows.OpenOrShowWindow<SettingsWindow>();
             _handleInitialActivation();
         }
         catch (Exception ex)
