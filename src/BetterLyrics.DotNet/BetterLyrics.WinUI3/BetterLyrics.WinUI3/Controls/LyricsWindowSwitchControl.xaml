@@ -33,7 +33,6 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <Grid Grid.Row="0">
@@ -92,13 +91,6 @@
                 </ListView.ItemTemplate>
             </ListView>
 
-            <Grid Grid.Row="2">
-                <local:ExternalLinkButton Click="SettingsHypelinkButton_Click">
-                    <local:ExternalLinkButton.Content>
-                        <TextBlock x:Uid="LyricsWindowSwitchWindowHelp" />
-                    </local:ExternalLinkButton.Content>
-                </local:ExternalLinkButton>
-            </Grid>
 
         </Grid>
     </Grid>

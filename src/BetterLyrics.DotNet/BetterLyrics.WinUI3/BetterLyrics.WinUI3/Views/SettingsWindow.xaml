@@ -30,13 +30,13 @@
             </Button>
 
             <Button
-                Click="MusicGalleryButton_Click"
+                Click="MusicReportButton_Click"
                 Content="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons},
                                       FontSize=12,
-                                      Glyph=&#xE8F1;}"
+                                      Glyph=&#xE9D2;}"
                 Style="{ThemeResource TitleBarButtonStyle}">
                 <ToolTipService.ToolTip>
-                    <ToolTip x:Uid="HostWindowMusicGalleryButtonToolTip" />
+                    <ToolTip x:Uid="MusicReportButtonToolTip" />
                 </ToolTipService.ToolTip>
             </Button>
         </StackPanel>

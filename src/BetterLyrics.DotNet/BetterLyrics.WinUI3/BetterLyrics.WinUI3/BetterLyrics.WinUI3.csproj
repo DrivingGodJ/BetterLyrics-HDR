@@ -85,9 +85,6 @@
         </Page>
     </ItemGroup>
     <ItemGroup>
-        <Page Update="Controls\PluginManagerControl.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
     </ItemGroup>
     <ItemGroup>
         <Page Update="Controls\PatronControl.xaml">
@@ -103,9 +100,6 @@
         </Page>
     </ItemGroup>
     <ItemGroup>
-        <Page Update="Controls\PlayQueue.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
     </ItemGroup>
     <ItemGroup>
         <Page Update="Controls\StatsDashboardControl.xaml">
@@ -115,66 +109,6 @@
     <ItemGroup>
         <Page Update="Controls\LyricsStyleSettingsControl.xaml">
             <Generator>MSBuild:Compile</Generator>
-        </Page>
-        <Page Update="Styles\LyricsCardCinematicStyle.xaml">
-            <SubType>Designer</SubType>
-        </Page>
-        <Page Update="Styles\LyricsCardPodStyle.xaml">
-            <SubType>Designer</SubType>
-        </Page>
-        <Page Update="Styles\LyricsCardBambooSlipsStyle.xaml">
-            <SubType>Designer</SubType>
-        </Page>
-        <Page Update="Styles\LyricsCardDunhuangStyle.xaml">
-            <SubType>Designer</SubType>
-        </Page>
-        <Page Update="Styles\LyricsCardJournalStyle.xaml">
-            <SubType>Designer</SubType>
-        </Page>
-        <Page Update="Styles\LyricsCardStickyNoteStyle.xaml">
-            <SubType>Designer</SubType>
-        </Page>
-        <Page Update="Styles\LyricsCardAncientBookStyle.xaml">
-            <SubType>Designer</SubType>
-        </Page>
-        <Page Update="Styles\LyricsCardWindowsPhoneStyle.xaml">
-            <SubType>Designer</SubType>
-        </Page>
-        <Page Update="Styles\LyricsCardCyberpunkStyle.xaml">
-            <SubType>Designer</SubType>
-        </Page>
-        <Page Update="Styles\LyricsCardCDStyle.xaml">
-            <SubType>Designer</SubType>
-        </Page>
-        <Page Update="Styles\LyricsCardReceiptStyle.xaml">
-            <SubType>Designer</SubType>
-        </Page>
-        <Page Update="Styles\LyricsCardRetroMSNStyle.xaml">
-            <SubType>Designer</SubType>
-        </Page>
-        <Page Update="Styles\LyricsCardRetroQQStyle.xaml">
-            <SubType>Designer</SubType>
-        </Page>
-        <Page Update="Styles\LyricsCardSwissStyle.xaml">
-            <SubType>Designer</SubType>
-        </Page>
-        <Page Update="Styles\LyricsCardMagazineStyle.xaml">
-            <SubType>Designer</SubType>
-        </Page>
-        <Page Update="Styles\LyricsCardTicketStyle.xaml">
-            <SubType>Designer</SubType>
-        </Page>
-        <Page Update="Styles\LyricsCardPolaroidStyle.xaml">
-            <SubType>Designer</SubType>
-        </Page>
-        <Page Update="Themes\LyricsCardLINEStyle.xaml">
-            <SubType>Designer</SubType>
-        </Page>
-        <Page Update="Themes\LyricsCardTelegramStyle.xaml">
-            <SubType>Designer</SubType>
-        </Page>
-        <Page Update="Themes\LyricsCardWhatsAppStyle.xaml">
-            <SubType>Designer</SubType>
         </Page>
     </ItemGroup>
     <ItemGroup>
@@ -193,9 +127,6 @@
         </Page>
     </ItemGroup>
     <ItemGroup>
-        <Page Update="Controls\LyricsWindowManagerControl.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
     </ItemGroup>
     <ItemGroup>
         <Page Update="Views\LyricsSearchWindow.xaml">
@@ -238,19 +169,10 @@
         </Page>
     </ItemGroup>
     <ItemGroup>
-        <Page Update="Controls\AppSettingsControl.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
     </ItemGroup>
     <ItemGroup>
-        <Page Update="Views\MusicGalleryWindow.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
     </ItemGroup>
     <ItemGroup>
-        <Page Update="Views\MusicGalleryPage.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
     </ItemGroup>
     <ItemGroup>
         <Page Update="Views\SettingsWindow.xaml">
@@ -293,9 +215,6 @@
         </Page>
     </ItemGroup>
     <ItemGroup>
-        <Page Update="Controls\AboutControl.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
     </ItemGroup>
     <ItemGroup>
         <Page Update="Styles\InteractiveListViewHeaderStyle.xaml">
@@ -343,9 +262,6 @@
         <Page Update="Themes\FluentToggleMenuFlyoutItem.xaml">
           <Generator>MSBuild:Compile</Generator>
         </Page>
-        <None Update="Themes\Generic.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </None>
         <Page Update="Themes\InteractiveGridViewHeaderStyle.xaml">
           <Generator>MSBuild:Compile</Generator>
         </Page>
@@ -359,9 +275,6 @@
         </Page>
     </ItemGroup>
     <ItemGroup>
-        <Page Update="Themes\LyricsCardQQStyle.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
     </ItemGroup>
     <ItemGroup>
         <Page Update="Controls\TrackDetailCard.xaml">
@@ -454,29 +367,14 @@
         </Page>
     </ItemGroup>
     <ItemGroup>
-        <Page Update="Styles\LyricsCardInkWashStyle.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
     </ItemGroup>
     <ItemGroup>
-        <Page Update="Styles\LyricsCardMinimalStyle.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
     </ItemGroup>
     <ItemGroup>
-        <Page Update="Styles\LyricsCardVinylStyle.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
     </ItemGroup>
     <ItemGroup>
-        <Page Update="Views\LyricsShareWindow.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
     </ItemGroup>
     <ItemGroup>
-        <Page Update="Views\LyricsSharePage.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
     </ItemGroup>
     <ItemGroup>
         <Page Update="Controls\DragIndicator.xaml">
@@ -512,9 +410,6 @@
         </Page>
     </ItemGroup>
     <ItemGroup>
-        <Page Update="Controls\PluginItemControl.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
     </ItemGroup>
     <!-- Publish Properties -->
     <PropertyGroup>

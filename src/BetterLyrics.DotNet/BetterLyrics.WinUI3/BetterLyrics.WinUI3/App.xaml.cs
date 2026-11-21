@@ -3,7 +3,6 @@ using BetterLyrics.Core.Helpers;
 using BetterLyrics.Core.Interfaces.Providers;
 using BetterLyrics.Core.Interfaces.Services;
 using BetterLyrics.Core.Models.Settings;
-using BetterLyrics.Sdk.Interfaces.Plugins;
 using BetterLyrics.WinUI3.UITest;
 using BetterLyrics.WinUI3.Views;
 using CommunityToolkit.Mvvm.DependencyInjection;
@@ -25,7 +24,6 @@ namespace BetterLyrics.WinUI3;
 public partial class App : Application
 {
     private readonly ILogger<App> _logger;
-    private SimpleSplashScreen? _splashScreen;
     private Window? m_window;
 
     public App()
@@ -79,11 +77,6 @@ public partial class App : Application
             m_window = windowManagerProvider.OpenOrShowWindow<SystemTrayWindow>();
             appUiThreadProvider.Initialize(m_window.DispatcherQueue);
 
-            if (!UiTestSession.IsEnabled && settingsService.AppSettings.GeneralSettings.ShowSplashScreen)
-            {
-                _splashScreen = SimpleSplashScreen.ShowDefaultSplashScreen();
-            }
-
             var globalToastProvider = Ioc.Default.GetRequiredService<IGlobalToastProvider>();
             globalToastProvider.Initialize();
 
@@ -117,7 +110,6 @@ public partial class App : Application
         }
         finally
         {
-            _splashScreen?.Dispose();
             HandleNormalLaunch();
         }
     }
@@ -132,42 +124,9 @@ public partial class App : Application
                 return;
             }
 
-            var settingsService = Ioc.Default.GetRequiredService<ISettingsService>();
-            var windowManagerProvider = Ioc.Default.GetRequiredService<IWindowManagerProvider>();
-            var wallpaperEngineService = Ioc.Default.GetRequiredService<IWallpaperEngineService>();
-            var activeWallpaperProjectPaths = wallpaperEngineService.GetActiveWallpaperProjectPaths();
-
-            // 初始化歌词切换窗口
-            _ = windowManagerProvider.OpenOrShowWindow<LyricsWindowSwitchWindow>();
-
-            // 自动打开歌词窗口逻辑
-            if (settingsService.AppSettings.GeneralSettings.AutoStartLyricsWindow)
-            {
-                var defaultStatus = settingsService.AppSettings.WindowBoundsRecords.Where(x => x.IsDefault);
-                if (defaultStatus != null)
-                {
-                    foreach (var item in defaultStatus)
-                    {
-                        // 已绑定其他壁纸的窗口由 Wallpaper Engine 联动服务决定是否显示
-                        if (IsBoundToInactiveWallpaper(item, activeWallpaperProjectPaths)) continue;
-
-                        windowManagerProvider.OpenOrShowWindow<NowPlayingWindow>(item);
-                        if (!settingsService.AppSettings.GeneralSettings.MultiNowPlayingWindowMode)
-                        {
-                            break;
-                        }
-                    }
-                }
-            }
-
-            // 根据当前 Wallpaper Engine 壁纸同步已绑定窗口
-            Ioc.Default.GetRequiredService<IWallpaperEngineLyricsWindowService>().Initialize();
-
-            // 自动打开音乐库逻辑
-            if (settingsService.AppSettings.MusicGallerySettings.AutoOpen)
-            {
-                windowManagerProvider.OpenOrShowWindow<MusicGalleryWindow>();
-            }
+            var windows = Ioc.Default.GetRequiredService<IWindowManagerProvider>();
+            windows.OpenOrShowWindow<LyricsWindowSwitchWindow>();
+            windows.OpenOrShowWindow<SettingsWindow>();
         }
         catch (Exception ex)
         {
@@ -175,18 +134,6 @@ public partial class App : Application
             System.Windows.Forms.MessageBox.Show(ex.Message, "HandleNormalLaunch: Fatal error", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
             Environment.Exit(1);
         }
-    }
-
-    private static bool IsBoundToInactiveWallpaper(LyricsWindowStatus status,
-        IReadOnlySet<string>? activeWallpaperProjectPaths)
-    {
-        if (activeWallpaperProjectPaths == null || string.IsNullOrWhiteSpace(status.WallpaperEngineBindingPath))
-        {
-            return false;
-        }
-
-        var bindingPath = status.WallpaperEngineBindingPath.Replace('/', '\\');
-        return !activeWallpaperProjectPaths.Contains(bindingPath);
     }
 
     private static async Task InitAppServicesAsync()
@@ -224,68 +171,9 @@ public partial class App : Application
         // 实时扫描
         _ = Ioc.Default.GetRequiredService<IFileWatchService>();
 
-        // 加载插件
-        var pluginService = Ioc.Default.GetRequiredService<IPluginService>();
-        await pluginService.LoadPluginsAsync();
-
-        // 确保播放源配置内歌词源与插件保持最新
-        EnsureLyricsSearchProvidersInfo();
-
-        // 启动周期更新检测
-        var appUpdateService = Ioc.Default.GetRequiredService<IAppUpdateService>();
-        appUpdateService.StartDailyCheck();
-
-        // 启动切歌通知服务
-        var nowPlayingNotificationService = Ioc.Default.GetRequiredService<INowPlayingNotificationService>();
-        nowPlayingNotificationService.Initialize();
-
-        // 启动全局快捷键服务
-        _ = Ioc.Default.GetRequiredService<IGlobalShortcutService>();
-
-        // 初始化 Wallpaper Engine 联动所需的配置读取
-        await Ioc.Default.GetRequiredService<IWallpaperEngineService>().InitializeAsync();
-
         Ioc.Default.GetRequiredService<ILogger<App>>().LogInformation(
-            "Application services initialized. Media folders: {FolderCount}; plugins: {PluginCount}.",
-            settingsService.AppSettings.LocalMediaFolders.Count,
-            settingsService.AppSettings.PluginsInfo.Count);
-    }
-
-    private static void EnsureLyricsSearchProvidersInfo()
-    {
-        var settingsService = Ioc.Default.GetRequiredService<ISettingsService>();
-        var pluginService = Ioc.Default.GetRequiredService<IPluginService>();
-
-        var validPluginData = settingsService.AppSettings.PluginsInfo
-            .Where(x => x.Plugin is ILyricsSource)
-            .Select(p => new
-            {
-                Id = pluginService.GetPluginHashedId(p.Id)
-            })
-            .ToList();
-
-        var validPluginIds = validPluginData.Select(x => x.Id).ToHashSet();
-
-        foreach (var providerInfo in settingsService.AppSettings.MediaSourceProvidersInfo)
-        {
-            var targetList = providerInfo.LyricsSearchProvidersInfo;
-
-            var itemsToRemove = targetList
-                .Where(item => (int)item.Provider >= 1000 && !validPluginIds.Contains((int)item.Provider))
-                .ToList();
-
-            foreach (var item in itemsToRemove) targetList.Remove(item);
-
-            var existingIds = targetList.Select(x => (int)x.Provider).ToHashSet();
-
-            foreach (var plugin in validPluginData)
-                if (!existingIds.Contains(plugin.Id))
-                    targetList.Add(new LyricsSearchProviderInfo
-                    {
-                        Provider = (LyricsProvider)plugin.Id,
-                        IsEnabled = true
-                    });
-        }
+            "Application services initialized. Media folders: {FolderCount}.",
+            settingsService.AppSettings.LocalMediaFolders.Count);
     }
 
     private static void UpdateGlobalStyles(bool useCustom)

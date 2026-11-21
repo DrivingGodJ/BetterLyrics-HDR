@@ -1873,7 +1873,7 @@
     <value>Minimum Match Threshold</value>
   </data>
   <data name="SettingsPageMediaLib" xml:space="preserve">
-    <value>Media Library</value>
+    <value>Local Files</value>
   </data>
   <data name="SettingsPageMediaSourceProvidersConfig.Header" xml:space="preserve">
     <value>Listen to this playback source</value>
@@ -2851,7 +2851,7 @@
     <value>Spectrum Delay</value>
   </data>
   <data name="SettingsPageIntegration.Text" xml:space="preserve">
-    <value>Integration</value>
+    <value>Lyrics Sources</value>
   </data>
   <data name="SettingsPageWindow.Text" xml:space="preserve">
     <value>Window</value>
@@ -2927,5 +2927,8 @@
   </data>
   <data name="DemoWindowGridMonitorDisconnected.Text" xml:space="preserve">
     <value>No monitor found matching the mode</value>
+  </data>
+  <data name="MusicReportButtonToolTip.Content" xml:space="preserve">
+    <value>Listening Report</value>
   </data>
 </root>

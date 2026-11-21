@@ -15,7 +15,7 @@ public static class App
 #if WINDOWS
     public static string AppName = Windows.ApplicationModel.Package.Current.Id.Name switch
     {
-        "DrivingGodJ.BetterLyricsHDR" => "BetterLyrics HDR",
+        "DrivingGodJ.BetterLyricsLite" => "BetterLyrics Lite",
         "37412.BetterLyrics" => "BetterLyrics",
         _ => "BetterLyrics (Dev)"
     };

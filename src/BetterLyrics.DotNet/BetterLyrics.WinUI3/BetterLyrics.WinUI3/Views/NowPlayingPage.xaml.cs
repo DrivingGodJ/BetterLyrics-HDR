@@ -199,8 +199,6 @@ public sealed partial class NowPlayingPage : BasePage,
             var (mappedTitle, mappedArtist, mappedAlbum) =
                 await _songSearchMapService.GetMappingAsync(_gsmtcService.CurrentSongInfo);
 
-            LyricsCard.Title = mappedTitle;
-            LyricsCard.Artist = mappedArtist;
 
             var titleFontSize = SongTitleContainer.ActualHeight * 0.75;
             var artistFontSize = SongArtistContainer.ActualHeight * 0.75;
@@ -274,7 +272,6 @@ public sealed partial class NowPlayingPage : BasePage,
             FrameworkElement? targetElement = placement.ComponentType switch
             {
                 ComponentType.Lyrics => LyricsContainer,
-                ComponentType.LyricsCard => LyricsCardContainer,
                 ComponentType.AlbumArt => AlbumArtContainer,
                 ComponentType.SongTitle => SongTitleContainer,
                 ComponentType.SongArtist => SongArtistContainer,
@@ -339,7 +336,6 @@ public sealed partial class NowPlayingPage : BasePage,
             FrameworkElement? targetElement = placement.ComponentType switch
             {
                 ComponentType.Lyrics => LyricsContainer,
-                ComponentType.LyricsCard => LyricsCardContainer,
                 ComponentType.AlbumArt => AlbumArtContainer,
                 ComponentType.SongTitle => SongTitleContainer,
                 ComponentType.SongArtist => SongArtistContainer,
@@ -355,7 +351,6 @@ public sealed partial class NowPlayingPage : BasePage,
     private void HideContainers()
     {
         LyricsContainer.Visibility = Visibility.Collapsed;
-        LyricsCardContainer.Visibility = Visibility.Collapsed;
         AlbumArtContainer.Visibility = Visibility.Collapsed;
         SongTitleContainer.Visibility = Visibility.Collapsed;
         SongArtistContainer.Visibility = Visibility.Collapsed;
@@ -591,7 +586,6 @@ public sealed partial class NowPlayingPage : BasePage,
 
         ViewModel.MediaSessionsService = _gsmtcService;
         NowPlayingCanvas.GsmtcSource = _gsmtcService;
-        LyricsCard.GsmtcSource = _gsmtcService;
         NowPlayingBar.IsBuiltInOnly = isBuiltInOnly;
     }
 

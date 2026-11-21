@@ -21,12 +21,6 @@ public partial class NavigationService : ObservableObject, INavigationService
     }
 
     [RelayCommand]
-    private void OpenMusicGalleryWindow()
-    {
-        _windowManagerProvider.OpenOrShowWindow(WindowType.MusicGalleryWindow);
-    }
-
-    [RelayCommand]
     private void OpenLyricsWindowSwitchWindow()
     {
         _windowManagerProvider.OpenOrShowWindow(WindowType.LyricsWindowSwitchWindow);
@@ -36,12 +30,6 @@ public partial class NavigationService : ObservableObject, INavigationService
     private void OpenLyricsSearchWindow()
     {
         _windowManagerProvider.OpenOrShowWindow(WindowType.LyricsSearchWindow);
-    }
-
-    [RelayCommand]
-    private void OpenLyricsShareWindow()
-    {
-        _windowManagerProvider.OpenOrShowWindow(WindowType.LyricsShareWindow);
     }
 
     [RelayCommand]

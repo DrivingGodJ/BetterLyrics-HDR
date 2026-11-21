@@ -36,7 +36,7 @@ foreach ($name in 'StoreLogo','Square150x150Logo','Square44x44Logo','Wide310x150
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot '..\LICENSE') -Destination $staging
 $manifest.Save((Join-Path $staging 'AppxManifest.xml'))
 
-$package = Join-Path $output ('BetterLyrics-HDR-{0}-{1}.msix' -f $manifest.Package.Identity.Version, $Architecture)
+$package = Join-Path $output ('BetterLyrics-Lite-{0}-{1}.msix' -f $manifest.Package.Identity.Version, $Architecture)
 & (Join-Path $sdk 'makeappx.exe') pack /d $staging /p $package /o
 if ($LASTEXITCODE) { throw "MakeAppx failed with exit code $LASTEXITCODE." }
 & (Join-Path $sdk 'signtool.exe') sign /fd SHA256 /sha1 $CertificateThumbprint $package

@@ -5,7 +5,6 @@ using BetterLyrics.Core.Interfaces.Providers;
 using BetterLyrics.Core.Interfaces.Services;
 using BetterLyrics.Core.Models.Domain;
 using BetterLyrics.Core.Models.Settings;
-using BetterLyrics.Core.ViewModels.MusicGalleryPageViewModel;
 using BetterLyrics.WinUI3.Constants;
 using BetterLyrics.WinUI3.Hooks;
 using BetterLyrics.WinUI3.Views;
@@ -186,8 +185,6 @@ public class WindowManagerProvider : IWindowManagerProvider
 
     public object? GetWindow(WindowType windowType, object? windowParameter = null) => windowType switch
     {
-        WindowType.LyricsShareWindow => GetWindow<LyricsShareWindow>(),
-        WindowType.MusicGalleryWindow => GetWindow<MusicGalleryWindow>(),
         WindowType.LyricsSearchWindow => GetWindow<LyricsSearchWindow>(),
         WindowType.LyricsWindowSwitchWindow => GetWindow<LyricsWindowSwitchWindow>(),
         WindowType.StatsDashboardWindow => GetWindow<StatsDashboardWindow>(),
@@ -234,8 +231,6 @@ public class WindowManagerProvider : IWindowManagerProvider
     {
         WindowType.SettingsWindow => GetWindows<SettingsWindow>().Select(x => (object)x).ToList(),
         WindowType.NowPlayingWindow => GetWindows<NowPlayingWindow>().Select(x => (object)x).ToList(),
-        WindowType.MusicGalleryWindow => GetWindows<MusicGalleryWindow>().Select(x => (object)x).ToList(),
-        WindowType.LyricsShareWindow => GetWindows<LyricsShareWindow>().Select(x => (object)x).ToList(),
         WindowType.LyricsSearchWindow => GetWindows<LyricsSearchWindow>().Select(x => (object)x).ToList(),
         WindowType.LyricsWindowSwitchWindow => GetWindows<LyricsWindowSwitchWindow>().Select(x => (object)x).ToList(),
         WindowType.StatsDashboardWindow => GetWindows<StatsDashboardWindow>().Select(x => (object)x).ToList(),
@@ -315,10 +310,6 @@ public class WindowManagerProvider : IWindowManagerProvider
             {
                 window = new SettingsWindow();
             }
-            else if (typeof(T) == typeof(MusicGalleryWindow))
-            {
-                window = new MusicGalleryWindow();
-            }
             else if (typeof(T) == typeof(LyricsSearchWindow))
             {
                 window = new LyricsSearchWindow();
@@ -326,10 +317,6 @@ public class WindowManagerProvider : IWindowManagerProvider
             else if (typeof(T) == typeof(LyricsWindowSwitchWindow))
             {
                 window = new LyricsWindowSwitchWindow();
-            }
-            else if (typeof(T) == typeof(LyricsShareWindow))
-            {
-                window = new LyricsShareWindow();
             }
             else if (typeof(T) == typeof(StatsDashboardWindow))
             {
@@ -364,11 +351,6 @@ public class WindowManagerProvider : IWindowManagerProvider
                 lyricsStatus.HideReasons = LyricsWindowHideReason.None;
                 lyricsStatus.IsUserHidden = false;
             }
-            else if (typeof(T) == typeof(MusicGalleryWindow))
-            {
-                var musicGalleryPageViewModel = Ioc.Default.GetService<MusicGalleryPageViewModel>();
-                musicGalleryPageViewModel?.HandleAutoPlay();
-            }
 
             _logger.LogDebug("Showing existing window {WindowType}.", typeof(T).Name);
             var castedWindow = (Window)window;
@@ -397,8 +379,6 @@ public class WindowManagerProvider : IWindowManagerProvider
         WindowType.NowPlayingWindow => windowParameter is LyricsWindowStatus lyricsWindowStatus
             ? OpenOrShowWindow<NowPlayingWindow>(lyricsWindowStatus)
             : OpenOrShowWindow<NowPlayingWindow>(),
-        WindowType.MusicGalleryWindow => OpenOrShowWindow<MusicGalleryWindow>(),
-        WindowType.LyricsShareWindow => OpenOrShowWindow<LyricsShareWindow>(),
         WindowType.LyricsWindowSwitchWindow => OpenOrShowWindow<LyricsWindowSwitchWindow>(),
         WindowType.LyricsSearchWindow => OpenOrShowWindow<LyricsSearchWindow>(),
         WindowType.StatsDashboardWindow => OpenOrShowWindow<StatsDashboardWindow>(),

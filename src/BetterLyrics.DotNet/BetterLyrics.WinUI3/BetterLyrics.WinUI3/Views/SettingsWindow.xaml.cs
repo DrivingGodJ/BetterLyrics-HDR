@@ -12,9 +12,9 @@ public sealed partial class SettingsWindow : BaseWindow
         this.Init("SettingsPageTitle");
     }
 
-    private void MusicGalleryButton_Click(object sender, RoutedEventArgs e)
+    private void MusicReportButton_Click(object sender, RoutedEventArgs e)
     {
-        _windowManagerProvider.OpenOrShowWindow(WindowType.MusicGalleryWindow);
+        _windowManagerProvider.OpenOrShowWindow(WindowType.StatsDashboardWindow);
     }
 
     private void LyricsWindowSwitchButton_Click(object sender, RoutedEventArgs e)

@@ -35,16 +35,8 @@ public sealed partial class NowPlayingBar : BaseUserControl
         DependencyProperty.Register(nameof(ShowProgressBar), typeof(bool), typeof(NowPlayingBar),
             new PropertyMetadata(true));
 
-    public static readonly DependencyProperty ShowPlayingQueueButtonProperty =
-        DependencyProperty.Register(nameof(ShowPlayingQueueButton), typeof(bool), typeof(NowPlayingBar),
-            new PropertyMetadata(false));
-
     public static readonly DependencyProperty ShowStopButtonProperty =
         DependencyProperty.Register(nameof(ShowStopButton), typeof(bool), typeof(NowPlayingBar),
-            new PropertyMetadata(false));
-
-    public static readonly DependencyProperty ShowPlaybackOrderButtonProperty =
-        DependencyProperty.Register(nameof(ShowPlaybackOrderButton), typeof(bool), typeof(NowPlayingBar),
             new PropertyMetadata(false));
 
     public static readonly DependencyProperty ShowVolumeButtonProperty =
@@ -98,18 +90,6 @@ public sealed partial class NowPlayingBar : BaseUserControl
     {
         get => (bool)GetValue(ShowProgressBarProperty);
         set => SetValue(ShowProgressBarProperty, value);
-    }
-
-    public bool ShowPlayingQueueButton
-    {
-        get => (bool)GetValue(ShowPlayingQueueButtonProperty);
-        set => SetValue(ShowPlayingQueueButtonProperty, value);
-    }
-
-    public bool ShowPlaybackOrderButton
-    {
-        get => (bool)GetValue(ShowPlaybackOrderButtonProperty);
-        set => SetValue(ShowPlaybackOrderButtonProperty, value);
     }
 
     public bool ShowStopButton
@@ -181,7 +161,6 @@ public sealed partial class NowPlayingBar : BaseUserControl
 
     public event EventHandler? SongInfoTapped;
     public event EventHandler? TimeTapped;
-    public event EventHandler? PlayQueueButtonClick;
 
     public NowPlayingBar()
     {
@@ -332,18 +311,17 @@ public sealed partial class NowPlayingBar : BaseUserControl
         LyricsSettingsFlyout.Content = null;
     }
 
-    private void LyricsSettingsFlyout_Opened(object sender, object e)
-    {
-        WeakReferenceMessenger.Default.Send(new LyricsWindowNavigationRequestedMessage(LyricsWindowManagerSettingsSection.Window, LyricsWindowStatus?.Id));
-    }
-
     private void LyricsSettingsShortcutMenuFlyoutItem_Click(object sender, RoutedEventArgs e)
     {
-        var content = new LyricsWindowManagerControl
+        if (LyricsWindowStatus is not { } window) return;
+
+        var content = new LyricsEffectSettingsControl
         {
             MaxHeight = 500,
             MaxWidth = 850,
         };
+        content.LyricsWindowStatus = window;
+        content.LyricsEffectSettings = window.LyricsEffectSettings;
         LyricsSettingsFlyout.Content = content;
         LyricsSettingsFlyout.ShowAt(BottomRightCommandStackPanel);
     }
@@ -443,17 +421,6 @@ public sealed partial class NowPlayingBar : BaseUserControl
     private void BottomCommandFlyoutTrigger_Tapped(object sender, TappedRoutedEventArgs e)
     {
         if (BottomCommandFlyoutContainer.Children.Count != 0) BottomCommandFlyout.ShowAt(BottomCommandFlyoutTrigger);
-    }
-
-    private void PlayingQueueButton_Click(object sender, RoutedEventArgs e)
-    {
-        PlayQueueButtonClick?.Invoke(sender, EventArgs.Empty);
-    }
-
-    private void PlaybackOrderButton_Click(object sender, RoutedEventArgs e)
-    {
-        ViewModel.AppSettings.MusicGallerySettings.PlaybackOrder =
-            ViewModel.AppSettings.MusicGallerySettings.PlaybackOrder.GetNext();
     }
 
     private async void OpenPlaybackSourceButton_Click(object sender, RoutedEventArgs e)

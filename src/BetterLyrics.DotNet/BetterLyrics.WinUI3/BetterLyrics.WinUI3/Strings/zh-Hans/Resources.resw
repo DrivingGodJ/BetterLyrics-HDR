@@ -1873,7 +1873,7 @@
     <value>最小匹配阈值</value>
   </data>
   <data name="SettingsPageMediaLib" xml:space="preserve">
-    <value>媒体库</value>
+    <value>本地文件源</value>
   </data>
   <data name="SettingsPageMediaSourceProvidersConfig.Header" xml:space="preserve">
     <value>监听此播放源</value>
@@ -2851,7 +2851,7 @@
     <value>频谱延迟</value>
   </data>
   <data name="SettingsPageIntegration.Text" xml:space="preserve">
-    <value>集成</value>
+    <value>高级歌词来源</value>
   </data>
   <data name="SettingsPageWindow.Text" xml:space="preserve">
     <value>窗口</value>
@@ -2927,5 +2927,8 @@
   </data>
   <data name="DemoWindowGridMonitorDisconnected.Text" xml:space="preserve">
     <value>未找到与该模式匹配的显示器</value>
+  </data>
+  <data name="MusicReportButtonToolTip.Content" xml:space="preserve">
+    <value>音乐报告</value>
   </data>
 </root>

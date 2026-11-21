@@ -52,14 +52,8 @@ public partial class SystemTrayViewModel : ObservableRecipient, ISingletonViewMo
             case SystemTrayClickCallback.LyricsSearchWindow:
                 _windowManagerProvider.OpenOrShowWindow(WindowType.LyricsSearchWindow);
                 break;
-            case SystemTrayClickCallback.MusicGalleryWindow:
-                _windowManagerProvider.OpenOrShowWindow(WindowType.MusicGalleryWindow);
-                break;
             case SystemTrayClickCallback.StatsWindow:
                 _windowManagerProvider.OpenOrShowWindow(WindowType.StatsDashboardWindow);
-                break;
-            case SystemTrayClickCallback.LyricsCardWindow:
-                _windowManagerProvider.OpenOrShowWindow(WindowType.LyricsShareWindow);
                 break;
             case SystemTrayClickCallback.SettingsWindow:
                 _windowManagerProvider.OpenOrShowWindow(WindowType.SettingsWindow);

@@ -57,14 +57,6 @@ public sealed partial class LyricsWindowSwitchControl : BaseUserControl
         Shadow.Receivers.Add(ShadowCastGrid);
     }
 
-    private async void SettingsHypelinkButton_Click(object sender, RoutedEventArgs e)
-    {
-        await HideAsync();
-        _windowManagerProvider.OpenOrShowWindow<SettingsWindow>();
-        var settingsPageViewModel = Ioc.Default.GetRequiredService<SettingsPageViewModel>();
-        settingsPageViewModel.NavigateToSection(SettingsSection.LyricsWindowMgr);
-    }
-
     private async void UserControl_KeyDown(object sender, KeyRoutedEventArgs e)
     {
         int index = -1;

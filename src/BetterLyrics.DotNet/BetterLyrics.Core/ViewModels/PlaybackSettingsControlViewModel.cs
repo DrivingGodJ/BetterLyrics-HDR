@@ -12,7 +12,6 @@ using BetterLyrics.Core.Serialization;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using Hqub.Lastfm.Entities;
 using Microsoft.Extensions.Logging;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -28,7 +27,6 @@ public partial class PlaybackSettingsControlViewModel : ObservableRecipient, ITr
 {
     private readonly IAppUIThreadProvider _appUiThreadProvider;
     private readonly IGlobalToastProvider _globalToastProvider;
-    private readonly ILastFmService _lastFmService;
     private readonly IPasswordVaultProvider _passwordVaultProvider;
     private readonly ITranslationService _translationService;
     private readonly IFilePickerProvider _filePickerProvider;
@@ -45,14 +43,6 @@ public partial class PlaybackSettingsControlViewModel : ObservableRecipient, ITr
 
     [ObservableProperty] public partial PlaybackLibSettingsNavMenuItem? SelectedNavItem { get; set; }
 
-    [ObservableProperty] public partial bool IsLastFmAuthenticated { get; set; }
-
-    [ObservableProperty] public partial User? LastFmUser { get; set; }
-
-    private readonly IDiscordService _discordService;
-
-    [ObservableProperty] public partial DiscordRPC.User? DiscordUser { get; set; }
-
     [ObservableProperty] public partial bool IsLibreTranslateServerTesting { get; set; } = false;
 
     [ObservableProperty] public partial bool IsLxMusicServerTesting { get; set; } = false;
@@ -61,16 +51,12 @@ public partial class PlaybackSettingsControlViewModel : ObservableRecipient, ITr
 
     [ObservableProperty] public partial string AppleMusicMediaUserToken { get; set; }
 
-    [ObservableProperty] public partial string? DiscordUsername { get; set; }
-
-    [ObservableProperty] public partial bool IsDiscordConnected { get; set; }
-
     [ObservableProperty] public partial bool IsConfigPanelOpen { get; set; }
 
     public PlaybackSettingsControlViewModel(
     ISettingsService settingsService, IGsmtcService gsmtcService, ITranslationService libreTranslationService,
-    ILastFmService lastFmService, IAppUIThreadProvider appUiThreadProvider, IPasswordVaultProvider passwordVaultProvider,
-    IGlobalToastProvider globalToastProvider, IFilePickerProvider filePickerProvider, IDiscordService discordService,
+    IAppUIThreadProvider appUiThreadProvider, IPasswordVaultProvider passwordVaultProvider,
+    IGlobalToastProvider globalToastProvider, IFilePickerProvider filePickerProvider,
     ILocalizationService localizationService, ILogger<PlaybackSettingsControlViewModel> logger)
     {
         GsmtcService = gsmtcService;
@@ -83,12 +69,7 @@ public partial class PlaybackSettingsControlViewModel : ObservableRecipient, ITr
         _globalToastProvider = globalToastProvider;
         _filePickerProvider = filePickerProvider;
 
-        _lastFmService = lastFmService;
 
-        _discordService = discordService;
-        DiscordUser = _discordService.CurrentUser;
-        DiscordUsername = DiscordUser != null ? $"{DiscordUser.Username}" : null;
-        IsDiscordConnected = DiscordUser != null;
 
         AppSettings = settingsService.AppSettings;
 
@@ -99,8 +80,6 @@ public partial class PlaybackSettingsControlViewModel : ObservableRecipient, ITr
         SelectedTargetLanguageIndex = LanguageHelper.SupportedTranslationTargetLanguages.ToList().FindIndex(x =>
             x.LanguageCode == AppSettings.TranslationSettings.SelectedTargetLanguageCode);
 
-        IsLastFmAuthenticated = _lastFmService.IsAuthenticated;
-        LastFmUser = _lastFmService.User;
 
         SelectedMediaSourceProvider = AppSettings.MediaSourceProvidersInfo.FirstOrDefault();
 
@@ -131,24 +110,13 @@ public partial class PlaybackSettingsControlViewModel : ObservableRecipient, ITr
     {
         base.OnActivated();
 
-        _lastFmService.UserChanged += LastFMService_UserChanged;
-        _lastFmService.IsAuthenticatedChanged += LastFMService_IsAuthenticatedChanged;
-        _discordService.UserChanged += DiscordService_UserChanged;
         AppSettings.MediaSourceProvidersInfo.CollectionChanged += MediaSourceProvidersInfo_CollectionChanged;
 
         // 重新激活时同步一次外部状态，避免控件隐藏期间状态变旧
-        IsLastFmAuthenticated = _lastFmService.IsAuthenticated;
-        LastFmUser = _lastFmService.User;
-        DiscordUser = _discordService.CurrentUser;
-        DiscordUsername = DiscordUser != null ? $"{DiscordUser.Username}" : null;
-        IsDiscordConnected = DiscordUser != null;
     }
 
     protected override void OnDeactivated()
     {
-        _lastFmService.UserChanged -= LastFMService_UserChanged;
-        _lastFmService.IsAuthenticatedChanged -= LastFMService_IsAuthenticatedChanged;
-        _discordService.UserChanged -= DiscordService_UserChanged;
         AppSettings.MediaSourceProvidersInfo.CollectionChanged -= MediaSourceProvidersInfo_CollectionChanged;
 
         base.OnDeactivated();
@@ -175,26 +143,6 @@ public partial class PlaybackSettingsControlViewModel : ObservableRecipient, ITr
     private void MediaSourceProvidersInfo_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         SelectedMediaSourceProvider = AppSettings.MediaSourceProvidersInfo.FirstOrDefault();
-    }
-
-    private void LastFMService_IsAuthenticatedChanged(object? sender, LastFMIsAuthenticatedChangedEventArgs e)
-    {
-        IsLastFmAuthenticated = e.IsAuthenticated;
-    }
-
-    private void LastFMService_UserChanged(object? sender, LastFMUserChangedEventArgs e)
-    {
-        LastFmUser = e.User;
-    }
-
-    private void DiscordService_UserChanged(object? sender, DiscordRPC.User? e)
-    {
-        _appUiThreadProvider.Execute(() =>
-        {
-            DiscordUser = e;
-            DiscordUsername = e != null ? $"{e.Username}" : null;
-            IsDiscordConnected = e != null;
-        });
     }
 
     [RelayCommand]
@@ -249,24 +197,6 @@ public partial class PlaybackSettingsControlViewModel : ObservableRecipient, ITr
                 IsLibreTranslateServerTesting = false;
             });
         });
-    }
-
-    [RelayCommand]
-    private async Task LastFmAuthAsync()
-    {
-        await _lastFmService.AuthAsync();
-    }
-
-    [RelayCommand]
-    private async Task LastFmUnAuthAsync()
-    {
-        await _lastFmService.UnAuthAsync();
-    }
-
-    [RelayCommand]
-    private async Task LastFmRefreshAsync()
-    {
-        await _lastFmService.RefreshAsync();
     }
 
     [RelayCommand]

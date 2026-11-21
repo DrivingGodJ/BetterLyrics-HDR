@@ -44,20 +44,10 @@
                     Icon="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons},
                                        Glyph=&#xE721;}" />
                 <MenuFlyoutItem
-                    x:Uid="SystemTrayMusicGallery"
-                    Command="{x:Bind ViewModel.NavigationService.OpenMusicGalleryWindowCommand}"
-                    Icon="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons},
-                                       Glyph=&#xE8F1;}" />
-                <MenuFlyoutItem
                     x:Uid="SystemTrayStats"
                     Command="{x:Bind ViewModel.NavigationService.OpenStatsDashboardWindowCommand}"
                     Icon="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons},
                                        Glyph=&#xE9D2;}" />
-                <MenuFlyoutItem
-                    x:Uid="LyricsPageLyricsCard"
-                    Command="{x:Bind ViewModel.NavigationService.OpenLyricsShareWindowCommand}"
-                    Icon="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons},
-                                       Glyph=&#xE70B;}" />
                 <MenuFlyoutItem
                     x:Uid="SystemTraySettings"
                     Command="{x:Bind ViewModel.NavigationService.OpenSettingsWindowCommand}"

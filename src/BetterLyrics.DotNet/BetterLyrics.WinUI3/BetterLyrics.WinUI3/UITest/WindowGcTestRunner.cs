@@ -33,9 +33,7 @@ internal static class WindowGcTestRunner
     [
         WindowType.SettingsWindow,
         WindowType.LyricsSearchWindow,
-        WindowType.LyricsShareWindow,
         WindowType.StatsDashboardWindow,
-        WindowType.MusicGalleryWindow,
         WindowType.NowPlayingWindow
     ];
 

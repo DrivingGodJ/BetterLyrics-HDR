@@ -42,18 +42,6 @@
                         <ScalarTransition />
                     </StackPanel.OpacityTransition>
 
-                    <Button
-                        x:Name="MusicGalleryButton"
-                        Click="MusicGalleryButton_Click"
-                        Style="{ThemeResource TitleBarButtonStyle}">
-                        <FontIcon
-                            FontFamily="{StaticResource SegoeFluentIcons}"
-                            FontSize="12"
-                            Glyph="&#xE8F1;" />
-                        <ToolTipService.ToolTip>
-                            <ToolTip x:Uid="HostWindowMusicGalleryButtonToolTip" />
-                        </ToolTipService.ToolTip>
-                    </Button>
 
                     <Button
                         x:Name="SettingsWindowButton"

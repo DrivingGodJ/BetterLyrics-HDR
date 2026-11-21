@@ -21,12 +21,8 @@ namespace BetterLyrics.Core.Implementations.Services.GsmtcService;
 /// </summary>
 public class GsmtcService : GsmtcServiceBase,
     IRecipient<MediaSourceProviderEnabledChangedMessage>,
-    IRecipient<MediaSourceDiscordPresenceChangedMessage>,
-    IRecipient<LyricsWindowStateChangedMessage>,
-    IRecipient<DiscordAlbumArtSourceChangedMessage>
+    IRecipient<LyricsWindowStateChangedMessage>
 {
-    private readonly IDiscordService _discordService;
-    private readonly ILastFmService _lastFmService;
     private readonly IPlayHistoryService _playHistoryService;
     private readonly Timer _scrobbleTimer;
 
@@ -37,20 +33,16 @@ public class GsmtcService : GsmtcServiceBase,
     ISettingsService settingsService,
     IAlbumArtSearchService albumArtSearchService,
     ILyricsSearchService lyricsSearchService,
-    IDiscordService discordService,
     ITranslationService libreTranslateService,
     ITransliterationService transliterationService,
     IPlayHistoryService playHistoryService,
-    ILastFmService lastFmService,
     IAppUIThreadProvider appUiThreadProvider,
     ILogger<GsmtcService> logger, IGlobalToastProvider globalToastProvider,
     IWindowManagerProvider windowManagerProvider)
         : base(settingsService, albumArtSearchService, lyricsSearchService, libreTranslateService,
             transliterationService, appUiThreadProvider, logger, globalToastProvider, windowManagerProvider)
     {
-        _discordService = discordService;
         _playHistoryService = playHistoryService;
-        _lastFmService = lastFmService;
 
         _scrobbleTimer = new Timer(ScrobbleTimerCallback, null, Timeout.Infinite, 1000);
 
@@ -62,20 +54,9 @@ public class GsmtcService : GsmtcServiceBase,
         OnDesiredSessionChanged();
     }
 
-    public void Receive(MediaSourceDiscordPresenceChangedMessage message)
-    {
-        _ = UpdateDiscordPresenceAsync();
-    }
-
     public void Receive(LyricsWindowStateChangedMessage message)
     {
         OnDesiredSessionChanged();
-    }
-
-    public void Receive(DiscordAlbumArtSourceChangedMessage message)
-    {
-        CurrentSongInfo.AlbumArtUrl = null;
-        _ = UpdateDiscordPresenceAsync();
     }
 
     protected override void OnPlaybackStateApplied(bool isPlaying)
@@ -87,21 +68,6 @@ public class GsmtcService : GsmtcServiceBase,
         else
         {
             _scrobbleTimer.Change(Timeout.Infinite, Timeout.Infinite);
-        }
-    }
-
-    protected override void OnPresenceUpdateRequested()
-    {
-        _ = UpdateDiscordPresenceAsync();
-    }
-
-    protected override void OnSongInfoApplied()
-    {
-        var isLastFMEnabled = CurrentMediaSourceProviderInfo?.IsLastFMTrackEnabled ?? false;
-        if (isLastFMEnabled)
-        {
-            _ = Task.Run(() => _lastFmService.UpdateNowPlayingAsync(CurrentSongInfo));
-            _logger.LogInformation("MediaManager_OnAnyMediaPropertyChanged: {Title} update now playing to last.fm", CurrentSongInfo.Title);
         }
     }
 
@@ -203,25 +169,6 @@ public class GsmtcService : GsmtcServiceBase,
         return focusedSession;
     }
 
-    private async Task UpdateDiscordPresenceAsync()
-    {
-        if (CurrentMediaSourceProviderInfo?.IsDiscordPresenceEnabled == true && CurrentSongInfo != SongInfoExtensions.Placeholder)
-        {
-            var discordSource = _settingsService.AppSettings.DiscordSettings.AlbumArtSource;
-            if (discordSource != OnlineAlbumArtProvider.None && string.IsNullOrEmpty(CurrentSongInfo.AlbumArtUrl))
-            {
-                CurrentSongInfo.AlbumArtUrl = await _albumArtSearchService.GetAlbumArtUrlAsync(
-                    CurrentSongInfo, discordSource, 500, CancellationToken.None);
-            }
-
-            await _discordService.UpdateRichPresenceAsync(CurrentSongInfo, CurrentIsPlaying, CurrentPosition, CurrentSongInfo.AlbumArtUrl);
-        }
-        else
-        {
-            _discordService.ClearRichPresence();
-        }
-    }
-
     private void ScrobbleTimerCallback(object? state)
     {
         if (!IsScrobbled)
@@ -240,16 +187,6 @@ public class GsmtcService : GsmtcServiceBase,
                             // 后台
                             _ = Task.Run(async () => { await _playHistoryService.AddLogAsync(playHistoryItem); });
                             _logger.LogInformation("ScrobbleTimer_Tick: {Title} scrobbled to local stat",
-                                CurrentSongInfo.Title);
-                        }
-
-                        // 写入 Last.fm 播放记录
-                        var isLastFMEnabled = CurrentMediaSourceProviderInfo?.IsLastFMTrackEnabled ?? false;
-                        if (isLastFMEnabled)
-                        {
-                            // 后台
-                            _ = Task.Run(() => _lastFmService.TrackAsync(CurrentSongInfo));
-                            _logger.LogInformation("ScrobbleTimer_Tick: {Title} scrobbled to last.fm",
                                 CurrentSongInfo.Title);
                         }
 

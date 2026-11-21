@@ -11,7 +11,6 @@ using BetterLyrics.Core.Interfaces.Providers;
 using BetterLyrics.Core.Interfaces.Services;
 using BetterLyrics.Core.Models;
 using BetterLyrics.Core.ViewModels;
-using BetterLyrics.Core.ViewModels.MusicGalleryPageViewModel;
 using BetterLyrics.WinUI3.Logging;
 using BetterLyrics.WinUI3.Providers;
 using BetterLyrics.WinUI3.Services;
@@ -34,7 +33,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
-using Windows.Storage;
 using WinRT;
 
 namespace BetterLyrics.WinUI3;
@@ -97,7 +95,7 @@ public class Program
         // redirected into a user instance that cannot accept test arguments.
         var instanceKey = UiTestSession.IsEnabled
             ? $"BetterLyrics.UiTest.{Environment.ProcessId}"
-            : "MySingleInstanceApp";
+            : "BetterLyricsLite";
 
         var keyInstance = AppInstance.FindOrRegisterForKey(instanceKey);
 
@@ -128,48 +126,17 @@ public class Program
         var kind = args.Kind;
         _logger?.LogDebug("Activation received. Kind: {Kind}; initial: {IsInitial}.", kind, init);
 
-        if (kind == ExtendedActivationKind.File)
+        if (kind == ExtendedActivationKind.Protocol)
         {
-            _ = HandleFileActivationAsync(args);
-        }
-        else if (kind == ExtendedActivationKind.Protocol)
-        {
-            _ = HandleProtocolActivationAsync(args);
-        }
-        else if (kind == ExtendedActivationKind.Launch && !init)
-        {
-            _logger?.LogDebug("App launched by the user without a specific activation target.");
+            HandleProtocolActivation(args);
         }
         else if (!init)
         {
-            var windowManagerProvider = Ioc.Default.GetRequiredService<IWindowManagerProvider>();
-            windowManagerProvider.OpenOrShowWindow<LyricsWindowSwitchWindow>();
+            Ioc.Default.GetRequiredService<IWindowManagerProvider>().OpenOrShowWindow<SettingsWindow>();
         }
     }
 
-    private static async Task HandleFileActivationAsync(AppActivationArguments args)
-    {
-        if (args.Data is IFileActivatedEventArgs fileArgs)
-        {
-            var item = fileArgs.Files.FirstOrDefault();
-            if (item is StorageFile file)
-            {
-                _logger?.LogInformation("App activated via file: {Path}", file.Path);
-
-                var windowManagerProvider = Ioc.Default.GetRequiredService<IWindowManagerProvider>();
-                windowManagerProvider.OpenOrShowWindow<SettingsWindow>();
-
-                var pluginManagerControlViewModel = Ioc.Default.GetRequiredService<PluginManagerControlViewModel>();
-                await pluginManagerControlViewModel.InstallPluginAsync(file.Path);
-            }
-            else
-            {
-                _logger?.LogWarning("File activation ignored: only storage files are supported.");
-            }
-        }
-    }
-
-    private static async Task HandleProtocolActivationAsync(AppActivationArguments args)
+    private static void HandleProtocolActivation(AppActivationArguments args)
     {
         var windowManagerProvider = Ioc.Default.GetRequiredService<IWindowManagerProvider>();
 
@@ -180,7 +147,8 @@ public class Program
             if (protocolArgs.Uri.Host == "settings")
             {
                 var segments = protocolArgs.Uri.Segments.Select(s => s.Trim('/')).Where(s => !string.IsNullOrEmpty(s)).ToArray();
-                if (segments.Length > 0 && Enum.TryParse<SettingsSection>(segments[0], true, out var section))
+                if (segments.Length > 0 && Enum.TryParse<SettingsSection>(segments[0], true, out var section) &&
+                    section is SettingsSection.PlaybackLib or SettingsSection.MediaLib)
                 {
                     windowManagerProvider.OpenOrShowWindow<SettingsWindow>();
                     var settingsPageViewModel = Ioc.Default.GetRequiredService<SettingsPageViewModel>();
@@ -220,11 +188,7 @@ public class Program
             else if (protocolArgs.Uri.Host == "lyrics")
             {
                 var targetSegment = protocolArgs.Uri.Segments.LastOrDefault()?.Trim('/');
-                if (targetSegment == "card")
-                {
-                    windowManagerProvider.OpenOrShowWindow<LyricsShareWindow>();
-                }
-                else if (targetSegment == "search")
+                if (targetSegment == "search")
                 {
                     windowManagerProvider.OpenOrShowWindow<LyricsSearchWindow>();
 
@@ -241,10 +205,6 @@ public class Program
                     if (!lyricsSearchControlViewModel.IsSearching)
                         lyricsSearchControlViewModel.SearchCommand.Execute(null);
                 }
-            }
-            else if (protocolArgs.Uri.Host == "player")
-            {
-                windowManagerProvider.OpenOrShowWindow<MusicGalleryWindow>();
             }
             else if (protocolArgs.Uri.Host == "stats")
             {
@@ -293,12 +253,10 @@ public class Program
             .AddSingleton<ITranslationService, TranslationService>()
             .AddSingleton<ITransliterationService, TransliterationService>()
             .AddSingleton<ILastFmService, LastFmService>()
-            .AddSingleton<IDiscordService, DiscordService>()
             .AddSingleton<ILocalizationService, LocalizationService>()
             .AddSingleton<ILyricsCacheService, LyricsCacheService>()
             .AddSingleton<IPluginService, PluginService>()
             .AddSingleton<IFileWatchService, FileWatchService>()
-            .AddSingleton<IAppUpdateService, AppUpdateService>()
             .AddSingleton<INavigationService, NavigationService>()
             .AddSingleton<IAppLifecycleService, AppLifecycleService>()
             .AddSingleton<IAudioMixerService, AudioMixerService>()
@@ -307,7 +265,6 @@ public class Program
             .AddSingleton<IMonitorBindingService, MonitorBindingService>()
             .AddSingleton<IWallpaperEngineService, WallpaperEngineService>()
             .AddSingleton<ILyricsWindowVisibilityService, LyricsWindowVisibilityService>()
-            .AddSingleton<IWallpaperEngineLyricsWindowService, WallpaperEngineLyricsWindowService>()
 
             // Providers
             .AddSingleton<IPasswordVaultProvider, PasswordVaultProvider>()
@@ -317,8 +274,6 @@ public class Program
             .AddSingleton<IUniversalMemoryReaderProvider, UniversalMemoryReaderProvider>()
             .AddSingleton<IAppUIThreadProvider, AppUIThreadProvider>()
             .AddSingleton<IGlobalToastProvider, GlobalToastProvider>()
-            .AddSingleton<INowPlayingToastProvider, NowPlayingToastProvider>()
-            .AddSingleton<INowPlayingNotificationService, NowPlayingNotificationService>()
             .AddSingleton<IWindowManagerProvider, WindowManagerProvider>()
             .AddSingleton<IAddMediaSourceDialogProvider, MediaSourceDialogProvider>()
             .AddSingleton<ILastFmDialogProvider, LastFmDialogProvider>()
@@ -335,24 +290,15 @@ public class Program
             // ViewModels
             // 应用级单例：需要被视图之外的代码解析，或在窗口重建后保留状态
             .AddSingleton<SettingsPageViewModel>()
-            .AddSingleton<MusicGalleryPageViewModel>()
             .AddSingleton<LyricsSearchControlViewModel>()
             .AddSingleton<SystemTrayViewModel>()
 
             // 视图级实例：每个 Window/Page/Control 生命周期内独立，随视图创建与释放
-            .AddTransient<AppSettingsControlViewModel>()
             .AddTransient<PlaybackSettingsControlViewModel>()
             .AddTransient<MediaSettingsControlViewModel>()
-            .AddTransient<LyricsWindowManagerControlViewModel>()
-            .AddTransient<WindowSettingsControlViewModel>()
             .AddTransient<LyricsWindowSwitchControlViewModel>()
             .AddTransient<LyricsWindowSwitchWindowViewModel>()
-            .AddTransient<AboutControlViewModel>()
             .AddTransient<StatsDashboardControlViewModel>()
-            .AddTransient<PlayQueueViewModel>()
-            .AddTransient<PluginManagerControlViewModel>()
-            .AddTransient<LyricsSharePageViewModel>()
-            .AddTransient<MusicGalleryWindowViewModel>()
             .AddTransient<NowPlayingPageViewModel>()
             .AddTransient<NowPlayingBarViewModel>();
 

@@ -165,9 +165,6 @@
                         HorizontalAlignment="Right"
                         Orientation="Horizontal"
                         Spacing="6">
-                        <Button Command="{x:Bind ViewModel.NavigationService.OpenMusicGalleryWindowCommand}">
-                            <TextBlock x:Uid="SystemTrayMusicGallery" />
-                        </Button>
                         <DropDownButton x:Uid="SettingsPageAddFolderButton">
                             <DropDownButton.Flyout>
                                 <MenuFlyout>

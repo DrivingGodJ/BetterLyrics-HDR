@@ -62,39 +62,15 @@ public partial class SettingsPageViewModel : ObservableRecipient, ISingletonView
 
         NavItems.Add(new SettingsNavMenuItem
         {
-            Label = _localizationService.GetLocalizedString("SettingsPageApp"),
-            Glyph = "\uECAA",
-            Section = SettingsSection.App
-        });
-        NavItems.Add(new SettingsNavMenuItem
-        {
-            Label = _localizationService.GetLocalizedString("SettingsPageLyricsWindowMgr"),
-            Glyph = "\uE61F",
-            Section = SettingsSection.LyricsWindowMgr
-        });
-        NavItems.Add(new SettingsNavMenuItem
-        {
-            Label = _localizationService.GetLocalizedString("SettingsPageMediaLib"),
-            Glyph = "\uE8B7",
-            Section = SettingsSection.MediaLib
-        });
-        NavItems.Add(new SettingsNavMenuItem
-        {
             Label = _localizationService.GetLocalizedString("SettingsPagePlaybackLib"),
             Glyph = "\uEA69",
             Section = SettingsSection.PlaybackLib
         });
         NavItems.Add(new SettingsNavMenuItem
         {
-            Label = _localizationService.GetLocalizedString("SettingsPagePlugins"),
-            Glyph = "\uE74C",
-            Section = SettingsSection.Plugins
-        });
-        NavItems.Add(new SettingsNavMenuItem
-        {
-            Label = _localizationService.GetLocalizedString("SettingsPageAbout"),
-            Glyph = "\uE946",
-            Section = SettingsSection.About
+            Label = _localizationService.GetLocalizedString("SettingsPageMediaLib"),
+            Glyph = "\uE8B7",
+            Section = SettingsSection.MediaLib
         });
         SelectedNavItem = NavItems[0];
 
@@ -117,7 +93,7 @@ public partial class SettingsPageViewModel : ObservableRecipient, ISingletonView
         if (SelectedNavItem == null) return;
 
         var displayPathSegments = new List<string> { _localizationService.GetLocalizedString("SettingsPageTitle"), GetLocalizedSectionName(SelectedNavItem.Section) };
-        var uriSegments = new List<string> { "betterlyrics://settings", SelectedNavItem.Section.ToString().ToLowerInvariant() };
+        var uriSegments = new List<string> { "betterlyricslite://settings", SelectedNavItem.Section.ToString().ToLowerInvariant() };
 
         if (SelectedNavItem.Section == SettingsSection.App)
         {
@@ -223,6 +199,8 @@ public partial class SettingsPageViewModel : ObservableRecipient, ISingletonView
 
                     foreach (var staticItem in SettingSearchItemExtensions.AllItems)
                     {
+                        if (staticItem.Section is not (SettingsSection.PlaybackLib or SettingsSection.MediaLib)) continue;
+                        if (staticItem.Uid.Contains("LastFM") || staticItem.Uid.Contains("Discord")) continue;
                         if (token.IsCancellationRequested) return null;
 
                         staticItem.Title = _localizationService.GetLocalizedString(staticItem.Uid);

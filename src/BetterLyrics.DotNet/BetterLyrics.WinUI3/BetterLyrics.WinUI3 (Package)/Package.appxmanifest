@@ -10,15 +10,15 @@
         IgnorableNamespaces="uap rescap uap18">
 
     <Identity
-            Name="DrivingGodJ.BetterLyricsHDR"
+            Name="DrivingGodJ.BetterLyricsLite"
             Publisher="CN=DrivingGodJ BetterLyrics HDR"
-            Version="1.3.553.0"/>
+            Version="1.0.0.0"/>
 
     <mp:PhoneIdentity PhoneProductId="ca4a4830-fc19-40d9-b823-53e2bff3d816"
                       PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
     <Properties>
-        <DisplayName>BetterLyrics HDR</DisplayName>
+        <DisplayName>BetterLyrics Lite</DisplayName>
         <PublisherDisplayName>DrivingGodJ</PublisherDisplayName>
         <Logo>Images\StoreLogo.png</Logo>
     </Properties>
@@ -53,8 +53,8 @@
                      Executable="$targetnametoken$.exe"
                      EntryPoint="$targetentrypoint$">
             <uap:VisualElements
-                    DisplayName="BetterLyrics HDR"
-                    Description="BetterLyrics HDR"
+                    DisplayName="BetterLyrics Lite"
+                    Description="BetterLyrics Lite"
                     BackgroundColor="transparent"
                     Square150x150Logo="Images\Square150x150Logo.png"
                     Square44x44Logo="Images\Square44x44Logo.png">
@@ -63,27 +63,9 @@
                 <uap:SplashScreen Image="Assets\Logo.png"/>
             </uap:VisualElements>
             <Extensions>
-                <uap5:Extension
-                        Category="windows.startupTask">
-                    <uap5:StartupTask
-                            TaskId="AutoStartup"
-                            Enabled="false"
-                            DisplayName="BetterLyrics HDR"/>
-                </uap5:Extension>
-                <uap:Extension Category="windows.fileTypeAssociation">
-                    <uap:FileTypeAssociation Name="blp">
-                        <uap:Logo>Assets\LogoPlugin.png</uap:Logo>
-                        <uap:DisplayName>BetterLyrics Plugin</uap:DisplayName>
-                        <uap:SupportedFileTypes>
-                            <uap:FileType>.blp</uap:FileType>
-                        </uap:SupportedFileTypes>
-                        <uap:EditFlags OpenIsSafe="true"/>
-                        <uap:InfoTip>BetterLyrics Plugin</uap:InfoTip>
-                    </uap:FileTypeAssociation>
-                </uap:Extension>
                 <uap:Extension Category="windows.protocol">
-                    <uap:Protocol Name="betterlyrics">
-                        <uap:DisplayName>Open with BetterLyrics HDR</uap:DisplayName>
+                    <uap:Protocol Name="betterlyricslite">
+                        <uap:DisplayName>Open with BetterLyrics Lite</uap:DisplayName>
                         <uap:Logo>Assets\Logo.png</uap:Logo>
                     </uap:Protocol>
                 </uap:Extension>

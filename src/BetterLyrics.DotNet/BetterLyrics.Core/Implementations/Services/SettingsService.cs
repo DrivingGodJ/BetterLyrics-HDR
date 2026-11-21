@@ -42,6 +42,7 @@ public class SettingsService : ISettingsService
         _logger = logger;
 
         AppSettings = ReadAppSettings();
+        EnsureLyricsWindowStatus();
 
         AppSettings.PropertyChanged += AppSettings_PropertyChanged;
 
@@ -89,9 +90,6 @@ public class SettingsService : ISettingsService
             AppSettings.PluginsInfo.Count, AppSettings.AdvancedSettings.WriteDebugLogs);
 
         EnsureMediaSourceProvidersInfo();
-        EnsureStarredPlaylists();
-        EnsureLayoutProfiles();
-        EnsureLyricsWindowStatus();
     }
 
     /// <summary>
@@ -175,88 +173,21 @@ public class SettingsService : ISettingsService
 
     private void EnsureLyricsWindowStatus()
     {
-        var records = AppSettings.WindowBoundsRecords;
-        var layoutProfiles = AppSettings.LayoutProfiles;
-        if (records.Count == 0)
-        {
-            foreach (var mode in Enum.GetValues<LyricsWindowMode>())
-            {
-                records.Add(new LyricsWindowStatus(mode)
-                {
-                    IsDefault = mode == LyricsWindowMode.Standard
-                });
-            }
-        }
+        if (AppSettings.WindowBoundsRecords.Count > 0 && AppSettings.LayoutProfiles.Count > 0) return;
 
-        foreach (var item in records)
-        {
-            if (item.LayoutProfileId == Guid.Empty)
-            {
-                var mode = item.GetDefaultLayoutProfileMode();
-                var layoutProfile = layoutProfiles.FirstOrDefault(p => p.Mode == mode);
-                if (layoutProfile != null)
-                {
-                    item.LayoutProfileId = layoutProfile.Id;
-                }
-            }
-        }
+        using var stream = typeof(SettingsService).Assembly.GetManifestResourceStream(
+            "BetterLyrics.Core.Assets.LiteWindowProfiles.json")
+            ?? throw new InvalidOperationException("The built-in lyrics window profiles are missing.");
+        var presets = JsonSerializer.Deserialize(stream, SourceGenerationContext.Default.AppSettings)
+            ?? throw new InvalidOperationException("The built-in lyrics window profiles are invalid.");
 
-        var playerLyricsWindowStatus = AppSettings.MusicGallerySettings.LyricsWindowStatus;
-        if (playerLyricsWindowStatus.LayoutProfileId == Guid.Empty)
-        {
-            var layoutProfile = layoutProfiles.FirstOrDefault(p => p.Mode == NowPlayingLayoutMode.LeftAlbumArtRightLyrics);
-            if (layoutProfile != null)
-            {
-                playerLyricsWindowStatus.LayoutProfileId = layoutProfile.Id;
-            }
-        }
-    }
+        AppSettings.LayoutProfiles.Clear();
+        foreach (var layout in presets.LayoutProfiles)
+            AppSettings.LayoutProfiles.Add(layout);
 
-    private void EnsureLayoutProfiles()
-    {
-        foreach (var mode in Enum.GetValues<NowPlayingLayoutMode>())
-        {
-            if (mode == NowPlayingLayoutMode.Custom)
-            {
-                continue;
-            }
-
-            var existing = AppSettings.LayoutProfiles.FirstOrDefault(p => p.Mode == mode);
-            if (existing == null)
-            {
-                AppSettings.LayoutProfiles.Add(new LayoutProfile(mode));
-            }
-            else
-            {
-                var id = existing.Id;
-                var index = AppSettings.LayoutProfiles.IndexOf(existing);
-                AppSettings.LayoutProfiles[index] = new LayoutProfile(mode)
-                {
-                    Id = id
-                };
-            }
-        }
-
-        foreach (var profile in AppSettings.LayoutProfiles)
-        {
-            if (profile.Mode == NowPlayingLayoutMode.Custom && !profile.IsPlaybackControlMigrated)
-            {
-                if (profile.Placements.All(p => p.ComponentType != ComponentType.PlaybackControl))
-                {
-                    profile.Placements.Add(new ComponentPlacement
-                    {
-                        ComponentType = ComponentType.PlaybackControl,
-                        Row = 0,
-                        Column = 0,
-                        RowSpan = profile.RowDefinitions.Count > 0 ? profile.RowDefinitions.Count : 1,
-                        ColumnSpan = profile.ColumnDefinitions.Count > 0 ? profile.ColumnDefinitions.Count : 1,
-                        HorizontalAlignment = AppHorizontalAlignment.Stretch,
-                        VerticalAlignment = AppVerticalAlignment.Bottom
-                    });
-                }
-                profile.IsPlaybackControlMigrated = true;
-            }
-        }
+        AppSettings.WindowBoundsRecords.Clear();
+        foreach (var window in presets.WindowBoundsRecords)
+            AppSettings.WindowBoundsRecords.Add(window);
     }
 
     /// <summary>

@@ -648,7 +648,6 @@ public sealed partial class NowPlayingWindow : BaseWindow,
         TopCommandGrid.PointerEntered -= TopCommandGrid_PointerEntered;
         TopCommandGrid.PointerExited -= TopCommandGrid_PointerExited;
 
-        MusicGalleryButton.Click -= MusicGalleryButton_Click;
         SettingsWindowButton.Click -= SettingsWindowButton_Click;
         LyricsWindowSwitchButton.Click -= LyricsWindowSwitchButton_Click;
 
@@ -763,11 +762,6 @@ public sealed partial class NowPlayingWindow : BaseWindow,
     private void TopCommandGrid_PointerExited(object sender, PointerRoutedEventArgs e)
     {
         TopCommandGrid.Opacity = 0f;
-    }
-
-    private void MusicGalleryButton_Click(object sender, RoutedEventArgs e)
-    {
-        _windowManagerProvider.OpenOrShowWindow<MusicGalleryWindow>();
     }
 
     private async void CloseButton_Click(object sender, RoutedEventArgs e)

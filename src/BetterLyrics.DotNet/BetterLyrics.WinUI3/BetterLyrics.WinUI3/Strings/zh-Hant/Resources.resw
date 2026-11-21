@@ -1873,7 +1873,7 @@
     <value>最小符合閾值</value>
   </data>
   <data name="SettingsPageMediaLib" xml:space="preserve">
-    <value>媒體櫃</value>
+    <value>本機檔案來源</value>
   </data>
   <data name="SettingsPageMediaSourceProvidersConfig.Header" xml:space="preserve">
     <value>監聽此播放來源</value>
@@ -2851,7 +2851,7 @@
     <value>頻譜延遲</value>
   </data>
   <data name="SettingsPageIntegration.Text" xml:space="preserve">
-    <value>集成</value>
+    <value>進階歌詞來源</value>
   </data>
   <data name="SettingsPageWindow.Text" xml:space="preserve">
     <value>視窗</value>
@@ -2927,5 +2927,8 @@
   </data>
   <data name="DemoWindowGridMonitorDisconnected.Text" xml:space="preserve">
     <value>未找到符合該模式的顯示器</value>
+  </data>
+  <data name="MusicReportButtonToolTip.Content" xml:space="preserve">
+    <value>音樂報告</value>
   </data>
 </root>
