@@ -59,7 +59,6 @@ public abstract partial class GsmtcServiceBase : IGsmtcService
         };
 
         AppColor adaptiveGrayedFontColor;
-        AppColor grayedEnvironmentalColor;
         AppColor? adaptiveColoredFontColor;
 
         var darkColor = Colors.Black;
@@ -69,7 +68,6 @@ public abstract partial class GsmtcServiceBase : IGsmtcService
         {
             adaptiveGrayedFontColor = darkColor;
             // brightness = 0.7f;
-            grayedEnvironmentalColor = lightColor;
 
             result.AccentColor1 = lightAccentColors.ElementAtOrDefault(0);
             result.AccentColor2 = lightAccentColors.ElementAtOrDefault(1);
@@ -80,7 +78,6 @@ public abstract partial class GsmtcServiceBase : IGsmtcService
         {
             adaptiveGrayedFontColor = lightColor;
             // brightness = 0.3f;
-            grayedEnvironmentalColor = darkColor;
 
             result.AccentColor1 = darkAccentColors.ElementAtOrDefault(0);
             result.AccentColor2 = darkAccentColors.ElementAtOrDefault(1);
@@ -102,14 +99,7 @@ public abstract partial class GsmtcServiceBase : IGsmtcService
 
         result.ThemeType = themeTypeSent;
 
-        // 背景字色
-        result.NonCurrentLineFillColor = lyricsWindowStatus.LyricsStyleSettings.LyricsBgFontColorType switch
-        {
-            LyricsFontColorType.AdaptiveGrayed => adaptiveGrayedFontColor,
-            LyricsFontColorType.AdaptiveColored => adaptiveColoredFontColor ?? adaptiveGrayedFontColor,
-            LyricsFontColorType.Custom => lyricsWindowStatus.LyricsStyleSettings.LyricsCustomBgFontColor,
-            _ => adaptiveGrayedFontColor
-        };
+        result.NonCurrentLineFillColor = adaptiveGrayedFontColor;
 
         // 频谱填充色
         result.SpectrumColor = lyricsWindowStatus.LyricsBackgroundSettings.SpectrumColorType switch
@@ -120,38 +110,8 @@ public abstract partial class GsmtcServiceBase : IGsmtcService
             _ => adaptiveGrayedFontColor
         };
 
-        // 前景字色
-        result.PlayedCurrentLineFillColor = lyricsWindowStatus.LyricsStyleSettings.LyricsPlayedFgFontColorType switch
-        {
-            LyricsFontColorType.AdaptiveGrayed => adaptiveGrayedFontColor,
-            LyricsFontColorType.AdaptiveColored => adaptiveColoredFontColor ?? adaptiveGrayedFontColor,
-            LyricsFontColorType.Custom => lyricsWindowStatus.LyricsStyleSettings.LyricsCustomPlayedFgFontColor,
-            _ => adaptiveGrayedFontColor
-        };
-        result.UnplayedCurrentLineFillColor =
-            lyricsWindowStatus.LyricsStyleSettings.LyricsUnplayedFgFontColorType switch
-            {
-                LyricsFontColorType.AdaptiveGrayed => adaptiveGrayedFontColor,
-                LyricsFontColorType.AdaptiveColored => adaptiveColoredFontColor ?? adaptiveGrayedFontColor,
-                LyricsFontColorType.Custom => lyricsWindowStatus.LyricsStyleSettings.LyricsCustomUnplayedFgFontColor,
-                _ => adaptiveGrayedFontColor
-            };
-
-        // 描边颜色
-        result.PlayedTextStrokeColor = lyricsWindowStatus.LyricsStyleSettings.LyricsPlayedStrokeFontColorType switch
-        {
-            LyricsFontColorType.AdaptiveGrayed => grayedEnvironmentalColor.WithBrightness(0.7),
-            LyricsFontColorType.AdaptiveColored => result.UnderlayColor.WithBrightness(0.7),
-            LyricsFontColorType.Custom => lyricsWindowStatus.LyricsStyleSettings.LyricsCustomPlayedStrokeFontColor,
-            _ => Colors.Transparent
-        };
-        result.UnplayedTextStrokeColor = lyricsWindowStatus.LyricsStyleSettings.LyricsUnplayedStrokeFontColorType switch
-        {
-            LyricsFontColorType.AdaptiveGrayed => grayedEnvironmentalColor.WithBrightness(0.7),
-            LyricsFontColorType.AdaptiveColored => result.UnderlayColor.WithBrightness(0.7),
-            LyricsFontColorType.Custom => lyricsWindowStatus.LyricsStyleSettings.LyricsCustomUnplayedStrokeFontColor,
-            _ => Colors.Transparent
-        };
+        result.PlayedCurrentLineFillColor = adaptiveGrayedFontColor;
+        result.UnplayedCurrentLineFillColor = adaptiveGrayedFontColor;
         return result;
     }
 

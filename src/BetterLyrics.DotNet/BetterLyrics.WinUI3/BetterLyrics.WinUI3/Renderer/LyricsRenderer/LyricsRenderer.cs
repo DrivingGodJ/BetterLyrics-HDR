@@ -65,20 +65,7 @@ public partial class LyricsRenderer : EffectRendererBase, IDisposable
         if (LyricsOpacity == 0) return;
 
         if (LyricsWindowStatus == null) return;
-        if (LyricsWindowStatus.LyricsEffectSettings.Is3DLyricsEnabled)
-        {
-            using var layer = new CanvasCommandList(control);
-            using (var layerDs = layer.CreateDrawingSession())
-            {
-                DrawLyricsWithEdgeFadeHandled(control, layerDs, hdrHighlightGain);
-            }
-
-            DrawWithParallax(ds, layer);
-        }
-        else
-        {
-            DrawLyricsWithEdgeFadeHandled(control, ds, hdrHighlightGain);
-        }
+        DrawLyricsWithEdgeFadeHandled(control, ds, hdrHighlightGain);
     }
 
     private void DrawLyricsWithEdgeFadeHandled(ICanvasAnimatedControl control, CanvasDrawingSession ds,
@@ -110,7 +97,6 @@ public partial class LyricsRenderer : EffectRendererBase, IDisposable
             ? new VerticalLyricsLineRenderer()
             : new HorizontalLyricsLineRenderer();
 
-        lineRenderer.StrokeWidth = styleSettings.LyricsFontStrokeWidth;
         lineRenderer.LyricsWidth = LyricsWidth;
         lineRenderer.LyricsHeight = LyricsHeight;
         lineRenderer.LyricsWindowStatus = LyricsWindowStatus;
@@ -124,25 +110,6 @@ public partial class LyricsRenderer : EffectRendererBase, IDisposable
         var baseScrollY = isVertical
             ? LyricsY
             : UserScrollOffset + LyricsY + LyricsHeight * PlayingLineTopOffsetFactor;
-
-        // 提前计算扇形歌词的旋转基准中心
-        double fanAnchorX = 0;
-        double fanAnchorY = 0;
-        if (effectSettings.IsFanLyricsEnabled)
-        {
-            if (isVertical)
-            {
-                // 竖排：扇形围绕 Y 轴的顶部或底部展开
-                fanAnchorY = effectSettings.FanLyricsAngle < 0 ? LyricsHeight : 0;
-                fanAnchorY += LyricsHeight / 2 * (effectSettings.FanLyricsAngle < 0 ? 1 : -1);
-            }
-            else
-            {
-                // 横排：扇形围绕 X 轴的左侧或右侧展开
-                fanAnchorX = effectSettings.FanLyricsAngle < 0 ? LyricsWidth : 0;
-                fanAnchorX += LyricsWidth / 2 * (effectSettings.FanLyricsAngle < 0 ? 1 : -1);
-            }
-        }
 
         // 开始渲染循环
         for (var i = StartVisibleLineIndex; i <= EndVisibleLineIndex; i++)
@@ -176,33 +143,10 @@ public partial class LyricsRenderer : EffectRendererBase, IDisposable
             // 应用缩放矩阵
             ds.Transform *= Matrix3x2.CreateScale((float)line.ScaleTransition.Value, line.CenterPosition);
 
-            // 应用扇形歌词矩阵
-            if (effectSettings.IsFanLyricsEnabled)
-            {
-                var angle = (float)line.AngleTransition.Value;
-                var angleRatio = Math.Abs(angle) / (Math.PI / 2);
-
-                if (isVertical)
-                {
-                    // 竖排补偿 Y 轴位移，并绕 X 中心旋转
-                    currentYOffset += angleRatio * (LyricsHeight / 2) *
-                                      (effectSettings.FanLyricsAngle < 0 ? 1 : -1);
-                    ds.Transform *= Matrix3x2.CreateRotation(angle,
-                        new Vector2(line.CenterPosition.X, (float)fanAnchorY));
-                }
-                else
-                {
-                    // 横排补偿 X 轴位移，并绕 Y 中心旋转
-                    currentXOffset += angleRatio * (LyricsWidth / 2) * (effectSettings.FanLyricsAngle < 0 ? 1 : -1);
-                    ds.Transform *= Matrix3x2.CreateRotation(angle,
-                        new Vector2((float)fanAnchorX, line.CenterPosition.Y));
-                }
-            }
-
             // 应用最终位移矩阵
             ds.Transform *= Matrix3x2.CreateTranslation((float)currentXOffset, (float)currentYOffset);
 
-            line.EnsureCaches(control, styleSettings.LyricsFontStrokeWidth);
+            line.EnsureCaches(control, 0);
             if (line.CachedStroke == null || line.CachedFill == null) continue;
             if (line.UnplayedFillTint == null || line.UnplayedStrokeTint == null ||
                 line.UnplayedComposite == null) continue;
@@ -317,36 +261,6 @@ public partial class LyricsRenderer : EffectRendererBase, IDisposable
             indicator);
     }
 
-    private void UpdateLyricsParallaxMatrix()
-    {
-        if (LyricsWindowStatus == null) return;
-        var lyricsStyle = LyricsWindowStatus.LyricsStyleSettings;
-        var lyricsEffect = LyricsWindowStatus.LyricsEffectSettings;
-
-        if (!lyricsEffect.Is3DLyricsEnabled)
-        {
-            _threeDimMatrix = Matrix4x4.Identity;
-            return;
-        }
-
-        var playingLineTopOffsetFactor = lyricsStyle.PlayingLineTopOffset / 100.0;
-
-        // 获取旋转中心点
-        Vector3 center = new(
-            (float)(LyricsX + LyricsWidth / 2),
-            (float)(LyricsY + LyricsHeight * playingLineTopOffsetFactor),
-            0);
-
-        UpdateParallaxMatrix(
-            center,
-            lyricsEffect.IsAuto3DLyricsEnabled,
-            lyricsEffect.Lyrics3DXAngle,
-            lyricsEffect.Lyrics3DYAngle,
-            lyricsEffect.Lyrics3DZAngle,
-            lyricsEffect.IsAuto3DLyricsEnabled ? 800f : lyricsEffect.Lyrics3DDepth
-        );
-    }
-
     private void UpdateEdgeFadeMask(ICanvasAnimatedControl sender)
     {
         if (LyricsWindowStatus == null) return;
@@ -409,7 +323,6 @@ public partial class LyricsRenderer : EffectRendererBase, IDisposable
     {
         UpdateLineHighlightAnimations(elapsedTime);
         UpdateBreathing(bassEnergy, breathingIntensity);
-        UpdateLyricsParallaxMatrix();
         UpdateEdgeFadeMask(sender);
     }
 }

@@ -1,7 +1,6 @@
 // 2025/6/23 by Zhe Fang
 
 using BetterLyrics.Core.Constants;
-using BetterLyrics.Core.Effects;
 using BetterLyrics.Core.Enums;
 using BetterLyrics.Core.Helpers;
 using BetterLyrics.Core.Interfaces.Providers;
@@ -75,7 +74,6 @@ public sealed partial class NowPlayingPage : BasePage,
 
     private readonly Debouncer _layoutChangedDebouncer = new();
 
-    private readonly ParallaxTiltEffect _parallaxEffect = new();
 
     private readonly ISettingsService _settingsService = Ioc.Default.GetRequiredService<ISettingsService>();
 
@@ -611,43 +609,18 @@ public sealed partial class NowPlayingPage : BasePage,
         OnLayoutChanged();
     }
 
-    private void AlbumArtParallaxTiltControl_Loaded(object sender, RoutedEventArgs e)
-    {
-        AlbumArtParallaxTiltControl.ParallaxContext = _parallaxEffect;
-    }
-
-    private void SongTitleParallaxTiltControl_Loaded(object sender, RoutedEventArgs e)
-    {
-        SongTitleParallaxTiltControl.ParallaxContext = _parallaxEffect;
-    }
-
-    private void SongArtistParallaxTiltControl_Loaded(object sender, RoutedEventArgs e)
-    {
-        SongAristParallaxTiltControl.ParallaxContext = _parallaxEffect;
-    }
-
-    private void SongAlbumParallaxTiltControl_Loaded(object sender, RoutedEventArgs e)
-    {
-        SongAlbumParallaxTiltControl.ParallaxContext = _parallaxEffect;
-    }
-
-    private void NowPlayingCanvas_Loaded(object sender, RoutedEventArgs e)
-    {
-        NowPlayingCanvas.ParallaxContext = _parallaxEffect;
-    }
-
     private void UpdateAlbumArtFadeOutDirection()
     {
         var settings = _lyricsWindowStatus?.AlbumArtAreaEffectSettings;
         if (settings == null) return;
 
-        var albumArtParallaxTiltControlWidth = AlbumArtParallaxTiltControl.ActualWidth;
-        var albumArtParallaxTiltControlHeight = AlbumArtParallaxTiltControl.ActualHeight;
+        var maskWidth = AlbumArtMaskContainer.ActualWidth;
+        var maskHeight = AlbumArtMaskContainer.ActualHeight;
 
-        var startPointX = ((albumArtParallaxTiltControlWidth - 32 * 2) * settings.FadeOutStartPointX + 32) / albumArtParallaxTiltControlWidth;
-        var startPointY = ((albumArtParallaxTiltControlHeight - 32 * 2) * settings.FadeOutStartPointY + 32) / albumArtParallaxTiltControlHeight;
-        var endPointX = ((albumArtParallaxTiltControlWidth - 32 * 2) * settings.FadeOutEndPointX + 32) / albumArtParallaxTiltControlWidth;
-        var endPointY = ((albumArtParallaxTiltControlHeight - 32 * 2) * settings.FadeOutEndPointY + 32) / albumArtParallaxTiltControlHeight;
+        var startPointX = ((maskWidth - 32 * 2) * settings.FadeOutStartPointX + 32) / maskWidth;
+        var startPointY = ((maskHeight - 32 * 2) * settings.FadeOutStartPointY + 32) / maskHeight;
+        var endPointX = ((maskWidth - 32 * 2) * settings.FadeOutEndPointX + 32) / maskWidth;
+        var endPointY = ((maskHeight - 32 * 2) * settings.FadeOutEndPointY + 32) / maskHeight;
 
         AlbumArtGradientBrush.StartPoint = new Point(startPointX, startPointY);
         AlbumArtGradientBrush.EndPoint = new Point(endPointX, endPointY);

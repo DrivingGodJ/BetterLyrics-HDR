@@ -45,9 +45,9 @@ public class LyricsAnimator
         var autoWrap = lyricsStyle.AutoWrap;
         var isVertical = lyricsStyle.LyricsLayoutOrientation == LyricsLayoutOrientation.Vertical;
 
-        var phoneticOpacity = lyricsStyle.PhoneticLyricsOpacity / 100.0;
-        var originalOpacity = lyricsStyle.UnplayedOriginalLyricsOpacity / 100.0;
-        var translatedOpacity = lyricsStyle.TranslatedLyricsOpacity / 100.0;
+        var phoneticOpacity = LyricsStyleSettings.PhoneticLyricsOpacity;
+        var originalOpacity = LyricsStyleSettings.UnplayedOriginalLyricsOpacity;
+        var translatedOpacity = LyricsStyleSettings.TranslatedLyricsOpacity;
 
         // 动态视口缓冲区域
         var spaceBefore = isVertical
@@ -66,8 +66,6 @@ public class LyricsAnimator
 
         var isBlurEnabled = lyricsEffect.IsLyricsBlurEffectEnabled;
         var isOutOfSightEnabled = lyricsEffect.IsLyricsOutOfSightEffectEnabled;
-        var isFanEnabled = lyricsEffect.IsFanLyricsEnabled;
-        var fanAngleRad = Math.PI * (lyricsEffect.FanLyricsAngle / 180.0);
         var isGlowEnabled = lyricsEffect.IsLyricsGlowEffectEnabled;
         var isFloatEnabled = lyricsEffect.IsLyricsFloatAnimationEnabled;
         var isScaleEnabled = lyricsEffect.IsLyricsScaleEffectEnabled;
@@ -246,20 +244,12 @@ public class LyricsAnimator
                     ? albumArtThemeColors.UnplayedTextStrokeColor
                     : albumArtThemeColors.UnplayedTextStrokeColor);
 
-                line.AngleTransition.SetInterpolator(canvasScrollTransition.Interpolator);
-                line.AngleTransition.SetDuration(scrollDuration);
-                line.AngleTransition.SetDelay(scrollDelay);
-                line.AngleTransition.Start(
-                    isFanEnabled && !isMouseScrolling
-                        ? fanAngleRad * distanceFactor * (i > primaryPlayingLineIndex ? 1 : -1)
-                        : 0);
-
                 if (isLayoutChanged || isPrimaryPlayingLineChanged || isMouseScrollingChanged)
                 {
                     line.OffsetTransition.SetInterpolator(canvasScrollTransition.Interpolator);
                     line.OffsetTransition.SetDuration(scrollDuration);
                     line.OffsetTransition.SetDelay(scrollDelay);
-                    line.OffsetTransition.IsSpring = lyricsEffect.LyricsScrollEasingType == EasingType.Spring;
+                    line.OffsetTransition.IsSpring = true;
                     if (isLayoutChanged)
                     {
                         line.OffsetTransition.JumpTo(targetScrollOffset);

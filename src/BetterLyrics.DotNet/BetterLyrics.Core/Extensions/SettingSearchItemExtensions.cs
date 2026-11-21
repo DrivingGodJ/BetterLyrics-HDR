@@ -52,10 +52,7 @@ public static class SettingSearchItemExtensions
 
         new SettingSearchItem { Uid = "SettingsPageWriteDebugLogs/Header", Section = SettingsSection.App, Subsection = AppSettingsSection.Advanced },
 
-        // Media library settings
-
-
-        // Playback source and lyrics processing settings
+        // Media library settings        // Playback source and lyrics processing settings
 
         // Playback source and lyrics processing settings - Playback source settings
 
@@ -87,10 +84,7 @@ public static class SettingSearchItemExtensions
         new SettingSearchItem { Uid = "SettingsPageTargetLanguage/Header", Section = SettingsSection.PlaybackLib, Subsection = PlaybackLibSettingsSection.LyricsProcessing, ParentUid = "LyricsPageTranslationEnabled/Header" },
 
         new SettingSearchItem { Uid = "PlaybackSettingsControlNoLyricsFoundHandling/Header", Section = SettingsSection.PlaybackLib, Subsection = PlaybackLibSettingsSection.LyricsProcessing },
-        new SettingSearchItem { Uid = "PlaybackSettingsControlCustomNotFoundMessageCard/Header", Section = SettingsSection.PlaybackLib, Subsection = PlaybackLibSettingsSection.LyricsProcessing, ParentUid = "PlaybackSettingsControlNoLyricsFoundHandling/Header" },
-
-
-        new SettingSearchItem { Uid = "SettingsPageChinesePreference/Header", Section = SettingsSection.PlaybackLib, Subsection = PlaybackLibSettingsSection.LyricsProcessing },
+        new SettingSearchItem { Uid = "PlaybackSettingsControlCustomNotFoundMessageCard/Header", Section = SettingsSection.PlaybackLib, Subsection = PlaybackLibSettingsSection.LyricsProcessing, ParentUid = "PlaybackSettingsControlNoLyricsFoundHandling/Header" },        new SettingSearchItem { Uid = "SettingsPageChinesePreference/Header", Section = SettingsSection.PlaybackLib, Subsection = PlaybackLibSettingsSection.LyricsProcessing },
         new SettingSearchItem { Uid = "SettingsPageLyricsFilter/Header", Section = SettingsSection.PlaybackLib, Subsection = PlaybackLibSettingsSection.LyricsProcessing },
         new SettingSearchItem { Uid = "SettingsPageLyricsAutoRetryCount/Header", Section = SettingsSection.PlaybackLib, Subsection = PlaybackLibSettingsSection.LyricsProcessing },
 
@@ -104,17 +98,7 @@ public static class SettingSearchItemExtensions
 
         // Lyrics window manager settings
 
-        // Lyrics window manager settings - Window settings
-
-
-
-        new SettingSearchItem { Uid = "SettingsPageTaskbarPlacement/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.Window },
-
-        new SettingSearchItem { Uid = "SettingsPageAOT/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.Window },
-        new SettingSearchItem { Uid = "SettingsPageForceAlwaysOnTop/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.Window, ParentUid = "SettingsPageAOT/Header" },
-
-        new SettingSearchItem { Uid = "SettingsPageKeepScreenOpen/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.Window },
-        new SettingSearchItem { Uid = "SettingsPageShowInSwitchers/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.Window },
+        // Lyrics window manager settings - Window settings        new SettingSearchItem { Uid = "SettingsPageTaskbarPlacement/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.Window },        new SettingSearchItem { Uid = "SettingsPageShowInSwitchers/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.Window },
         new SettingSearchItem { Uid = "SettingsPageDragArea/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.Window },
 
         new SettingSearchItem { Uid = "WindowSettingsControlEdgeFeathering/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.Window },
@@ -159,7 +143,6 @@ public static class SettingSearchItemExtensions
         new SettingSearchItem { Uid = "WindowSettingsControlAlwaysHideNowPlayingBar/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.Window, ParentUid = "WindowSettingsControlNowPlayingBarAutoAdaptive/Header" },
 
         new SettingSearchItem { Uid = "WindowSettingsControlNowPlayingBarResident/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.Window },
-        new SettingSearchItem { Uid = "WindowSettingsControlNowPlayingBarBackgroundStyle/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.Window },
         new SettingSearchItem { Uid = "SettingsPageFPS/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.Window },
         new SettingSearchItem { Uid = "SettingsPageDebugOverlay/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.Window },
 
@@ -180,80 +163,22 @@ public static class SettingSearchItemExtensions
         new SettingSearchItem { Uid = "SettingsPageCJK/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsStyle, ParentUid = "SettingsPageLyricsFontFamily/Header" },
         new SettingSearchItem { Uid = "SettingsPageWesternChar/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsStyle, ParentUid = "SettingsPageLyricsFontFamily/Header" },
 
-        new SettingSearchItem { Uid = "SettingsPageLyricsFontWeight/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsStyle },
-        new SettingSearchItem { Uid = "SettingsPageLyricsFontStrokeWidth/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsStyle },
-
-        new SettingSearchItem { Uid = "SettingsPageFontColor/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsStyle },
-        new SettingSearchItem { Uid = "SettingsPagePlayedStrokeFontColor/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsStyle, ParentUid = "SettingsPageFontColor/Header" },
-        new SettingSearchItem { Uid = "SettingsPageUnplayedStrokeFontColor/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsStyle, ParentUid = "SettingsPageFontColor/Header" },
-        new SettingSearchItem { Uid = "SettingsPageLyricsBgFontColor/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsStyle, ParentUid = "SettingsPageFontColor/Header" },
-        new SettingSearchItem { Uid = "SettingsPageLyricsPlayedFgFontColor/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsStyle, ParentUid = "SettingsPageFontColor/Header" },
-        new SettingSearchItem { Uid = "SettingsPageLyricsUnplayedFgFontColor/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsStyle, ParentUid = "SettingsPageFontColor/Header" },
-
-        new SettingSearchItem { Uid = "SettingsPageLyricsFontSize/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsStyle },
-        new SettingSearchItem { Uid = "SettingsPageAutoAdjust/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsStyle, ParentUid = "SettingsPageLyricsFontSize/Header" },
-        new SettingSearchItem { Uid = "SettingsPageOriginalText/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsStyle, ParentUid = "SettingsPageLyricsFontSize/Header" },
-        new SettingSearchItem { Uid = "SettingsPageTranslatedText/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsStyle, ParentUid = "SettingsPageLyricsFontSize/Header" },
-
-        new SettingSearchItem { Uid = "SettingsPageLyricsOpacity/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsStyle },
-        new SettingSearchItem { Uid = "SettingsPagePlayedOriginalText/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsStyle, ParentUid = "SettingsPageLyricsOpacity/Header" },
-        new SettingSearchItem { Uid = "SettingsPageUnplayedOriginalText/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsStyle, ParentUid = "SettingsPageLyricsOpacity/Header" },
-        new SettingSearchItem { Uid = "SettingsPageTranslatedText/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsStyle, ParentUid = "SettingsPageLyricsOpacity/Header" },
-
-        new SettingSearchItem { Uid = "LyricsSharePageStyleTitle/Text", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsStyle },
-
-        // Lyrics window manager settings - Lyrics background settings
+        new SettingSearchItem { Uid = "SettingsPageLyricsFontWeight/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsStyle },        // Lyrics window manager settings - Lyrics background settings
 
         new SettingSearchItem { Uid = "SettingsPagePureLayer/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground },
-        new SettingSearchItem { Uid = "SettingsPageColor/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPagePureLayer/Header" },
-        new SettingSearchItem { Uid = "SettingsPageOpacity/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPagePureLayer/Header" },
-
-        new SettingSearchItem { Uid = "SettingsPageDesktopWallpaperLayer/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground },
-        new SettingSearchItem { Uid = "SettingsPageOpacity/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPageDesktopWallpaperLayer/Header" },
-        new SettingSearchItem { Uid = "SettingsPageBlurAmount/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPageDesktopWallpaperLayer/Header" },
-
-        new SettingSearchItem { Uid = "SettingsPageAlbumArtLayer/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground },
-        new SettingSearchItem { Uid = "SettingsPageOpacity/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPageAlbumArtLayer/Header" },
+        new SettingSearchItem { Uid = "SettingsPageColor/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPagePureLayer/Header" },        new SettingSearchItem { Uid = "SettingsPageAlbumArtLayer/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground },
         new SettingSearchItem { Uid = "SettingsPageSpeed/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPageAlbumArtLayer/Header" },
         new SettingSearchItem { Uid = "SettingsPageBlurAmount/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPageAlbumArtLayer/Header" },
         new SettingSearchItem { Uid = "SettingsPageSpectrumBrethingEffect/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPageAlbumArtLayer/Header" },
         new SettingSearchItem { Uid = "SettingsPageSpectrumBreathingIntensity/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPageAlbumArtLayer/Header" },
-        new SettingSearchItem { Uid = "SettingsPageParallaxTilt/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPageAlbumArtLayer/Header" },
 
         new SettingSearchItem { Uid = "SettingsPageFluidLayer/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground },
-        new SettingSearchItem { Uid = "SettingsPageOpacity/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPageFluidLayer/Header" },
         new SettingSearchItem { Uid = "SettingsPageSpeed/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPageFluidLayer/Header" },
         new SettingSearchItem { Uid = "SettingsPageLightWaveEffect/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPageFluidLayer/Header" },
         new SettingSearchItem { Uid = "SettingsPageSpectrumBrethingEffect/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPageFluidLayer/Header" },
         new SettingSearchItem { Uid = "SettingsPageSpectrumBreathingIntensity/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPageFluidLayer/Header" },
-        new SettingSearchItem { Uid = "SettingsPageFluidOverlayStatic/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPageFluidLayer/Header" },
-        new SettingSearchItem { Uid = "SettingsPageParallaxTilt/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPageFluidLayer/Header" },
-
-        new SettingSearchItem { Uid = "SettingsPageSnowFlakeLayer/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground },
-        new SettingSearchItem { Uid = "SettingsPageAmount/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPageSnowFlakeLayer/Header" },
-        new SettingSearchItem { Uid = "SettingsPageSpeed/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPageSnowFlakeLayer/Header" },
-        new SettingSearchItem { Uid = "SettingsPageSpectrumBrethingEffect/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPageSnowFlakeLayer/Header" },
-        new SettingSearchItem { Uid = "SettingsPageSpectrumBreathingIntensity/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPageSnowFlakeLayer/Header" },
-        new SettingSearchItem { Uid = "SettingsPageParallaxTilt/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPageSnowFlakeLayer/Header" },
-
-        new SettingSearchItem { Uid = "SettingsPageFogLayer/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground },
-        new SettingSearchItem { Uid = "SettingsPageSpectrumBrethingEffect/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPageFogLayer/Header" },
-        new SettingSearchItem { Uid = "SettingsPageSpectrumBreathingIntensity/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPageFogLayer/Header" },
-        new SettingSearchItem { Uid = "SettingsPageParallaxTilt/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPageFogLayer/Header" },
-
-        new SettingSearchItem { Uid = "SettingsPageRaindropLayer/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground },
-        new SettingSearchItem { Uid = "SettingsPageSpeed/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPageRaindropLayer/Header" },
-        new SettingSearchItem { Uid = "SettingsPageSize/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPageRaindropLayer/Header" },
-        new SettingSearchItem { Uid = "SettingsPageDensity/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPageRaindropLayer/Header" },
-        new SettingSearchItem { Uid = "SettingsPageLightAngle/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPageRaindropLayer/Header" },
-        new SettingSearchItem { Uid = "SettingsPageShadowIntensity/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPageRaindropLayer/Header" },
-        new SettingSearchItem { Uid = "SettingsPageSpectrumBrethingEffect/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPageRaindropLayer/Header" },
-        new SettingSearchItem { Uid = "SettingsPageSpectrumBreathingIntensity/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPageRaindropLayer/Header" },
-        new SettingSearchItem { Uid = "SettingsPageParallaxTilt/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPageRaindropLayer/Header" },
-
-        new SettingSearchItem { Uid = "SettingsPageSpectrumLayer/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground },
+        new SettingSearchItem { Uid = "SettingsPageFluidOverlayStatic/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPageFluidLayer/Header" },        new SettingSearchItem { Uid = "SettingsPageSpectrumLayer/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground },
         new SettingSearchItem { Uid = "SettingsPageColor/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPageSpectrumLayer/Header" },
-        new SettingSearchItem { Uid = "SettingsPageOpacity/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPageSpectrumLayer/Header" },
         new SettingSearchItem { Uid = "SettingsPageSpectrumLayerPlacement/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPageSpectrumLayer/Header" },
         new SettingSearchItem { Uid = "SettingsPageSpectrumLayerStyle/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPageSpectrumLayer/Header" },
         new SettingSearchItem { Uid = "SettingsPageAmount/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPageSpectrumLayer/Header" },
@@ -261,12 +186,7 @@ public static class SettingSearchItemExtensions
         new SettingSearchItem { Uid = "SettingsPageSpectrumDelay/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPageSpectrumLayer/Header" },
         new SettingSearchItem { Uid = "SettingsPageSpectrumBrethingEffect/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPageSpectrumLayer/Header" },
         new SettingSearchItem { Uid = "SettingsPageSpectrumBreathingIntensity/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPageSpectrumLayer/Header" },
-        new SettingSearchItem { Uid = "SettingsPageSpectrumGlowEffect/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPageSpectrumLayer/Header" },
-        new SettingSearchItem { Uid = "SettingsPageParallaxTilt/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPageSpectrumLayer/Header" },
-
-        new SettingSearchItem { Uid = "SettingsPageSemanticEffects/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground },
-
-        // Lyrics window manager settings - Lyrics effect settings
+        new SettingSearchItem { Uid = "SettingsPageSpectrumGlowEffect/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsBackground, ParentUid = "SettingsPageSpectrumLayer/Header" },        // Lyrics window manager settings - Lyrics effect settings
 
         new SettingSearchItem { Uid = "SettingsPageLyricsWordByWordEffectMode/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsEffect },
         new SettingSearchItem { Uid = "SettingsPageLyricsBlurEffect/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsEffect },
@@ -295,23 +215,7 @@ public static class SettingSearchItemExtensions
         new SettingSearchItem { Uid = "SettingsPageLyricsFloatAnimation/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsEffect },
         new SettingSearchItem { Uid = "SettingsPageAutoAdjust/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsEffect, ParentUid = "SettingsPageLyricsFloatAnimation/Header" },
         new SettingSearchItem { Uid = "SettingsPageAmount/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsEffect, ParentUid = "SettingsPageLyricsFloatAnimation/Header" },
-        new SettingSearchItem { Uid = "LyricsEffectSettingsControlAnimationDuration/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsEffect, ParentUid = "SettingsPageLyricsFloatAnimation/Header" },
-
-        new SettingSearchItem { Uid = "SettingsPageFan/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsEffect },
-
-        new SettingSearchItem { Uid = "SettingsPageParallaxTilt/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsEffect },
-        new SettingSearchItem { Uid = "SettingsPageAutoAdjust/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsEffect, ParentUid = "SettingsPageParallaxTilt/Header" },
-        new SettingSearchItem { Uid = "SettingsPage3DLyricsDepth/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsEffect, ParentUid = "SettingsPageParallaxTilt/Header" },
-
-        new SettingSearchItem { Uid = "SettingsPageScrollEasing/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsEffect },
-        new SettingSearchItem { Uid = "SettingsPageEasingMode/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsEffect, ParentUid = "SettingsPageScrollEasing/Header" },
-        new SettingSearchItem { Uid = "SettingsPageScrollTopDuration/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsEffect, ParentUid = "SettingsPageScrollEasing/Header" },
-        new SettingSearchItem { Uid = "SettingsPageScrollDuration/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsEffect, ParentUid = "SettingsPageScrollEasing/Header" },
-        new SettingSearchItem { Uid = "SettingsPageScrollBottomDuration/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsEffect, ParentUid = "SettingsPageScrollEasing/Header" },
-        new SettingSearchItem { Uid = "SettingsPageScrollTopDelay/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsEffect, ParentUid = "SettingsPageScrollEasing/Header" },
-        new SettingSearchItem { Uid = "SettingsPageScrollBottomDelay/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsEffect, ParentUid = "SettingsPageScrollEasing/Header" },
-
-        // Lyrics window manager settings - Album art settings
+        new SettingSearchItem { Uid = "LyricsEffectSettingsControlAnimationDuration/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.LyricsEffect, ParentUid = "SettingsPageLyricsFloatAnimation/Header" },        // Lyrics window manager settings - Album art settings
 
         new SettingSearchItem { Uid = "SettingsPageAlbumRadius/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.AlbumArt },
         new SettingSearchItem { Uid = "SettingsPageAlbumShadowAmount/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.AlbumArt },
@@ -319,11 +223,7 @@ public static class SettingSearchItemExtensions
 
         new SettingSearchItem { Uid = "AlbumArtAreaSettingsControlFadeOut/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.AlbumArt },
         new SettingSearchItem { Uid = "AlbumArtAreaSettingsControlStartPoint/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.AlbumArt, ParentUid = "AlbumArtAreaSettingsControlFadeOut/Header" },
-        new SettingSearchItem { Uid = "AlbumArtAreaSettingsControlEndPoint/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.AlbumArt, ParentUid = "AlbumArtAreaSettingsControlFadeOut/Header" },
-
-        new SettingSearchItem { Uid = "SettingsPageParallaxTilt/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.AlbumArt },
-
-        new SettingSearchItem { Uid = "AlbumArtAreaEffectSettingsControlSongInfoAutoScroll/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.AlbumArt },
+        new SettingSearchItem { Uid = "AlbumArtAreaSettingsControlEndPoint/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.AlbumArt, ParentUid = "AlbumArtAreaSettingsControlFadeOut/Header" },        new SettingSearchItem { Uid = "AlbumArtAreaEffectSettingsControlSongInfoAutoScroll/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = LyricsWindowManagerSettingsSection.AlbumArt },
 
         new SettingSearchItem { Uid = "SettingsPageMonitorLayout/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = null },
         new SettingSearchItem { Uid = "SettingsPageOpenDisplaySettings/Header", Section = SettingsSection.LyricsWindowMgr, Subsection = null, ParentUid = "SettingsPageMonitorLayout/Header" },

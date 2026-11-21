@@ -96,26 +96,6 @@
                         </Button.OpacityTransition>
                     </Button>
 
-                    <Button
-                        x:Name="AOTButton"
-                        Click="AOTButton_Click"
-                        Style="{ThemeResource TitleBarButtonStyle}">
-                        <Grid>
-                            <FontIcon
-                                FontFamily="{StaticResource SegoeFluentIcons}"
-                                FontSize="12"
-                                Glyph="&#xE840;" />
-                            <FontIcon
-                                x:Name="PinFillFontIcon"
-                                FontFamily="{StaticResource SegoeFluentIcons}"
-                                FontSize="12"
-                                Glyph="&#xE841;">
-                                <FontIcon.OpacityTransition>
-                                    <ScalarTransition />
-                                </FontIcon.OpacityTransition>
-                            </FontIcon>
-                        </Grid>
-                    </Button>
 
                     <Button
                         x:Name="FullscreenButton"

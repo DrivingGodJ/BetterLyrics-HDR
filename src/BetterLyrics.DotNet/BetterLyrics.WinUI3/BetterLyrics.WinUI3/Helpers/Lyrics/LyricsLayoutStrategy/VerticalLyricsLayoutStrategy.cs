@@ -27,24 +27,11 @@ public class VerticalLyricsLayoutStrategy : LyricsLayoutStrategyBase
     {
         if (lines == null || resourceCreator == null) return;
 
-        // 计算字体大小
-        int originalFontSize, phoneticFontSize, translatedFontSize;
         var style = status.LyricsStyleSettings;
-
-        if (style.IsDynamicLyricsFontSize)
-        {
-            var lyricsLayoutMetrics = LyricsLayoutHelper.CalculateLayout(canvasWidth, canvasHeight);
-
-            phoneticFontSize = (int)lyricsLayoutMetrics.TransliterationSize;
-            originalFontSize = (int)lyricsLayoutMetrics.MainLyricsSize;
-            translatedFontSize = (int)lyricsLayoutMetrics.TranslationSize;
-        }
-        else
-        {
-            phoneticFontSize = style.PhoneticLyricsFontSize;
-            originalFontSize = style.OriginalLyricsFontSize;
-            translatedFontSize = style.TranslatedLyricsFontSize;
-        }
+        var metrics = LyricsLayoutHelper.CalculateLayout(canvasWidth, canvasHeight);
+        var phoneticFontSize = (int)metrics.TransliterationSize;
+        var originalFontSize = (int)metrics.MainLyricsSize;
+        var translatedFontSize = (int)metrics.TranslationSize;
 
         var fontWeight = style.LyricsFontWeight;
 
@@ -189,7 +176,7 @@ public class VerticalLyricsLayoutStrategy : LyricsLayoutStrategyBase
                 _ => line.CenterPosition
             };
 
-            line.RecreateRenderChars(style.LyricsFontStrokeWidth);
+            line.RecreateRenderChars(0);
         }
     }
 

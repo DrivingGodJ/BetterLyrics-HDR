@@ -83,28 +83,6 @@
                             <ComboBoxItem x:Uid="SettingsPageCenter" />
                         </ComboBox>
                     </controls:SettingsCard>
-                    <!--  置顶  -->
-                    <controls:SettingsExpander
-                        x:Uid="SettingsPageAOT"
-                        HeaderIcon="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons},
-                                                 Glyph=&#xE718;}"
-                        IsExpanded="True"
-                        Visibility="{x:Bind ViewModel.IsManaged, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
-                        <ToggleSwitch IsOn="{x:Bind LyricsWindowStatus.IsAlwaysOnTop, Mode=TwoWay}" />
-                        <controls:SettingsExpander.Items>
-                            <controls:SettingsCard x:Uid="SettingsPageForceAlwaysOnTop" IsEnabled="{x:Bind LyricsWindowStatus.IsAlwaysOnTop, Mode=OneWay}">
-                                <ToggleSwitch IsOn="{x:Bind LyricsWindowStatus.IsAlwaysOnTopPolling, Mode=TwoWay}" />
-                            </controls:SettingsCard>
-                        </controls:SettingsExpander.Items>
-                    </controls:SettingsExpander>
-                    <!--  保持屏幕常亮  -->
-                    <controls:SettingsCard
-                        x:Uid="SettingsPageKeepScreenOpen"
-                        HeaderIcon="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons},
-                                                 Glyph=&#xEA80;}"
-                        Visibility="{x:Bind ViewModel.IsManaged, Mode=OneWay, Converter={StaticResource BoolToVisibilityConverter}}">
-                        <ToggleSwitch IsOn="{x:Bind LyricsWindowStatus.IsKeepScreenOpen, Mode=TwoWay}" />
-                    </controls:SettingsCard>
                     <!--  在系统环境中显示  -->
                     <controls:SettingsCard
                         x:Uid="SettingsPageShowInSwitchers"
@@ -388,14 +366,6 @@
                     <controls:SettingsCard x:Uid="WindowSettingsControlNowPlayingBarResident" HeaderIcon="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons}, Glyph=&#xE8A1;}">
                         <ToggleSwitch IsOn="{x:Bind LyricsWindowStatus.IsNowPlayingBarResident, Mode=TwoWay}" />
                     </controls:SettingsCard>
-                    <!--  控制栏背景样式  -->
-                    <controls:SettingsCard x:Uid="WindowSettingsControlNowPlayingBarBackgroundStyle" HeaderIcon="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons}, Glyph=&#xE790;}">
-                        <ComboBox SelectedIndex="{x:Bind LyricsWindowStatus.NowPlayingBarBackgroundStyle, Mode=TwoWay, Converter={StaticResource EnumToIntConverter}}">
-                            <ComboBoxItem x:Uid="WindowSettingsControlNowPlayingBarBackgroundStyleTransparent" />
-                            <ComboBoxItem x:Uid="WindowSettingsControlNowPlayingBarBackgroundStyleTranslucent" />
-                            <ComboBoxItem x:Uid="WindowSettingsControlNowPlayingBarBackgroundStyleOpaque" />
-                        </ComboBox>
-                    </controls:SettingsCard>
 
                     <TextBlock x:Uid="WindowSettingsControlDebug" Style="{StaticResource SettingsSectionHeaderTextBlockStyle}" />
 
@@ -424,7 +394,6 @@
                         Header="Status">
                         <StackPanel>
                             <local:PropertyRow Header="IsOverlayInputHelperRunning" Value="{x:Bind LyricsWindowStatus.IsOverlayInputHelperRunning, Mode=OneWay}" />
-                            <local:PropertyRow Header="IsAlwaysOnTopPollingTimerRunning" Value="{x:Bind LyricsWindowStatus.IsAlwaysOnTopPollingTimerRunning, Mode=OneWay}" />
                             <local:PropertyRow Header="IsUnderlayColorTimerRunning" Value="{x:Bind LyricsWindowStatus.IsUnderlayColorTimerRunning, Mode=OneWay}" />
                             <local:PropertyRow Header="WindowState" Value="{x:Bind LyricsWindowStatus.WindowState, Mode=OneWay}" />
                             <local:PropertyRow Header="HideReasons" Value="{x:Bind LyricsWindowStatus.HideReasons, Mode=OneWay}" />

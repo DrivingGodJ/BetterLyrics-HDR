@@ -160,7 +160,6 @@ public partial class SettingsPageViewModel : ObservableRecipient, ISingletonView
             AppSettingsSection.Advanced => "SettingsPageAdvanced/Text",
 
             LyricsWindowManagerSettingsSection.Window => "SettingsPageWindow/Text",
-            LyricsWindowManagerSettingsSection.Layout => "SettingsPageLayout/Text",
             LyricsWindowManagerSettingsSection.AlbumArt => "SettingsPageAlbumArt/Text",
             LyricsWindowManagerSettingsSection.LyricsStyle => "SettingsPageLyricsStyle/Text",
             LyricsWindowManagerSettingsSection.LyricsEffect => "SettingsPageLyricsEffect/Text",

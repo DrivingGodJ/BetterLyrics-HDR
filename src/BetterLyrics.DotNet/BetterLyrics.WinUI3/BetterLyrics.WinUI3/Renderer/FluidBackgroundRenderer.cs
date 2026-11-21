@@ -46,8 +46,8 @@ public partial class FluidBackgroundRenderer : EffectRendererBase, IDisposable
         _fluidEffect = new PixelShaderEffect<FluidBackgroundEffect>();
     }
 
-    public void Update(ICanvasAnimatedControl control, TimeSpan deltaTime, Color c1, Color c2, Color c3, Color c4,
-        float bassEnergy, int breathingIntensity, bool is3DEnabled)
+    public void Update(TimeSpan deltaTime, Color c1, Color c2, Color c3, Color c4,
+        float bassEnergy, int breathingIntensity)
     {
         if (_fluidEffect == null || !IsEnabled) return;
 
@@ -64,16 +64,6 @@ public partial class FluidBackgroundRenderer : EffectRendererBase, IDisposable
         UpdateBreathing(bassEnergy, breathingIntensity);
 
         if (!IsStatic) _timeAccumulator += (float)deltaTime.TotalSeconds * Speed;
-
-        if (is3DEnabled)
-        {
-            var center = new Vector3((float)control.Size.Width / 2, (float)control.Size.Height / 2, 0);
-            UpdateParallaxMatrix(center, true);
-        }
-        else
-        {
-            ResetParallaxMatrix();
-        }
     }
 
     public void Draw(ICanvasAnimatedControl control, CanvasDrawingSession ds, bool isBreathingEffectEnabled)
@@ -83,7 +73,7 @@ public partial class FluidBackgroundRenderer : EffectRendererBase, IDisposable
         float width = control.ConvertDipsToPixels((float)control.Size.Width, CanvasDpiRounding.Round);
         float height = control.ConvertDipsToPixels((float)control.Size.Height, CanvasDpiRounding.Round);
 
-        ICanvasImage? sourceToDraw;
+        ICanvasImage sourceToDraw;
 
         if (IsStatic)
         {
@@ -126,7 +116,7 @@ public partial class FluidBackgroundRenderer : EffectRendererBase, IDisposable
 
         if (Opacity >= 1.0)
         {
-            DrawWithParallax(ds, sourceToDraw);
+            ds.DrawImage(sourceToDraw);
         }
         else
         {
@@ -135,7 +125,7 @@ public partial class FluidBackgroundRenderer : EffectRendererBase, IDisposable
                 Source = sourceToDraw,
                 Opacity = (float)Opacity
             };
-            DrawWithParallax(ds, opacityEffect);
+            ds.DrawImage(opacityEffect);
         }
 
         ResetTransform(ds, isBreathingEffectEnabled);

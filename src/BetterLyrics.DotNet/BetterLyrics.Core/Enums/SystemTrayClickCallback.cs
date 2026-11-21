@@ -7,6 +7,5 @@ public enum SystemTrayClickCallback
     LyricsSearchWindow,
     MusicGalleryWindow,
     StatsWindow,
-    LyricsCardWindow,
-    SettingsWindow
+    SettingsWindow = 6
 }

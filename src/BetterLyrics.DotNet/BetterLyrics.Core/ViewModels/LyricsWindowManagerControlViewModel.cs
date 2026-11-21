@@ -29,11 +29,7 @@ public partial class LyricsWindowManagerControlViewModel : ObservableRecipient, 
     [ObservableProperty] public partial AppSettings AppSettings { get; set; }
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(SelectedLayoutProfile))]
     public partial LyricsWindowStatus? SelectedWindowStatus { get; set; }
-
-    public LayoutProfile? SelectedLayoutProfile =>
-        AppSettings.LayoutProfiles.FirstOrDefault(profile => profile.Id == SelectedWindowStatus?.LayoutProfileId);
 
     public ObservableCollection<LyricsWindowManagerSettingsNavMenuItem> NavItems = [];
 
@@ -58,11 +54,6 @@ public partial class LyricsWindowManagerControlViewModel : ObservableRecipient, 
         {
             Label = _localizationService.GetLocalizedString("AppSettingsControlGeneral/Text"),
             Section = LyricsWindowManagerSettingsSection.Window
-        });
-        NavItems.Add(new LyricsWindowManagerSettingsNavMenuItem
-        {
-            Label = _localizationService.GetLocalizedString("SettingsPageLayout/Text"),
-            Section = LyricsWindowManagerSettingsSection.Layout
         });
         NavItems.Add(new LyricsWindowManagerSettingsNavMenuItem
         {

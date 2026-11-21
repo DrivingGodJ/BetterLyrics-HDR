@@ -89,12 +89,6 @@ public partial class LyricsWindowStatus : ObservableObject, ICloneable
     public partial bool IsWorkArea { get; set; } = false;
 
     [ObservableProperty]
-    public partial bool IsAlwaysOnTop { get; set; } = false;
-
-    [ObservableProperty]
-    public partial bool IsAlwaysOnTopPolling { get; set; } = false;
-
-    [ObservableProperty]
     public partial bool IsShownInSwitchers { get; set; } = true;
 
     [ObservableProperty]
@@ -239,9 +233,6 @@ public partial class LyricsWindowStatus : ObservableObject, ICloneable
     [ObservableProperty]
     public partial TitleBarArea TitleBarArea { get; set; } = TitleBarArea.Top;
 
-    [ObservableProperty]
-    public partial bool IsKeepScreenOpen { get; set; } = false;
-
     /// <summary>
     /// Runtime state reported by the window. Minimized windows are still
     /// <see cref="LyricsWindowState.Opened"/>, so services that depend on the
@@ -267,9 +258,6 @@ public partial class LyricsWindowStatus : ObservableObject, ICloneable
     public partial int EdgeFeatheringBottom { get; set; } = 0;
 
     [ObservableProperty]
-    public partial string LyricsCardStyleKey { get; set; } = "LyricsCardStickyNoteStyle";
-
-    [ObservableProperty]
     public partial bool IsSpoutOutputEnabled { get; set; } = false;
 
     [ObservableProperty]
@@ -279,7 +267,6 @@ public partial class LyricsWindowStatus : ObservableObject, ICloneable
     public partial bool ShowDebugOverlay { get; set; } = false;
 
     [JsonIgnore][ObservableProperty] public partial bool IsOverlayInputHelperRunning { get; set; } = false;
-    [JsonIgnore][ObservableProperty] public partial bool IsAlwaysOnTopPollingTimerRunning { get; set; } = false;
     [JsonIgnore][ObservableProperty] public partial bool IsUnderlayColorTimerRunning { get; set; } = false;
 
     [JsonIgnore]
@@ -333,12 +320,6 @@ public partial class LyricsWindowStatus : ObservableObject, ICloneable
 
     partial void OnIsShownInSwitchersChanged(bool value) =>
         WeakReferenceMessenger.Default.Send(new LyricsWindowShownInSwitchersChangedMessage(this, value));
-
-    partial void OnIsAlwaysOnTopChanged(bool value) =>
-        WeakReferenceMessenger.Default.Send(new LyricsWindowAlwaysOnTopChangedMessage(this, value));
-
-    partial void OnIsAlwaysOnTopPollingChanged(bool value) =>
-        WeakReferenceMessenger.Default.Send(new LyricsWindowAlwaysOnTopPollingChangedMessage(this, value));
 
     partial void OnIsLockedChanged(bool value) =>
         WeakReferenceMessenger.Default.Send(new LyricsWindowLockConfigChangedMessage(this));
@@ -415,9 +396,6 @@ public partial class LyricsWindowStatus : ObservableObject, ICloneable
     partial void OnTitleBarAreaChanged(TitleBarArea value) =>
         WeakReferenceMessenger.Default.Send(new LyricsWindowTitleBarAreaChangedMessage(this, value));
 
-    partial void OnIsKeepScreenOpenChanged(bool value) =>
-        WeakReferenceMessenger.Default.Send(new LyricsWindowKeepScreenOpenChangedMessage(this, value));
-
     partial void OnIsMinimizedChanged(bool value) =>
         WeakReferenceMessenger.Default.Send(new LyricsWindowDisplayStateChangedMessage(this, value));
 
@@ -435,8 +413,6 @@ public partial class LyricsWindowStatus : ObservableObject, ICloneable
             MonitorDevicePath = MonitorDevicePath,
             MonitorEdid = MonitorEdid,
             IsWorkArea = IsWorkArea,
-            IsAlwaysOnTop = IsAlwaysOnTop,
-            IsAlwaysOnTopPolling = IsAlwaysOnTopPolling,
             IsShownInSwitchers = IsShownInSwitchers,
             IsWallpaper = IsWallpaper,
             WallpaperEngineBindingPath = WallpaperEngineBindingPath,
@@ -480,7 +456,6 @@ public partial class LyricsWindowStatus : ObservableObject, ICloneable
             HideWindowWhenNullSession = HideWindowWhenNullSession,
             AutoShowOrHideWindowDelay = AutoShowOrHideWindowDelay,
             TitleBarArea = TitleBarArea,
-            IsKeepScreenOpen = IsKeepScreenOpen,
 
             IsEdgeFeatheringEnabled = IsEdgeFeatheringEnabled,
             EdgeFeatheringLeft = EdgeFeatheringLeft,
@@ -488,7 +463,6 @@ public partial class LyricsWindowStatus : ObservableObject, ICloneable
             EdgeFeatheringRight = EdgeFeatheringRight,
             EdgeFeatheringBottom = EdgeFeatheringBottom,
 
-            LyricsCardStyleKey = LyricsCardStyleKey,
 
             IsSpoutOutputEnabled = IsSpoutOutputEnabled,
 
@@ -511,8 +485,6 @@ public partial class LyricsWindowStatus : ObservableObject, ICloneable
     {
         Name = localizationService.GetLocalizedString("DesktopMode");
         IsLocked = true;
-        IsAlwaysOnTop = true;
-        IsAlwaysOnTopPolling = true;
         IsAdaptToEnvironment = true;
         IsShownInSwitchers = false;
         EnvironmentSampleMode = WindowPixelSampleMode.WindowEdge;
@@ -531,8 +503,6 @@ public partial class LyricsWindowStatus : ObservableObject, ICloneable
     {
         Name = localizationService.GetLocalizedString("DockedMode");
         IsWorkArea = true;
-        IsAlwaysOnTop = true;
-        IsAlwaysOnTopPolling = true;
         IsAdaptToEnvironment = true;
         IsShownInSwitchers = false;
         EnvironmentSampleMode = WindowPixelSampleMode.BelowWindow;
@@ -608,8 +578,6 @@ public partial class LyricsWindowStatus : ObservableObject, ICloneable
         Name = localizationService.GetLocalizedString("WallpaperMode");
         IsWallpaper = true;
         IsLocked = true;
-        IsAlwaysOnTop = true;
-        IsAlwaysOnTopPolling = true;
         IsAdaptToEnvironment = true;
         IsShownInSwitchers = false;
         EnvironmentSampleMode = WindowPixelSampleMode.Wallpaper;

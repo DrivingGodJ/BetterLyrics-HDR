@@ -243,10 +243,6 @@
                         <local:WindowSettingsControl x:Name="WindowSettingsView" LyricsWindowStatus="{x:Bind ViewModel.SelectedWindowStatus, Mode=OneWay}" />
                     </controls:Case>
 
-                    <!--  Layout  -->
-                    <controls:Case Value="{x:Bind enums:LyricsWindowManagerSettingsSection.Layout}">
-                        <local:LayoutEditorControl LayoutProfile="{x:Bind ViewModel.SelectedLayoutProfile, Mode=OneWay}" PreviewBounds="{x:Bind ViewModel.SelectedWindowStatus.WindowBounds, Mode=OneWay}" />
-                    </controls:Case>
 
                     <!--  Album art  -->
                     <controls:Case Value="{x:Bind enums:LyricsWindowManagerSettingsSection.AlbumArt}">

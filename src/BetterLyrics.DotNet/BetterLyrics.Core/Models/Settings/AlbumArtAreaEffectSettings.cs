@@ -28,9 +28,6 @@ public partial class AlbumArtAreaEffectSettings : ObservableObject, ICloneable
     [ObservableProperty]
     public partial float FadeOutEndPointY { get; set; } = 0;
 
-    [ObservableProperty]
-    public partial bool IsParallaxEnabled { get; set; } = false;
-
     partial void OnSongInfoAutoScrollChanged(bool value) =>
         WeakReferenceMessenger.Default.Send(new AlbumArtSongInfoAutoScrollChangedMessage(this, value));
 
@@ -59,8 +56,7 @@ public partial class AlbumArtAreaEffectSettings : ObservableObject, ICloneable
             FadeOutStartPointX = FadeOutStartPointX,
             FadeOutStartPointY = FadeOutStartPointY,
             FadeOutEndPointX = FadeOutEndPointX,
-            FadeOutEndPointY = FadeOutEndPointY,
-            IsParallaxEnabled = IsParallaxEnabled
+            FadeOutEndPointY = FadeOutEndPointY
         };
     }
 }

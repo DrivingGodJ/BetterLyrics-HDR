@@ -4,8 +4,7 @@ public enum ComponentType
 {
     None,
     Lyrics,
-    LyricsCard,
-    AlbumArt,
+    AlbumArt = 3,
     SongTitle,
     SongArtist,
     SongAlbum,

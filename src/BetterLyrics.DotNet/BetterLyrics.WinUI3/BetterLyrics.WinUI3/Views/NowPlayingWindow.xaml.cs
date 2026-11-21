@@ -37,13 +37,10 @@ namespace BetterLyrics.WinUI3.Views;
 
 public sealed partial class NowPlayingWindow : BaseWindow,
     IRecipient<CurrentIsPlayingChangedMessage>,
-    IRecipient<LyricsStyleColorConfigChangedMessage>,
     IRecipient<LyricsBackgroundColorConfigChangedMessage>,
     IRecipient<LyricsWindowPaletteConfigChangedMessage>,
     IRecipient<LyricsWindowAdaptToEnvironmentChangedMessage>,
     IRecipient<LyricsWindowShownInSwitchersChangedMessage>,
-    IRecipient<LyricsWindowAlwaysOnTopChangedMessage>,
-    IRecipient<LyricsWindowAlwaysOnTopPollingChangedMessage>,
     IRecipient<LyricsWindowLockConfigChangedMessage>,
     IRecipient<LyricsWindowPlayingBarConfigChangedMessage>,
     IRecipient<LyricsWindowWorkAreaConfigChangedMessage>,
@@ -52,7 +49,6 @@ public sealed partial class NowPlayingWindow : BaseWindow,
     IRecipient<LyricsWindowTitleBarAreaChangedMessage>
 {
     private readonly Debouncer _albumArtThemeColorsDebounder = new();
-    private readonly AsyncPoller _alwaysOnTopPoller = new();
 
     private readonly IAppUIThreadProvider _appUIThreadProvider = Ioc.Default.GetRequiredService<IAppUIThreadProvider>();
 
@@ -198,7 +194,6 @@ public sealed partial class NowPlayingWindow : BaseWindow,
     {
         SyncMinimizedState();
         OnIsShownInSwitchersChanged();
-        OnIsAlwaysOnTopChanged();
         OnTitleBarAreaChanged();
         OnIsAdaptToEnvironmentChanged();
 
@@ -344,34 +339,6 @@ public sealed partial class NowPlayingWindow : BaseWindow,
                Math.Abs(rect1.Top - rect2.Top) <= tolerance &&
                Math.Abs(rect1.Right - rect2.Right) <= tolerance &&
                Math.Abs(rect1.Bottom - rect2.Bottom) <= tolerance;
-    }
-
-    private void OnIsAlwaysOnTopChanged()
-    {
-        _windowManagerProvider.SetIsAlwaysOnTop(this, LyricsWindowStatus.IsAlwaysOnTop);
-        PinFillFontIcon.Opacity = LyricsWindowStatus.IsAlwaysOnTop ? 1 : 0;
-        OnIsAlwaysOnTopPollingChanged();
-    }
-
-    private void OnIsAlwaysOnTopPollingChanged()
-    {
-        _alwaysOnTopPoller.Stop();
-        LyricsWindowStatus.IsAlwaysOnTopPollingTimerRunning = false;
-
-        if (LyricsWindowStatus.IsAlwaysOnTop && LyricsWindowStatus.IsAlwaysOnTopPolling)
-        {
-            _alwaysOnTopPoller.Start(async token =>
-            {
-                if (LyricsWindowStatus?.IsWallpaper != true)
-                {
-                    _appUIThreadProvider.Execute(() =>
-                    {
-                        _windowManagerProvider.SetIsAlwaysOnTop(this, true);
-                    });
-                }
-            });
-            LyricsWindowStatus.IsAlwaysOnTopPollingTimerRunning = true;
-        }
     }
 
     private void OnIsLockedChanged()
@@ -623,9 +590,6 @@ public sealed partial class NowPlayingWindow : BaseWindow,
         _wmm?.Dispose();
         _wmm = null;
 
-        _alwaysOnTopPoller.Stop();
-        _alwaysOnTopPoller.Dispose();
-        LyricsWindowStatus.IsAlwaysOnTopPollingTimerRunning = false;
 
         _underlayColorPoller.Stop();
         _underlayColorPoller.Dispose();
@@ -652,7 +616,6 @@ public sealed partial class NowPlayingWindow : BaseWindow,
         LyricsWindowSwitchButton.Click -= LyricsWindowSwitchButton_Click;
 
         LockButton.Click -= LockButton_Click;
-        AOTButton.Click -= AOTButton_Click;
         FullscreenButton.Click -= FullscreenButton_Click;
         MinimizeButton.Click -= MinimizeButton_Click;
         MaximizeButton.Click -= MaximizeButton_Click;
@@ -701,7 +664,6 @@ public sealed partial class NowPlayingWindow : BaseWindow,
                     EnterFullscreenFontIcon.Opacity = 1;
                     ExitFullscreenFontIcon.Opacity = 0;
                     MaximizeButton.Visibility = Visibility.Visible;
-                    AOTButton.Visibility = Visibility.Visible;
                     MinimizeButton.Visibility = Visibility.Visible;
                     LockButton.Visibility = Visibility.Visible;
 
@@ -716,7 +678,6 @@ public sealed partial class NowPlayingWindow : BaseWindow,
                 EnterFullscreenFontIcon.Opacity = 0;
                 ExitFullscreenFontIcon.Opacity = 1;
                 MaximizeButton.Visibility = Visibility.Collapsed;
-                AOTButton.Visibility = Visibility.Collapsed;
                 MinimizeButton.Visibility = Visibility.Collapsed;
                 LockButton.Visibility = Visibility.Collapsed;
 
@@ -906,11 +867,6 @@ public sealed partial class NowPlayingWindow : BaseWindow,
         LyricsWindowStatus.IsLocked = true;
     }
 
-    private void AOTButton_Click(object sender, RoutedEventArgs e)
-    {
-        LyricsWindowStatus.IsAlwaysOnTop = !LyricsWindowStatus.IsAlwaysOnTop;
-    }
-
     private void FullscreenButton_Click(object sender, RoutedEventArgs e)
     {
         if (EnterFullscreenFontIcon.Opacity == 1)
@@ -935,12 +891,6 @@ public sealed partial class NowPlayingWindow : BaseWindow,
     private void XamlRoot_Changed(XamlRoot sender, XamlRootChangedEventArgs args)
     {
         OnTitleBarAreaChanged();
-    }
-
-    public void Receive(LyricsStyleColorConfigChangedMessage message)
-    {
-        if (message.Sender == LyricsWindowStatus.LyricsStyleSettings)
-            RequestUpdateAlbumArtThemeColors();
     }
 
     public void Receive(LyricsBackgroundColorConfigChangedMessage message)
@@ -973,18 +923,6 @@ public sealed partial class NowPlayingWindow : BaseWindow,
     {
         if (message.Sender == LyricsWindowStatus)
             OnIsShownInSwitchersChanged();
-    }
-
-    public void Receive(LyricsWindowAlwaysOnTopChangedMessage message)
-    {
-        if (message.Sender == LyricsWindowStatus)
-            OnIsAlwaysOnTopChanged();
-    }
-
-    public void Receive(LyricsWindowAlwaysOnTopPollingChangedMessage message)
-    {
-        if (message.Sender == LyricsWindowStatus)
-            OnIsAlwaysOnTopPollingChanged();
     }
 
     public void Receive(LyricsWindowLockConfigChangedMessage message)

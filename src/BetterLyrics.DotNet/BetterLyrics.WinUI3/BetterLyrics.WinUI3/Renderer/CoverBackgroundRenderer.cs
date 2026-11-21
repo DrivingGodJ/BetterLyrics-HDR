@@ -111,8 +111,7 @@ public partial class CoverBackgroundRenderer : EffectRendererBase, IDisposable
         _needsCacheUpdate = true;
     }
 
-    public void Update(ICanvasAnimatedControl control, TimeSpan deltaTime, float bassEnergy, int breathingIntensity,
-        bool is3DEnabled)
+    public void Update(TimeSpan deltaTime, float bassEnergy, int breathingIntensity)
     {
         if (!IsEnabled) return;
 
@@ -134,16 +133,6 @@ public partial class CoverBackgroundRenderer : EffectRendererBase, IDisposable
             _previousBitmap = null;
             _previousTargetCache?.Dispose();
             _previousTargetCache = null;
-        }
-
-        if (is3DEnabled)
-        {
-            var center = new Vector3((float)control.Size.Width / 2, (float)control.Size.Height / 2, 0);
-            UpdateParallaxMatrix(center, true);
-        }
-        else
-        {
-            ResetParallaxMatrix();
         }
     }
 
@@ -175,20 +164,7 @@ public partial class CoverBackgroundRenderer : EffectRendererBase, IDisposable
 
         ApplyBreathingTransform(ds, screenCenter, isBreathingEffectEnabled);
 
-        if (!_threeDimMatrix.IsIdentity)
-        {
-            using var commandList = new CanvasCommandList(control);
-            using (var layerDs = commandList.CreateDrawingSession())
-            {
-                Draw2DComposition(layerDs, screenCenter, angle, baseAlpha, fadeProgress, isCrossfading);
-            }
-
-            DrawWithParallax(ds, commandList);
-        }
-        else
-        {
-            Draw2DComposition(ds, screenCenter, angle, baseAlpha, fadeProgress, isCrossfading);
-        }
+        Draw2DComposition(ds, screenCenter, angle, baseAlpha, fadeProgress, isCrossfading);
 
         ResetTransform(ds, isBreathingEffectEnabled);
     }

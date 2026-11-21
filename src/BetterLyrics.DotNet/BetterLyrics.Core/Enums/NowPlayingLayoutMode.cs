@@ -10,6 +10,5 @@ public enum NowPlayingLayoutMode
     LeftLyricsRightAlbumArtCompact, // Taskbar / Docked
     TopAlbumArtBottomLyrics, // Fullscreen
     TopAlbumArtBottomLyricsCompact, // Narrow
-    LyricsCardOnly,
     Custom = 999
 }

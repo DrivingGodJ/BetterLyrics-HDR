@@ -3,7 +3,6 @@ using Microsoft.Graphics.Canvas;
 using Microsoft.Graphics.Canvas.Brushes;
 using Microsoft.Graphics.Canvas.Effects;
 using Microsoft.Graphics.Canvas.Geometry;
-using Microsoft.Graphics.Canvas.UI.Xaml;
 using Microsoft.UI;
 using System;
 using System.Numerics;
@@ -55,50 +54,14 @@ public partial class SpectrumRenderer : EffectRendererBase, IDisposable
                 ? new Vector2((float)(albumRect.X + albumRect.Width / 2), (float)(albumRect.Y + albumRect.Height / 2))
                 : new Vector2((float)canvasWidth / 2, placement == SpectrumPlacement.Bottom ? (float)canvasHeight : 0);
 
-            if (!_threeDimMatrix.IsIdentity)
-            {
-                using var commandList = new CanvasCommandList(resourceCreator);
-                using (var layerDs = commandList.CreateDrawingSession())
-                {
-                    Draw2DComposition(layerDs, center, isBreathingEffectEnabled, fillColor, isGlowEffectEnabled,
-                        opacity, placement, style, canvasHeight, albumRect);
-                }
-
-                DrawWithParallax(ds, commandList);
-            }
-            else
-            {
-                Draw2DComposition(ds, center, isBreathingEffectEnabled, fillColor, isGlowEffectEnabled, opacity,
-                    placement, style, canvasHeight, albumRect);
-            }
+            Draw2DComposition(ds, center, isBreathingEffectEnabled, fillColor, isGlowEffectEnabled, opacity,
+                placement, style, canvasHeight, albumRect);
         }
     }
 
-    public void Update(
-        ICanvasAnimatedControl control,
-        SpectrumPlacement placement,
-        Rect albumRect,
-        float bassEnergy,
-        int breathingIntensity,
-        bool is3DEnabled)
+    public void Update(float bassEnergy, int breathingIntensity)
     {
         UpdateBreathing(bassEnergy, breathingIntensity);
-
-        if (is3DEnabled)
-        {
-            var trueCenter2D = placement == SpectrumPlacement.AroundAlbumArt
-                ? new Vector2((float)(albumRect.X + albumRect.Width / 2), (float)(albumRect.Y + albumRect.Height / 2))
-                : new Vector2((float)control.Size.Width / 2,
-                    placement == SpectrumPlacement.Bottom ? (float)control.Size.Height : 0);
-
-            var center3D = new Vector3(trueCenter2D.X, trueCenter2D.Y, 0);
-
-            UpdateParallaxMatrix(center3D, true);
-        }
-        else
-        {
-            ResetParallaxMatrix();
-        }
     }
 
     private CanvasGeometry? CreateGeometry(

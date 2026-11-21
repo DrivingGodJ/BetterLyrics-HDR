@@ -82,9 +82,6 @@ public partial class App : Application
             var globalToastProvider = Ioc.Default.GetRequiredService<IGlobalToastProvider>();
             globalToastProvider.Initialize();
 
-            // 初始化 IScreenKeeperService
-            _ = Ioc.Default.GetRequiredService<IScreenKeeperService>();
-
             // 初始化 IMonitorBindingService：把旧版保存的 \\.\DISPLAYn 迁移为稳定的显示器 device path
             _ = Ioc.Default.GetRequiredService<IMonitorBindingService>();
 

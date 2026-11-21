@@ -217,21 +217,6 @@
         <ProjectReference Include="..\..\BetterLyrics.Sdk\BetterLyrics.Sdk.csproj" />
     </ItemGroup>
     <ItemGroup>
-        <Page Update="Controls\LayoutEditorControl.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
-        <Page Update="Controls\CanvasItemControl.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
-        <Page Update="Controls\DropGhostControl.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
-        <Page Update="Controls\DragVisualControl.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
-        <Page Update="Controls\LayoutPreviewControl.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
         <Page Update="Controls\AlbumArtAreaSettingsControl.xaml">
             <Generator>MSBuild:Compile</Generator>
         </Page>
@@ -239,9 +224,6 @@
             <Generator>MSBuild:Compile</Generator>
         </Page>
         <Page Update="Controls\FloatSidePanel.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
-        <Page Update="Controls\ParallaxTiltControl.xaml">
             <Generator>MSBuild:Compile</Generator>
         </Page>
         <Page Update="Themes\FluentMenuFlyoutSubItemStyle.xaml">

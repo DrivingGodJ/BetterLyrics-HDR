@@ -19,9 +19,6 @@ public partial class AppSettings : ObservableObject
     public partial MusicGallerySettings MusicGallerySettings { get; set; } = new();
 
     [ObservableProperty]
-    public partial LyricsCardSettings LyricsCardSettings { get; set; } = new();
-
-    [ObservableProperty]
     public partial AdvancedSettings AdvancedSettings { get; set; } = new();
 
     [ObservableProperty]
@@ -50,9 +47,6 @@ public partial class AppSettings : ObservableObject
 
     [ObservableProperty]
     public partial FullyObservableCollection<PluginInfo> PluginsInfo { get; set; } = [];
-
-    [ObservableProperty]
-    public partial FullyObservableCollection<LyricsCardConfig> LyricsCardConfigs { get; set; } = [];
 
     [ObservableProperty]
     public partial FullyObservableCollection<LayoutProfile> LayoutProfiles { get; set; } = [];

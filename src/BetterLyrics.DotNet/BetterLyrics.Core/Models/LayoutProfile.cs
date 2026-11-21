@@ -52,9 +52,6 @@ public partial class LayoutProfile : ObservableObject, ICloneable
             case NowPlayingLayoutMode.TopAlbumArtBottomLyricsCompact:
                 InitTopAlbumArtBottomLyricsCompactMode();
                 break;
-            case NowPlayingLayoutMode.LyricsCardOnly:
-                InitLyricsCardOnlyMode();
-                break;
         }
     }
 
@@ -676,41 +673,6 @@ public partial class LayoutProfile : ObservableObject, ICloneable
                 VerticalAlignment = AppVerticalAlignment.Stretch,
                 Width = double.NaN,
                 Height = double.NaN
-            },
-            new ComponentPlacement
-            {
-                ComponentType = ComponentType.PlaybackControl,
-                Row = 0,
-                Column = 0,
-                RowSpan = RowDefinitions.Count,
-                ColumnSpan = ColumnDefinitions.Count,
-                HorizontalAlignment = AppHorizontalAlignment.Stretch,
-                VerticalAlignment = AppVerticalAlignment.Bottom
-            }
-        ];
-    }
-
-    private void InitLyricsCardOnlyMode()
-    {
-        RowDefinitions = ["1*"];
-        ColumnDefinitions = ["1*"];
-        RowSpacing = 0;
-        ColumnSpacing = 0;
-        PaddingLeft = 0;
-        PaddingTop = 0;
-        PaddingRight = 0;
-        PaddingBottom = 0;
-        Placements =
-        [
-            new ComponentPlacement
-            {
-                ComponentType = ComponentType.LyricsCard,
-                Row = 0,
-                Column = 0,
-                RowSpan = 1,
-                ColumnSpan = 1,
-                HorizontalAlignment = AppHorizontalAlignment.Stretch,
-                VerticalAlignment = AppVerticalAlignment.Stretch
             },
             new ComponentPlacement
             {

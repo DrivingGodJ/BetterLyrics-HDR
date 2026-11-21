@@ -500,21 +500,6 @@ public class WindowManagerProvider : IWindowManagerProvider
         User32.SetWindowLong(hwnd, User32.WindowLongFlags.GWL_STYLE, style);
     }
 
-    public void SetIsAlwaysOnTop(object obj, bool enable)
-    {
-        if (obj is not Window)
-        {
-            throw new ArgumentException($"Expected a {nameof(Window)} instance, but received {obj?.GetType().Name ?? "null"}.", nameof(obj));
-        }
-
-        var window = (Window)obj;
-
-        if (window.AppWindow is AppWindow appWindow && appWindow.Presenter.Kind == AppWindowPresenterKind.Overlapped)
-        {
-            window.SetIsAlwaysOnTop(enable);
-        }
-    }
-
     public void SetIsShownInSwitchers(object obj, bool enable)
     {
         if (obj is not Window)

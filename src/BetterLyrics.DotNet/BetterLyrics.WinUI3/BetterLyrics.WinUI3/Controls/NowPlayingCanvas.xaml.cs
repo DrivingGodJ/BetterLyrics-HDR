@@ -1,7 +1,6 @@
 // 2025/6/23 by Zhe Fang
 
 using BetterLyrics.Core.Constants;
-using BetterLyrics.Core.Effects;
 using BetterLyrics.Core.Enums;
 using BetterLyrics.Core.Extensions;
 using BetterLyrics.Core.Helpers;
@@ -20,7 +19,6 @@ using BetterLyrics.WinUI3.Models.Lyrics;
 using BetterLyrics.WinUI3.Providers;
 using BetterLyrics.WinUI3.Renderer;
 using BetterLyrics.WinUI3.Renderer.LyricsRenderer;
-using BetterLyrics.WinUI3.Renderer.SemanticEffectsRenderer;
 using CommunityToolkit.Mvvm.DependencyInjection;
 using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Graphics.Canvas;
@@ -59,10 +57,6 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
     public static readonly DependencyProperty LyricsWindowStatusProperty =
         DependencyProperty.Register(nameof(LyricsWindowStatus), typeof(LyricsWindowStatus),
             typeof(NowPlayingCanvas), new PropertyMetadata(null, OnDependencyPropertyChanged));
-
-    public static readonly DependencyProperty ParallaxContextProperty =
-        DependencyProperty.Register(nameof(ParallaxContext), typeof(ParallaxTiltEffect), typeof(NowPlayingCanvas),
-            new PropertyMetadata(null, OnDependencyPropertyChanged));
 
     public static readonly DependencyProperty AlbumArtRectProperty =
         DependencyProperty.Register(nameof(AlbumArtRect), typeof(Rect), typeof(NowPlayingCanvas),
@@ -149,11 +143,8 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
 
     private int _coverReloadVersion;
 
-    private readonly DesktopWallpaperBackgroundRenderer _desktopWallpaperRenderer = new();
     private readonly EdgeFadeMaskRenderer _edgeFadeMaskRenderer = new();
     private readonly FluidBackgroundRenderer _fluidRenderer = new();
-    private readonly FogRenderer _fogRenderer = new();
-    private readonly SemanticEffectsRenderer _semanticEffectsRenderer = new();
 
     private IGsmtcService _gsmtcService = Ioc.Default.GetRequiredService<IGsmtcService>();
 
@@ -187,11 +178,8 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
         0.3f
     );
 
-    private readonly RaindropRenderer _raindropRenderer = new();
     private readonly Debouncer _scrollChangedDebouncer = new();
     private readonly ISettingsService _settingsService = Ioc.Default.GetRequiredService<ISettingsService>();
-    private readonly SnowRenderer _snowRenderer = new();
-    private readonly ISystemUIProvider _systemUIProvider = Ioc.Default.GetRequiredService<ISystemUIProvider>();
 
     private readonly ISpectrumAnalyzerProvider _spectrumAnalyzer = new SpectrumAnalyzerProvider();
     private readonly SpectrumRenderer _spectrumRenderer = new();
@@ -199,8 +187,6 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
     private readonly LyricsSynchronizer _synchronizer = new();
     private Rect _albumArtRect;
     private double _canvasTargetScrollOffset;
-    private TimeSpan _desktopWallpaperPathCheckTimer = TimeSpan.FromSeconds(1);
-    private string? _loadedWallpaperPath;
 
     private bool _isLayoutChanged;
     private bool _isLyricsChanged = true;
@@ -246,8 +232,6 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
 
     private Point _mousePosition = new(0, 0);
 
-    private ParallaxTiltEffect? _parallaxContext;
-
     private int _primaryPlayingLineIndex;
     private double _renderLyricsHeight;
 
@@ -272,12 +256,6 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
     {
         get => (LyricsWindowStatus?)GetValue(LyricsWindowStatusProperty);
         set => SetValue(LyricsWindowStatusProperty, value);
-    }
-
-    public ParallaxTiltEffect? ParallaxContext
-    {
-        get => (ParallaxTiltEffect?)GetValue(ParallaxContextProperty);
-        set => SetValue(ParallaxContextProperty, value);
     }
 
     public Rect AlbumArtRect
@@ -399,17 +377,6 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
                 canvas._lyricsWindowStatus = newValue;
                 canvas.RequestRelayout();
                 canvas.UpdatePalette();
-            }
-            else if (e.Property == ParallaxContextProperty)
-            {
-                canvas._parallaxContext = (ParallaxTiltEffect)e.NewValue;
-                canvas._lyricsRenderer.ParallaxContext = canvas._parallaxContext;
-                canvas._fluidRenderer.ParallaxContext = canvas._parallaxContext;
-                canvas._coverRenderer.ParallaxContext = canvas._parallaxContext;
-                canvas._snowRenderer.ParallaxContext = canvas._parallaxContext;
-                canvas._fogRenderer.ParallaxContext = canvas._parallaxContext;
-                canvas._raindropRenderer.ParallaxContext = canvas._parallaxContext;
-                canvas._spectrumRenderer.ParallaxContext = canvas._parallaxContext;
             }
             else if (e.Property == AlbumArtRectProperty)
             {
@@ -657,14 +624,6 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
         var isPrimaryPlayingLineChanged = primaryPlayingIndex != _primaryPlayingLineIndex;
         _primaryPlayingLineIndex = primaryPlayingIndex;
 
-        if (isPrimaryPlayingLineChanged && _primaryPlayingLineIndex >= 0 && _renderLyricsLines != null && _primaryPlayingLineIndex < _renderLyricsLines.Count)
-        {
-            if (_lyricsWindowStatus?.LyricsBackgroundSettings.IsSemanticEffectEnabled == true)
-            {
-                _semanticEffectsRenderer.PrepareLine(_renderLyricsLines[_primaryPlayingLineIndex]);
-            }
-        }
-
         #endregion
 
         UpdateGapIndicator();
@@ -688,8 +647,7 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
             {
                 _canvasScrollTransition.SetDurationMs(lyricsEffect.LyricsScrollDuration);
                 _canvasScrollTransition.SetInterpolator(
-                    EasingHelper.GetInterpolatorByEasingType<double>(lyricsEffect.LyricsScrollEasingType,
-                        lyricsEffect.LyricsScrollEasingMode));
+                    EasingHelper.GetInterpolatorByEasingType<double>(EasingType.Spring, EaseMode.Out));
                 _canvasScrollTransition.Start(_canvasTargetScrollOffset);
             }
         }
@@ -807,8 +765,6 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
                 _lyricsWindowStatus.EdgeFeatheringBottom
             );
 
-        _parallaxContext?.Update();
-
         _fluidRenderer.IsEnabled = lyricsBg.IsFluidOverlayEnabled;
         _fluidRenderer.EnableLightWave = lyricsBg.IsFluidOverlayLightWaveEnabled;
         _fluidRenderer.EnableDithering = lyricsBg.IsColorDitheringEnabled;
@@ -816,60 +772,23 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
         _fluidRenderer.Speed = lyricsBg.FluidOverlaySpeed / 100f;
         _fluidRenderer.IsStatic = isAccentColorsTransitioning ? false : lyricsBg.IsFluidOverlayStatic;
         _fluidRenderer.Update(
-            sender, elapsedTime,
+            elapsedTime,
             ColorExtensions.FromAppColor(_accentColor1Transition.Value),
             ColorExtensions.FromAppColor(_accentColor2Transition.Value),
             ColorExtensions.FromAppColor(_accentColor3Transition.Value),
             ColorExtensions.FromAppColor(_accentColor4Transition.Value),
             _spectrumAnalyzer.CurrentBassEnergy,
-            lyricsBg.FluidOverlayBreathingIntensity,
-            lyricsBg.IsFluidOverlayParallaxEnabled);
-
-        _desktopWallpaperRenderer.IsEnabled = lyricsBg.IsDesktopWallpaperOverlayEnabled;
-        _desktopWallpaperRenderer.Opacity = lyricsBg.DesktopWallpaperOverlayOpacity;
-        _desktopWallpaperRenderer.BlurAmount = lyricsBg.DesktopWallpaperOverlayBlurAmount;
-        UpdateDesktopWallpaperSource(elapsedTime, lyricsBg.IsDesktopWallpaperOverlayEnabled);
+            lyricsBg.FluidOverlayBreathingIntensity);
 
         _coverRenderer.IsEnabled = lyricsBg.IsCoverOverlayEnabled;
         _coverRenderer.Opacity = lyricsBg.CoverOverlayOpacity;
         _coverRenderer.BlurAmount = lyricsBg.CoverOverlayBlurAmount;
         _coverRenderer.Speed = lyricsBg.CoverOverlaySpeed;
         _coverRenderer.Update(
-            sender, elapsedTime,
-            _spectrumAnalyzer.CurrentBassEnergy, lyricsBg.CoverOverlayBreathingIntensity,
-            lyricsBg.IsCoverOverlayParallaxEnabled);
+            elapsedTime,
+            _spectrumAnalyzer.CurrentBassEnergy, lyricsBg.CoverOverlayBreathingIntensity);
 
-        _snowRenderer.IsEnabled = lyricsBg.IsSnowFlakeOverlayEnabled;
-        _snowRenderer.Amount = lyricsBg.SnowFlakeOverlayAmount / 100f;
-        _snowRenderer.Speed = lyricsBg.SnowFlakeOverlaySpeed;
-        _snowRenderer.Update(
-            sender, elapsedTime,
-            _spectrumAnalyzer.CurrentBassEnergy, lyricsBg.SnowFlakeOverlayBreathingIntensity,
-            lyricsBg.IsSnowFlakeOverlayParallaxEnabled);
-
-        _fogRenderer.IsEnabled = lyricsBg.IsFogOverlayEnabled;
-        _fogRenderer.Update(
-            sender, elapsedTime,
-            _spectrumAnalyzer.CurrentBassEnergy, lyricsBg.FogOverlayBreathingIntensity,
-            lyricsBg.IsFogOverlayParallaxEnabled);
-
-        _raindropRenderer.IsEnabled = lyricsBg.IsRaindropOverlayEnabled;
-        _raindropRenderer.RainSpeed = lyricsBg.RaindropSpeed / 100f;
-        _raindropRenderer.RainSize = lyricsBg.RaindropSize / 100f;
-        _raindropRenderer.RainDensity = lyricsBg.RaindropDensity / 100f;
-        _raindropRenderer.LightAngle = MathF.PI * lyricsBg.RaindropLightAngle / 180f;
-        _raindropRenderer.ShadowIntensity = lyricsBg.RaindropShadowIntensity / 100f;
-        _raindropRenderer.Update(
-            sender, elapsedTime,
-            _spectrumAnalyzer.CurrentBassEnergy, lyricsBg.RaindropOverlayBreathingIntensity,
-            lyricsBg.IsRaindropOverlayParallaxEnabled);
-
-        _spectrumRenderer.Update(
-            sender,
-            lyricsBg.SpectrumPlacement, _albumArtRect, _spectrumAnalyzer.CurrentBassEnergy,
-            lyricsBg.SpectrumBreathingIntensity, lyricsBg.IsSpectrumOverlayParallaxEnabled);
-
-        _semanticEffectsRenderer.Update(sender, elapsedTime, _spectrumAnalyzer.CurrentBassEnergy, 0, false, _songPositionWithOffset.TotalMilliseconds);
+        _spectrumRenderer.Update(_spectrumAnalyzer.CurrentBassEnergy, lyricsBg.SpectrumBreathingIntensity);
 
         if (_renderLyricsOpacity == 1)
         {
@@ -903,13 +822,6 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
         args.TrackAsyncAction(Task.WhenAll(tasks).AsAsyncAction());
 
         _fluidRenderer.LoadResources();
-        _snowRenderer.LoadResources();
-        _fogRenderer.LoadResources();
-        _raindropRenderer.LoadResources();
-
-        _desktopWallpaperRenderer.Reset();
-        _loadedWallpaperPath = null;
-        _desktopWallpaperPathCheckTimer = TimeSpan.FromSeconds(1);
 
         InitSpectrumAnalyzer();
         InitSpoutHook(sender);
@@ -966,12 +878,7 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
         _lyricsRenderer.Dispose();
         _fluidRenderer.Dispose();
         _coverRenderer.Dispose();
-        _desktopWallpaperRenderer.Dispose();
-        _snowRenderer.Dispose();
-        _fogRenderer.Dispose();
-        _raindropRenderer.Dispose();
         _spectrumRenderer.Dispose();
-        _semanticEffectsRenderer.Dispose();
 
         DisposeRenderLyricsLines();
         DisposeSpectrumAnalyzer();
@@ -1010,7 +917,6 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
         IsMouseInLyricsArea = false;
         IsMousePressing = false;
 
-        _parallaxContext?.OnPointerExited();
     }
 
     public void HandlePointerMoved(PointerRoutedEventArgs e)
@@ -1026,7 +932,6 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
             MousePosition = pointerPoint.Position;
         }
 
-        _parallaxContext?.OnPointerMoved(pointerPoint.Position.ToAppPoint(), ActualSize.ToAppSize());
     }
 
     public void HandlePointerPressed(PointerRoutedEventArgs e)
@@ -1137,8 +1042,6 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
             lyricsBg.IsPureColorOverlayEnabled
         );
 
-        _desktopWallpaperRenderer.Draw(sender, ds);
-
         _coverRenderer.Draw(sender, ds, lyricsBg.IsCoverOverlayBrethingEffectEnabled);
 
         _fluidRenderer.Draw(sender, ds, lyricsBg.IsFluidOverlayBrethingEffectEnabled);
@@ -1161,14 +1064,6 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
                 _albumArtRect,
                 albumStyle.CoverImageRadius
             );
-
-        _snowRenderer.Draw(sender, ds, lyricsBg.IsSnowFlakeOverlayBrethingEffectEnabled);
-
-        _fogRenderer.Draw(sender, ds, lyricsBg.IsFogOverlayBrethingEffectEnabled);
-
-        _raindropRenderer.Draw(sender, ds, lyricsBg.IsRaindropOverlayBrethingEffectEnabled);
-
-        _semanticEffectsRenderer.Draw(sender, ds, false);
 
         if (_renderLyricsOpacity == 1) _lyricsRenderer.Draw(sender, ds, hdrHighlightGain);
     }
@@ -1479,9 +1374,8 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
         var maxScrollDelay = Math.Max(effect.LyricsScrollTopDelay, effect.LyricsScrollBottomDelay) + 400;
         _presentationSlideUntil = DateTime.UtcNow.AddMilliseconds(maxScrollDuration + maxScrollDelay + 300);
 
-        var style = _lyricsWindowStatus!.LyricsStyleSettings;
-        var translatedOpacity = style.TranslatedLyricsOpacity / 100.0;
-        var phoneticOpacity = style.PhoneticLyricsOpacity / 100.0;
+        var translatedOpacity = LyricsStyleSettings.TranslatedLyricsOpacity;
+        var phoneticOpacity = LyricsStyleSettings.PhoneticLyricsOpacity;
 
         for (var i = 0; i < _renderLyricsLines!.Count; i++)
         {
@@ -1538,9 +1432,8 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
     {
         if (_lyricsWindowStatus == null || _renderLyricsLines == null || _renderLineSourceIndices == null) return;
 
-        var style = _lyricsWindowStatus.LyricsStyleSettings;
-        var translatedOpacity = style.TranslatedLyricsOpacity / 100.0;
-        var phoneticOpacity = style.PhoneticLyricsOpacity / 100.0;
+        var translatedOpacity = LyricsStyleSettings.TranslatedLyricsOpacity;
+        var phoneticOpacity = LyricsStyleSettings.PhoneticLyricsOpacity;
 
         for (var i = 0; i < _renderLyricsLines.Count; i++)
         {
@@ -1741,7 +1634,7 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
         var lineHeight = previousLine?.PrimaryLineHeight ?? nextLine?.PrimaryLineHeight ?? 0;
         if (lineHeight <= 0)
         {
-            lineHeight = (_lyricsWindowStatus?.LyricsStyleSettings.OriginalLyricsFontSize ?? 32) * 1.3;
+            lineHeight = LyricsLayoutHelper.CalculateLayout(Canvas.Size.Width, Canvas.Size.Height).MainLyricsSize * 1.3;
         }
 
         float flowCenter;
@@ -1833,7 +1726,7 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
 
         var lineHeight = referenceLine.PrimaryLineHeight ?? 0;
         if (lineHeight <= 0)
-            lineHeight = _lyricsWindowStatus.LyricsStyleSettings.OriginalLyricsFontSize * 1.3;
+            lineHeight = LyricsLayoutHelper.CalculateLayout(Canvas.Size.Width, Canvas.Size.Height).MainLyricsSize * 1.3;
 
         var isVertical = _lyricsWindowStatus.LyricsStyleSettings.LyricsLayoutOrientation ==
                          LyricsLayoutOrientation.Vertical;
@@ -1880,32 +1773,6 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
     private void ResetPlaybackState()
     {
         _songPosition = TimeSpan.Zero;
-    }
-
-    private void UpdateDesktopWallpaperSource(TimeSpan elapsedTime, bool isEnabled)
-    {
-        if (!isEnabled)
-        {
-            _desktopWallpaperPathCheckTimer = TimeSpan.FromSeconds(1);
-            return;
-        }
-
-        _desktopWallpaperPathCheckTimer += elapsedTime;
-        if (_desktopWallpaperPathCheckTimer < TimeSpan.FromSeconds(1)) return;
-
-        _desktopWallpaperPathCheckTimer = TimeSpan.Zero;
-        RefreshDesktopWallpaperSource();
-    }
-
-    private void RefreshDesktopWallpaperSource()
-    {
-        if (_lyricsWindowStatus == null || Canvas == null) return;
-
-        var path = _systemUIProvider.GetWallpaperPath(_lyricsWindowStatus.MonitorBounds);
-        if (path == _loadedWallpaperPath && _desktopWallpaperRenderer.HasWallpaper) return;
-
-        _loadedWallpaperPath = path;
-        _desktopWallpaperRenderer.SetWallpaperPath(Canvas, path);
     }
 
     private async Task ReloadCoverBackgroundResourcesAsync()

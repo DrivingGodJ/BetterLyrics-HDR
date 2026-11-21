@@ -22,15 +22,6 @@ public partial class LyricsBackgroundSettings : ObservableObject, ICloneable
     public partial AppColor PureColorOverlayCustomColor { get; set; } = Colors.White;
 
     [ObservableProperty]
-    public partial bool IsDesktopWallpaperOverlayEnabled { get; set; } = false;
-
-    [ObservableProperty]
-    public partial int DesktopWallpaperOverlayOpacity { get; set; } = 100; // 100 % = 1.0
-
-    [ObservableProperty]
-    public partial int DesktopWallpaperOverlayBlurAmount { get; set; } = 0;
-
-    [ObservableProperty]
     public partial bool IsCoverOverlayEnabled { get; set; } = false;
 
     [ObservableProperty]
@@ -47,9 +38,6 @@ public partial class LyricsBackgroundSettings : ObservableObject, ICloneable
 
     [ObservableProperty]
     public partial int CoverOverlayBreathingIntensity { get; set; } = 80;
-
-    [ObservableProperty]
-    public partial bool IsCoverOverlayParallaxEnabled { get; set; } = false;
 
     [ObservableProperty]
     public partial bool IsFluidOverlayEnabled { get; set; } = true;
@@ -74,9 +62,6 @@ public partial class LyricsBackgroundSettings : ObservableObject, ICloneable
 
     [ObservableProperty]
     public partial bool IsFluidOverlayStatic { get; set; } = false;
-
-    [ObservableProperty]
-    public partial bool IsFluidOverlayParallaxEnabled { get; set; } = false;
 
     [ObservableProperty]
     public partial bool IsSpectrumOverlayEnabled { get; set; } = false;
@@ -112,70 +97,7 @@ public partial class LyricsBackgroundSettings : ObservableObject, ICloneable
     public partial AppColor SpectrumCustomColor { get; set; } = Colors.White;
 
     [ObservableProperty]
-    public partial bool IsSpectrumOverlayParallaxEnabled { get; set; } = false;
-
-    [ObservableProperty]
     public partial int SpectrumDelayMs { get; set; } = 0;
-
-    [ObservableProperty]
-    public partial bool IsSnowFlakeOverlayEnabled { get; set; } = false;
-
-    [ObservableProperty]
-    public partial int SnowFlakeOverlayAmount { get; set; } = 10;
-
-    [ObservableProperty]
-    public partial int SnowFlakeOverlaySpeed { get; set; } = 1;
-
-    [ObservableProperty]
-    public partial bool IsSnowFlakeOverlayBrethingEffectEnabled { get; set; } = false;
-
-    [ObservableProperty]
-    public partial int SnowFlakeOverlayBreathingIntensity { get; set; } = 80;
-
-    [ObservableProperty]
-    public partial bool IsSnowFlakeOverlayParallaxEnabled { get; set; } = false;
-
-    [ObservableProperty]
-    public partial bool IsFogOverlayEnabled { get; set; } = false;
-
-    [ObservableProperty]
-    public partial bool IsFogOverlayBrethingEffectEnabled { get; set; } = false;
-
-    [ObservableProperty]
-    public partial int FogOverlayBreathingIntensity { get; set; } = 80;
-
-    [ObservableProperty]
-    public partial bool IsFogOverlayParallaxEnabled { get; set; } = false;
-
-    [ObservableProperty]
-    public partial bool IsRaindropOverlayEnabled { get; set; } = false;
-
-    [ObservableProperty]
-    public partial int RaindropSpeed { get; set; } = 100; // 100%
-
-    [ObservableProperty]
-    public partial int RaindropSize { get; set; } = 100; // 100%
-
-    [ObservableProperty]
-    public partial int RaindropDensity { get; set; } = 40; // 40%
-
-    [ObservableProperty]
-    public partial int RaindropLightAngle { get; set; } = 135; // 135 degree
-
-    [ObservableProperty]
-    public partial int RaindropShadowIntensity { get; set; } = 0; // 0%
-
-    [ObservableProperty]
-    public partial bool IsRaindropOverlayBrethingEffectEnabled { get; set; } = false;
-
-    [ObservableProperty]
-    public partial int RaindropOverlayBreathingIntensity { get; set; } = 80;
-
-    [ObservableProperty]
-    public partial bool IsRaindropOverlayParallaxEnabled { get; set; } = false;
-
-    [ObservableProperty]
-    public partial bool IsSemanticEffectEnabled { get; set; } = false;
 
     partial void OnSpectrumColorTypeChanged(LyricsFontColorType value) =>
         WeakReferenceMessenger.Default.Send(new LyricsBackgroundColorConfigChangedMessage(this));
@@ -201,17 +123,12 @@ public partial class LyricsBackgroundSettings : ObservableObject, ICloneable
             PureColorOverlayColorType = PureColorOverlayColorType,
             PureColorOverlayCustomColor = PureColorOverlayCustomColor,
 
-            IsDesktopWallpaperOverlayEnabled = IsDesktopWallpaperOverlayEnabled,
-            DesktopWallpaperOverlayOpacity = DesktopWallpaperOverlayOpacity,
-            DesktopWallpaperOverlayBlurAmount = DesktopWallpaperOverlayBlurAmount,
-
             IsCoverOverlayEnabled = IsCoverOverlayEnabled,
             CoverOverlayOpacity = CoverOverlayOpacity,
             CoverOverlaySpeed = CoverOverlaySpeed,
             CoverOverlayBlurAmount = CoverOverlayBlurAmount,
             CoverOverlayBreathingIntensity = CoverOverlayBreathingIntensity,
             IsCoverOverlayBrethingEffectEnabled = IsCoverOverlayBrethingEffectEnabled,
-            IsCoverOverlayParallaxEnabled = IsCoverOverlayParallaxEnabled,
 
             IsFluidOverlayEnabled = IsFluidOverlayEnabled,
             FluidOverlayOpacity = FluidOverlayOpacity,
@@ -221,7 +138,6 @@ public partial class LyricsBackgroundSettings : ObservableObject, ICloneable
             IsFluidOverlayLightWaveEnabled = IsFluidOverlayLightWaveEnabled,
             IsColorDitheringEnabled = IsColorDitheringEnabled,
             IsFluidOverlayStatic = IsFluidOverlayStatic,
-            IsFluidOverlayParallaxEnabled = IsFluidOverlayParallaxEnabled,
 
             IsSpectrumOverlayEnabled = IsSpectrumOverlayEnabled,
             SpectrumPlacement = SpectrumPlacement,
@@ -234,31 +150,7 @@ public partial class LyricsBackgroundSettings : ObservableObject, ICloneable
             SpectrumOpacity = SpectrumOpacity,
             SpectrumColorType = SpectrumColorType,
             SpectrumCustomColor = SpectrumCustomColor,
-            IsSpectrumOverlayParallaxEnabled = IsSpectrumOverlayParallaxEnabled,
-            SpectrumDelayMs = SpectrumDelayMs,
-
-            IsSnowFlakeOverlayEnabled = IsSnowFlakeOverlayEnabled,
-            SnowFlakeOverlayAmount = SnowFlakeOverlayAmount,
-            SnowFlakeOverlaySpeed = SnowFlakeOverlaySpeed,
-            SnowFlakeOverlayBreathingIntensity = SnowFlakeOverlayBreathingIntensity,
-            IsSnowFlakeOverlayBrethingEffectEnabled = IsSnowFlakeOverlayBrethingEffectEnabled,
-            IsSnowFlakeOverlayParallaxEnabled = IsSnowFlakeOverlayParallaxEnabled,
-
-            IsFogOverlayEnabled = IsFogOverlayEnabled,
-            FogOverlayBreathingIntensity = FogOverlayBreathingIntensity,
-            IsFogOverlayBrethingEffectEnabled = IsFogOverlayBrethingEffectEnabled,
-            IsFogOverlayParallaxEnabled = IsFogOverlayParallaxEnabled,
-
-            IsRaindropOverlayEnabled = IsRaindropOverlayEnabled,
-            RaindropSpeed = RaindropSpeed,
-            RaindropSize = RaindropSize,
-            RaindropDensity = RaindropDensity,
-            RaindropLightAngle = RaindropLightAngle,
-            RaindropShadowIntensity = RaindropShadowIntensity,
-            RaindropOverlayBreathingIntensity = RaindropOverlayBreathingIntensity,
-            IsRaindropOverlayBrethingEffectEnabled = IsRaindropOverlayBrethingEffectEnabled,
-            IsRaindropOverlayParallaxEnabled = IsRaindropOverlayParallaxEnabled,
-            IsSemanticEffectEnabled = IsSemanticEffectEnabled
+            SpectrumDelayMs = SpectrumDelayMs
         };
     }
 }

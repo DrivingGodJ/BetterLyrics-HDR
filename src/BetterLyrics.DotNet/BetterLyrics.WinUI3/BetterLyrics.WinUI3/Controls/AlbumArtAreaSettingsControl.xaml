@@ -84,9 +84,6 @@
                         </controls:SettingsExpander.Items>
                     </controls:SettingsExpander>
 
-                    <controls:SettingsCard x:Uid="SettingsPageParallaxTilt" HeaderIcon="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons}, Glyph=&#xECA5;}">
-                        <ToggleSwitch IsOn="{x:Bind LyricsWindowStatus.AlbumArtAreaEffectSettings.IsParallaxEnabled, Mode=TwoWay}" />
-                    </controls:SettingsCard>
 
                     <TextBlock x:Uid="SettingsPageSongInfoEffect" Style="{StaticResource SettingsSectionHeaderTextBlockStyle}" />
 

@@ -44,7 +44,6 @@ public interface IWindowManagerProvider
     void SetIsChildWindow(object obj, bool enable);
     void MoveAndResize(object obj, AppRect rect);
 
-    void SetIsAlwaysOnTop(object obj, bool enable);
     void SetIsShownInSwitchers(object obj, bool enable);
 
     void SetIsAppBar(object obj, bool enable);

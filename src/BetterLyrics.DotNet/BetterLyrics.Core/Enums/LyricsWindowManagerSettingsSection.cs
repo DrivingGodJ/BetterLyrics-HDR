@@ -3,8 +3,7 @@
 public enum LyricsWindowManagerSettingsSection
 {
     Window,
-    Layout,
-    LyricsStyle,
+    LyricsStyle = 2,
     LyricsBackground,
     LyricsEffect,
     AlbumArt

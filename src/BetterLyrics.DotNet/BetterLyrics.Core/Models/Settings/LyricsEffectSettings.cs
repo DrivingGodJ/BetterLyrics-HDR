@@ -2,7 +2,6 @@ using BetterLyrics.Core.Enums;
 using BetterLyrics.Core.Messages.LyricsWindow;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
-using System.Text.Json.Serialization;
 
 namespace BetterLyrics.Core.Models.Settings;
 
@@ -69,15 +68,6 @@ public partial class LyricsEffectSettings : ObservableObject, ICloneable
     public partial int LyricsFloatAnimationDuration { get; set; } = 450; // 450ms
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(IsLyricsScrollEasingModeEnabled))]
-    public partial EasingType LyricsScrollEasingType { get; set; } = EasingType.Spring;
-
-    public bool IsLyricsScrollEasingModeEnabled => LyricsScrollEasingType != EasingType.Spring;
-
-    [ObservableProperty]
-    public partial EaseMode LyricsScrollEasingMode { get; set; } = EaseMode.Out;
-
-    [ObservableProperty]
     public partial int LyricsScrollDuration { get; set; } = 500;
 
     [ObservableProperty]
@@ -93,34 +83,6 @@ public partial class LyricsEffectSettings : ObservableObject, ICloneable
     public partial int LyricsScrollBottomDelay { get; set; } = 50;
 
     [ObservableProperty]
-    public partial bool IsFanLyricsEnabled { get; set; } = false;
-
-    [ObservableProperty]
-    public partial int FanLyricsAngle { get; set; } = 30;
-
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(Is3DLyricsAdjustable))]
-    public partial bool Is3DLyricsEnabled { get; set; } = false;
-
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(Is3DLyricsAdjustable))]
-    public partial bool IsAuto3DLyricsEnabled { get; set; } = false;
-
-    [ObservableProperty]
-    public partial int Lyrics3DXAngle { get; set; } = 0;
-
-    [ObservableProperty]
-    public partial int Lyrics3DYAngle { get; set; } = 0;
-
-    [ObservableProperty]
-    public partial int Lyrics3DZAngle { get; set; } = 0;
-
-    [ObservableProperty]
-    public partial int Lyrics3DDepth { get; set; } = 800;
-
-    [JsonIgnore] public bool Is3DLyricsAdjustable => Is3DLyricsEnabled && !IsAuto3DLyricsEnabled;
-
-    [ObservableProperty]
     public partial bool IsLyricsBrethingEffectEnabled { get; set; } = false;
 
     [ObservableProperty]
@@ -131,9 +93,6 @@ public partial class LyricsEffectSettings : ObservableObject, ICloneable
 
     [ObservableProperty]
     public partial int LyricsGapDotsMinimumDuration { get; set; } = 6000; // 6000ms
-
-    partial void OnIsFanLyricsEnabledChanged(bool value) =>
-        WeakReferenceMessenger.Default.Send(new LyricsEffectRelayoutChangedMessage(this));
 
     partial void OnIsLyricsBlurEffectEnabledChanged(bool value) =>
         WeakReferenceMessenger.Default.Send(new LyricsEffectRelayoutChangedMessage(this));
@@ -157,21 +116,6 @@ public partial class LyricsEffectSettings : ObservableObject, ICloneable
         WeakReferenceMessenger.Default.Send(new LyricsEffectRelayoutChangedMessage(this));
 
     partial void OnLyricsScrollBottomDelayChanged(int value) =>
-        WeakReferenceMessenger.Default.Send(new LyricsEffectRelayoutChangedMessage(this));
-
-    partial void OnFanLyricsAngleChanged(int value) =>
-        WeakReferenceMessenger.Default.Send(new LyricsEffectRelayoutChangedMessage(this));
-
-    partial void OnLyrics3DXAngleChanged(int value) =>
-        WeakReferenceMessenger.Default.Send(new LyricsEffectRelayoutChangedMessage(this));
-
-    partial void OnLyrics3DYAngleChanged(int value) =>
-        WeakReferenceMessenger.Default.Send(new LyricsEffectRelayoutChangedMessage(this));
-
-    partial void OnLyrics3DZAngleChanged(int value) =>
-        WeakReferenceMessenger.Default.Send(new LyricsEffectRelayoutChangedMessage(this));
-
-    partial void OnLyrics3DDepthChanged(int value) =>
         WeakReferenceMessenger.Default.Send(new LyricsEffectRelayoutChangedMessage(this));
 
     partial void OnIsLyricsScaleEffectEnabledChanged(bool value) =>
@@ -215,24 +159,11 @@ public partial class LyricsEffectSettings : ObservableObject, ICloneable
             IsLyricsFloatAnimationAmountAutoAdjust = IsLyricsFloatAnimationAmountAutoAdjust,
             LyricsFloatAnimationAmount = LyricsFloatAnimationAmount,
             LyricsFloatAnimationDuration = LyricsFloatAnimationDuration,
-
-            LyricsScrollEasingType = LyricsScrollEasingType,
-            LyricsScrollEasingMode = LyricsScrollEasingMode,
             LyricsScrollDuration = LyricsScrollDuration,
             LyricsScrollTopDuration = LyricsScrollTopDuration,
             LyricsScrollBottomDuration = LyricsScrollBottomDuration,
             LyricsScrollTopDelay = LyricsScrollTopDelay,
             LyricsScrollBottomDelay = LyricsScrollBottomDelay,
-
-            IsFanLyricsEnabled = IsFanLyricsEnabled,
-            FanLyricsAngle = FanLyricsAngle,
-
-            Is3DLyricsEnabled = Is3DLyricsEnabled,
-            IsAuto3DLyricsEnabled = IsAuto3DLyricsEnabled,
-            Lyrics3DXAngle = Lyrics3DXAngle,
-            Lyrics3DYAngle = Lyrics3DYAngle,
-            Lyrics3DZAngle = Lyrics3DZAngle,
-            Lyrics3DDepth = Lyrics3DDepth,
 
             IsLyricsBrethingEffectEnabled = IsLyricsBrethingEffectEnabled,
             LyricsBreathingIntensity = LyricsBreathingIntensity,

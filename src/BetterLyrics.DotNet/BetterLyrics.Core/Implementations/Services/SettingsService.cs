@@ -53,7 +53,6 @@ public class SettingsService : ISettingsService
         AppSettings.AdvancedSettings.PropertyChanged += AppSettings_PropertyChanged;
         AppSettings.LyricsSaveConfig.PropertyChanged += AppSettings_PropertyChanged;
         AppSettings.SystemTraySettings.PropertyChanged += AppSettings_PropertyChanged;
-        AppSettings.LyricsCardSettings.PropertyChanged += AppSettings_PropertyChanged;
         AppSettings.DiscordSettings.PropertyChanged += AppSettings_PropertyChanged;
 
         AppSettings.MediaSourceProvidersInfo.CollectionChanged += AppSettings_CollectionChanged;
@@ -70,9 +69,6 @@ public class SettingsService : ISettingsService
 
         AppSettings.PluginsInfo.CollectionChanged += AppSettings_CollectionChanged;
         AppSettings.PluginsInfo.ItemPropertyChanged += AppSettings_ItemPropertyChanged;
-
-        AppSettings.LyricsCardConfigs.CollectionChanged += AppSettings_CollectionChanged;
-        AppSettings.LyricsCardConfigs.ItemPropertyChanged += AppSettings_ItemPropertyChanged;
 
         AppSettings.LayoutProfiles.CollectionChanged += AppSettings_CollectionChanged;
         AppSettings.LayoutProfiles.ItemPropertyChanged += AppSettings_ItemPropertyChanged;
@@ -210,6 +206,23 @@ public class SettingsService : ISettingsService
             window.IsWorkArea = false;
             window.WallpaperEngineBindingPath = "";
             window.IsSpoutOutputEnabled = false;
+
+            window.NowPlayingBarBackgroundStyle = preset.NowPlayingBarBackgroundStyle;
+
+            var background = window.LyricsBackgroundSettings;
+            var presetBackground = preset.LyricsBackgroundSettings;
+            background.PureColorOverlayOpacity = presetBackground.PureColorOverlayOpacity;
+            background.CoverOverlayOpacity = presetBackground.CoverOverlayOpacity;
+            background.FluidOverlayOpacity = presetBackground.FluidOverlayOpacity;
+            background.SpectrumOpacity = presetBackground.SpectrumOpacity;
+
+            var animation = window.LyricsEffectSettings;
+            var presetAnimation = preset.LyricsEffectSettings;
+            animation.LyricsScrollDuration = presetAnimation.LyricsScrollDuration;
+            animation.LyricsScrollTopDuration = presetAnimation.LyricsScrollTopDuration;
+            animation.LyricsScrollBottomDuration = presetAnimation.LyricsScrollBottomDuration;
+            animation.LyricsScrollTopDelay = presetAnimation.LyricsScrollTopDelay;
+            animation.LyricsScrollBottomDelay = presetAnimation.LyricsScrollBottomDelay;
         }
     }
 
