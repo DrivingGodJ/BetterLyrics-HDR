@@ -42,6 +42,7 @@ using Windows.UI;
 namespace BetterLyrics.WinUI3.Controls;
 
 public sealed partial class NowPlayingCanvas : BaseUserControl,
+    IRecipient<CurrentIsPlayingChangedMessage>,
     IRecipient<CurrentPositionChangedMessage>,
     IRecipient<CurrentLyricsDataChangedMessage>,
     IRecipient<CurrentSongInfoChangedMessage>,
@@ -138,7 +139,6 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
         0.3f
     );
 
-    private readonly CompositionRenderer _compositionRenderer = new();
     private readonly CoverBackgroundRenderer _coverRenderer = new();
 
     private int _coverReloadVersion;
@@ -181,7 +181,7 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
     private readonly Debouncer _scrollChangedDebouncer = new();
     private readonly ISettingsService _settingsService = Ioc.Default.GetRequiredService<ISettingsService>();
 
-    private readonly ISpectrumAnalyzerProvider _spectrumAnalyzer = new SpectrumAnalyzerProvider();
+    private ISpectrumAnalyzerProvider? _spectrumAnalyzer;
     private readonly SpectrumRenderer _spectrumRenderer = new();
 
     private readonly LyricsSynchronizer _synchronizer = new();
@@ -244,7 +244,6 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
     private TimeSpan _songPosition;
 
     private TimeSpan _songPositionWithOffset;
-    private readonly ISpoutTextureProvider _spoutHook = Ioc.Default.GetRequiredService<ISpoutTextureProvider>();
     private (int Start, int End) _visibleRange;
 
     public TimeSpan SongPosition => _songPosition;
@@ -345,21 +344,13 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
         Bindings?.StopTracking();
     }
 
-    private void PowerManager_DisplayStatusChanged(object sender, bool isDisplayOn)
+    private void PowerManager_DisplayStatusChanged(object? sender, bool isDisplayOn)
     {
-        if (Canvas != null)
+        DispatcherQueue.TryEnqueue(() =>
         {
-            DispatcherQueue.TryEnqueue(() =>
-            {
-                if (Canvas == null) return;
-
-                Canvas.Paused = !isDisplayOn;
-
-                // 息屏期间画布被暂停，期间收到的封面变更消息可能没有成功加载（或被跳过），
-                // 亮屏后主动重新加载一次封面，避免背景一直停留在旧封面。
-                if (isDisplayOn) _ = ReloadCoverBackgroundResourcesAsync();
-            });
-        }
+            RefreshRendering();
+            if (isDisplayOn) _ = ReloadCoverBackgroundResourcesAsync();
+        });
     }
 
     private static void OnDependencyPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -374,7 +365,9 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
                 oldValue?.LyricsStyleSettings.LyricsLayerOrder.CollectionChanged -= canvas.LyricsLayerOrder_CollectionChanged;
                 newValue?.LyricsStyleSettings.LyricsLayerOrder.CollectionChanged += canvas.LyricsLayerOrder_CollectionChanged;
 
+                canvas.ObserveRenderSettings(oldValue, subscribe: false);
                 canvas._lyricsWindowStatus = newValue;
+                canvas.ObserveRenderSettings(newValue, subscribe: true);
                 canvas.RequestRelayout();
                 canvas.UpdatePalette();
             }
@@ -433,6 +426,8 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
                     canvas._isMouseScrollingChanged = true;
                 }
             }
+
+            canvas.RequestFrame();
         }
     }
 
@@ -446,16 +441,16 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
 
     private void Canvas_Draw(ICanvasAnimatedControl sender, CanvasAnimatedDrawEventArgs args)
     {
-        if (_lyricsWindowStatus == null) return;
+        if (!_canRender || _lyricsWindowStatus == null) return;
 
         var enableHdr = _lyricsWindowStatus.LyricsEffectSettings.IsLyricsHdrGlowEnabled;
         var hdrVisible = _hdrPresenter?.TryDraw(sender, args.Timing, enableHdr) == true;
-        if (!hdrVisible || _lyricsWindowStatus.IsSpoutOutputEnabled)
-            DrawFrame(sender, args.DrawingSession, args.Timing, 1, showOnCanvas: !hdrVisible);
+        if (!hdrVisible)
+            DrawFrame(sender, args.DrawingSession, args.Timing, 1);
     }
 
     private void DrawFrame(ICanvasAnimatedControl sender, CanvasDrawingSession ds, CanvasTimingInformation timing,
-        float hdrHighlightGain, bool showOnCanvas = true)
+        float hdrHighlightGain)
     {
         if (_lyricsWindowStatus == null) return;
 
@@ -490,30 +485,8 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
             finalOpacity = lyricsBg.PureColorOverlayOpacity / 100.0;
         }
 
-        if (hdrHighlightGain == 1 && _lyricsWindowStatus.IsSpoutOutputEnabled)
-        {
-            var finalTexture = _compositionRenderer.Render(
-                sender,
-                sender.Size,
-                sender.Dpi,
-                ColorExtensions.FromAppColor(Colors.Transparent),
-                ds =>
-                {
-                    DrawCoreWithEdgeFeatheringHandled(sender, ds, bounds,
-                        ColorExtensions.FromAppColor(overlayColor), finalOpacity, lyricsStyle, albumStyle,
-                        lyricsBg);
-                });
-
-            _spoutHook.SendTexture(finalTexture);
-            if (!showOnCanvas) return;
-            ds.DrawImage(finalTexture);
-        }
-        else
-        {
-            DrawCoreWithEdgeFeatheringHandled(sender, ds, bounds, ColorExtensions.FromAppColor(overlayColor),
-                finalOpacity, lyricsStyle,
-                albumStyle, lyricsBg, hdrHighlightGain);
-        }
+        DrawCoreWithEdgeFeatheringHandled(sender, ds, bounds, ColorExtensions.FromAppColor(overlayColor),
+            finalOpacity, lyricsStyle, albumStyle, lyricsBg, hdrHighlightGain);
 
         if (_lyricsWindowStatus.ShowDebugOverlay)
         {
@@ -525,7 +498,6 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
                 ColorExtensions.FromAppColor(Colors.Cyan));
 
             var debugText =
-                $"Spout Sender : {_spoutHook.SenderName ?? "Disabled"}\n" +
                 $"FPS          : {1.0 / timing.ElapsedTime.TotalSeconds:00.0} (Avg: {timing.UpdateCount / timing.TotalTime.TotalSeconds:00.0})\n" +
                 $"----------------------------------------\n" +
                 $"Render Pos   : [{(int)_renderLyricsStartX}, {(int)_renderLyricsStartY}]\n" +
@@ -577,7 +549,7 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
 
     private void Canvas_Update(ICanvasAnimatedControl sender, CanvasAnimatedUpdateEventArgs args)
     {
-        if (_lyricsWindowStatus == null) return;
+        if (!_canRender || _lyricsWindowStatus == null) return;
 
         var lyricsBg = _lyricsWindowStatus.LyricsBackgroundSettings;
         var lyricsStyle = _lyricsWindowStatus.LyricsStyleSettings;
@@ -752,7 +724,9 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
         _isLayoutChanged = false;
         _isPresentationAnimating = false;
 
-        if (_spectrumAnalyzer.IsCapturing) _spectrumAnalyzer.UpdateSmoothSpectrum();
+        var spectrum = _spectrumAnalyzer;
+        spectrum?.UpdateSmoothSpectrum();
+        var bassEnergy = spectrum?.CurrentBassEnergy ?? 0f;
 
         if (_lyricsWindowStatus.IsEdgeFeatheringEnabled)
             _edgeFadeMaskRenderer.Update(
@@ -777,7 +751,7 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
             ColorExtensions.FromAppColor(_accentColor2Transition.Value),
             ColorExtensions.FromAppColor(_accentColor3Transition.Value),
             ColorExtensions.FromAppColor(_accentColor4Transition.Value),
-            _spectrumAnalyzer.CurrentBassEnergy,
+            bassEnergy,
             lyricsBg.FluidOverlayBreathingIntensity);
 
         _coverRenderer.IsEnabled = lyricsBg.IsCoverOverlayEnabled;
@@ -786,9 +760,9 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
         _coverRenderer.Speed = lyricsBg.CoverOverlaySpeed;
         _coverRenderer.Update(
             elapsedTime,
-            _spectrumAnalyzer.CurrentBassEnergy, lyricsBg.CoverOverlayBreathingIntensity);
+            bassEnergy, lyricsBg.CoverOverlayBreathingIntensity);
 
-        _spectrumRenderer.Update(_spectrumAnalyzer.CurrentBassEnergy, lyricsBg.SpectrumBreathingIntensity);
+        _spectrumRenderer.Update(bassEnergy, lyricsBg.SpectrumBreathingIntensity);
 
         if (_renderLyricsOpacity == 1)
         {
@@ -806,14 +780,13 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
             _lyricsRenderer.CurrentProgressMs = _songPositionWithOffset.TotalMilliseconds;
             _lyricsRenderer.LyricsWindowStatus = _lyricsWindowStatus;
             _lyricsRenderer.RenderLyricsLines = _renderLyricsLines;
-            _lyricsRenderer.Update(sender, elapsedTime, _spectrumAnalyzer.CurrentBassEnergy, lyricsEffect.LyricsBreathingIntensity);
+            _lyricsRenderer.Update(sender, elapsedTime, bassEnergy, lyricsEffect.LyricsBreathingIntensity);
         }
     }
 
     private void Canvas_CreateResources(CanvasAnimatedControl sender, CanvasCreateResourcesEventArgs args)
     {
         _hdrPresenter?.Reset();
-        _compositionRenderer?.Dispose();
 
         var tasks = new[]
         {
@@ -822,9 +795,6 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
         args.TrackAsyncAction(Task.WhenAll(tasks).AsAsyncAction());
 
         _fluidRenderer.LoadResources();
-
-        InitSpectrumAnalyzer();
-        InitSpoutHook(sender);
 
         RequestRelayout();
         TriggerRelayout();
@@ -835,7 +805,11 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
     protected override void OnLoaded()
     {
         _hdrPresenter = HdrLyricsPresenter.TryCreate(HdrPanel, XamlRoot.ContentIslandEnvironment.AppWindowId,
-            (sender, ds, timing, gain) => DrawFrame(sender, ds, timing, gain));
+            (sender, ds, timing, gain) => DrawFrame(sender, ds, timing, gain), RequestFrame);
+        _settleTimer = DispatcherQueue.CreateTimer();
+        _settleTimer.Interval = Time.LongAnimationDuration + TimeSpan.FromMilliseconds(200);
+        _settleTimer.IsRepeating = false;
+        _settleTimer.Tick += OnRenderSettled;
         _monitorProvider.DisplayStatusChanged -= PowerManager_DisplayStatusChanged;
         _monitorProvider.DisplayStatusChanged += PowerManager_DisplayStatusChanged;
 
@@ -843,22 +817,33 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
         {
             // 内置播放器专用服务的消息走独立通道，不再接收默认通道（当前 GSMTC 会话）的同类消息
             var messenger = WeakReferenceMessenger.Default;
+            messenger.Unregister<CurrentIsPlayingChangedMessage>(this);
             messenger.Unregister<CurrentPositionChangedMessage>(this);
             messenger.Unregister<CurrentLyricsDataChangedMessage>(this);
             messenger.Unregister<CurrentSongInfoChangedMessage>(this);
             messenger.Unregister<AlbumArtBytesChangedMessage>(this);
 
+            messenger.Register<NowPlayingCanvas, CurrentIsPlayingChangedMessage, string>(this, GsmtcMessageToken.BuiltIn, static (r, m) => r.Receive(m));
             messenger.Register<NowPlayingCanvas, CurrentPositionChangedMessage, string>(this, GsmtcMessageToken.BuiltIn, static (r, m) => r.Receive(m));
             messenger.Register<NowPlayingCanvas, CurrentLyricsDataChangedMessage, string>(this, GsmtcMessageToken.BuiltIn, static (r, m) => r.Receive(m));
             messenger.Register<NowPlayingCanvas, CurrentSongInfoChangedMessage, string>(this, GsmtcMessageToken.BuiltIn, static (r, m) => r.Receive(m));
             messenger.Register<NowPlayingCanvas, AlbumArtBytesChangedMessage, string>(this, GsmtcMessageToken.BuiltIn, static (r, m) => r.Receive(m));
         }
+
+        RefreshRendering();
     }
 
     protected override void OnUnloaded()
     {
         WeakReferenceMessenger.Default.UnregisterAll(this, GsmtcMessageToken.BuiltIn);
         _monitorProvider.DisplayStatusChanged -= PowerManager_DisplayStatusChanged;
+        if (_settleTimer != null)
+        {
+            _settleTimer.Stop();
+            _settleTimer.Tick -= OnRenderSettled;
+            _settleTimer = null;
+        }
+        ObserveRenderSettings(_lyricsWindowStatus, subscribe: false);
 
         if (Canvas != null)
         {
@@ -881,12 +866,9 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
         _spectrumRenderer.Dispose();
 
         DisposeRenderLyricsLines();
-        DisposeSpectrumAnalyzer();
+        SetSpectrumCapture(false);
 
         _edgeFadeMaskRenderer.Dispose();
-
-        _compositionRenderer?.Dispose();
-        _spoutHook.Close();
 
         _lyricsWindowStatus?.LyricsStyleSettings.LyricsLayerOrder.CollectionChanged -=
             LyricsLayerOrder_CollectionChanged;
@@ -908,7 +890,7 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
     /// </summary>
     public void RequestRedraw()
     {
-        Canvas?.Invalidate();
+        RequestFrame();
         _ = ReloadCoverBackgroundResourcesAsync();
     }
 
@@ -1046,12 +1028,13 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
 
         _fluidRenderer.Draw(sender, ds, lyricsBg.IsFluidOverlayBrethingEffectEnabled);
 
-        if (_spectrumAnalyzer.IsCapturing)
+        var spectrum = _spectrumAnalyzer;
+        if (lyricsBg.IsSpectrumOverlayEnabled && spectrum?.IsCapturing == true)
             _spectrumRenderer.Draw(
                 sender,
                 ds,
-                _spectrumAnalyzer?.SmoothSpectrum,
-                _spectrumAnalyzer?.BarCount ?? 1,
+                spectrum.SmoothSpectrum,
+                spectrum.BarCount,
                 lyricsBg.IsSpectrumOverlayEnabled,
                 lyricsBg.IsSpectrumGlowEffectEnabled,
                 lyricsBg.IsSpectrumBrethingEffectEnabled,
@@ -1086,31 +1069,6 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
         {
             DrawCore(sender, ds, bounds, overlayColor, finalOpacity, lyricsStyle, albumStyle, lyricsBg, hdrHighlightGain);
         }
-    }
-
-    private void InitSpoutHook(CanvasAnimatedControl sender)
-    {
-        _spoutHook.Close();
-        _spoutHook.Initialize(sender.Device, $"BetterLyrics ({_lyricsWindowStatus?.GetHashCode()})");
-    }
-
-    private void InitSpectrumAnalyzer()
-    {
-        if (_lyricsWindowStatus == null) return;
-        var lyricsBg = _lyricsWindowStatus.LyricsBackgroundSettings;
-
-        _spectrumAnalyzer.BarCount = lyricsBg.SpectrumCount;
-        _spectrumAnalyzer.Sensitivity = lyricsBg.SpectrumSensitivity;
-        _spectrumAnalyzer.DelayMs = lyricsBg.SpectrumDelayMs;
-
-        _spectrumAnalyzer.StartCapture();
-    }
-
-    private void DisposeSpectrumAnalyzer()
-    {
-        if (_spectrumAnalyzer.IsCapturing) _spectrumAnalyzer.StopCapture();
-
-        _spectrumAnalyzer.Dispose();
     }
 
     private void TriggerRelayout()
@@ -1518,12 +1476,20 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
 
     private void RequestRelayout()
     {
-        _ = _layoutDebouncer.RunAsync(() => { _isLayoutChanged = true; });
+        _ = _layoutDebouncer.RunAsync(() =>
+        {
+            _isLayoutChanged = true;
+            RequestFrame();
+        });
     }
 
     private void RequestReloadLyrics()
     {
-        _ = _lyricsDebouncer.RunAsync(() => { _isLyricsChanged = true; });
+        _ = _lyricsDebouncer.RunAsync(() =>
+        {
+            _isLyricsChanged = true;
+            RequestFrame();
+        });
     }
 
     /// <summary>
@@ -1763,11 +1729,10 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
     private void UpdatePlaybackState(TimeSpan elapsedTime)
     {
         if (_gsmtcService.CurrentIsPlaying)
-        {
             _songPosition += elapsedTime;
-            _songPositionWithOffset = _songPosition +
-                TimeSpan.FromMilliseconds(_gsmtcService.CurrentMediaSourceProviderInfo?.PositionOffset ?? 0);
-        }
+
+        _songPositionWithOffset = _songPosition +
+            TimeSpan.FromMilliseconds(_gsmtcService.CurrentMediaSourceProviderInfo?.PositionOffset ?? 0);
     }
 
     private void ResetPlaybackState()
@@ -1789,6 +1754,7 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
             if (imageBytes == null || imageBytes.Length == 0)
             {
                 _coverRenderer.SetCoverBitmap(null);
+                RequestFrame();
                 return;
             }
 
@@ -1814,6 +1780,7 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
                 }
 
                 _coverRenderer.SetCoverBitmap(bitmap);
+                RequestFrame();
             }
         }
         catch (Exception ex)
@@ -1849,6 +1816,7 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
         _accentColor4Transition.Start(palette.AccentColor4);
 
         _isNowPlayingPaletteChanged = true;
+        RequestFrame();
     }
 
     private void EnsureRenderLyricsLinesPreservedAnimation(List<RenderLyricsLine> lines)
@@ -1927,11 +1895,11 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
 
     public void Receive(SpectrumConfigChangedMessage message)
     {
-        if (message.Sender == _lyricsWindowStatus?.LyricsBackgroundSettings)
+        if (message.Sender == _lyricsWindowStatus?.LyricsBackgroundSettings && _spectrumAnalyzer is { } spectrum)
         {
-            _spectrumAnalyzer.BarCount = message.Sender.SpectrumCount;
-            _spectrumAnalyzer.Sensitivity = message.Sender.SpectrumSensitivity;
-            _spectrumAnalyzer.DelayMs = message.Sender.SpectrumDelayMs;
+            spectrum.BarCount = message.Sender.SpectrumCount;
+            spectrum.Sensitivity = message.Sender.SpectrumSensitivity;
+            spectrum.DelayMs = message.Sender.SpectrumDelayMs;
         }
     }
 
@@ -1946,6 +1914,7 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
         if (message.IsPresentationChange)
         {
             _isPresentationChanged = true;
+            RequestFrame();
             return;
         }
 
@@ -1972,6 +1941,16 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
         ResetPlaybackState();
 
         _isGapListChanged = true;
+        RequestFrame();
+    }
+
+    public void Receive(CurrentIsPlayingChangedMessage message)
+    {
+        _songPosition = _gsmtcService.CurrentPosition;
+        if (DispatcherQueue.HasThreadAccess)
+            RefreshRendering();
+        else
+            DispatcherQueue.TryEnqueue(RefreshRendering);
     }
 
     public void Receive(CurrentPositionChangedMessage message)
@@ -1982,9 +1961,10 @@ public sealed partial class NowPlayingCanvas : BaseUserControl,
         var timelineSyncThreshold = _gsmtcService.CurrentMediaSourceProviderInfo?.TimelineSyncThreshold ?? 0;
 
         // seek
-        if (diff >= timelineSyncThreshold)
+        if (diff > 0 && (diff >= timelineSyncThreshold || !_gsmtcService.CurrentIsPlaying))
         {
             _songPosition = realPosition;
+            if (!_gsmtcService.CurrentIsPlaying) RequestFrame();
         }
 
         if (diff >= timelineSyncThreshold + 5000)

@@ -38,7 +38,8 @@ public static partial class LanguageHelper
     private static readonly IStringConverterProvider _stringConverterProvider =
         Ioc.Default.GetRequiredService<IStringConverterProvider>();
 
-    private static LanguageDetector? _detector;
+    private static readonly Lazy<LanguageDetector> FallbackDetector =
+        new(() => LanguageDetectorBuilder.FromAllLanguages().Build());
 
     public static readonly List<ExtendedLanguage> SupportedTranslationTargetLanguages =
     [
@@ -82,11 +83,6 @@ public static partial class LanguageHelper
         new("vi"), new("zh-Hans"),
         new("zh-Hant")
     ];
-
-    public static async Task InitIdentifierAsync()
-    {
-        _detector = LanguageDetectorBuilder.FromAllLanguages().Build();
-    }
 
     /// <summary>
     /// 智能检测语言代码，支持识别拼音、粤拼、罗马音
@@ -132,11 +128,9 @@ public static partial class LanguageHelper
             }
         }
 
-        var guessLang = _detector?.DetectLanguageOf(text);
+        var guessLang = FallbackDetector.Value.DetectLanguageOf(text);
 
-        if (guessLang == null) return null;
-
-        var codeLingua = guessLang.Value.IsoCode6391().ToString().ToLower();
+        var codeLingua = guessLang.IsoCode6391().ToString().ToLower();
 
         if (codeLingua == "zh") return MandarinChineseCode;
 

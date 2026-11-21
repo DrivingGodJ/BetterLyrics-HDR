@@ -173,6 +173,10 @@ public sealed partial class NowPlayingWindow : BaseWindow,
             // minimize/restore paths such as Win+D and the system menu.
             SyncMinimizedState();
         }
+        else if (msgId == (uint)WindowMessage.WM_SHOWWINDOW)
+        {
+            NowPlayingPage?.SetWindowVisibility(e.Message.WParam != 0);
+        }
         else if (msgId == (uint)WindowMessage.WM_SETTINGCHANGE)
         {
             var changedSetting = Marshal.PtrToStringUni(e.Message.LParam);
@@ -628,6 +632,9 @@ public sealed partial class NowPlayingWindow : BaseWindow,
 
     private void AppWindow_Changed(AppWindow sender, AppWindowChangedEventArgs args)
     {
+        if (args.DidVisibilityChange)
+            NowPlayingPage?.SetWindowVisibility(sender.IsVisible);
+
         if (args.DidPositionChange || args.DidSizeChange || args.DidPresenterChange)
         {
             SyncMinimizedState();

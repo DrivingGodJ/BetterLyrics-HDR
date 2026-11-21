@@ -258,9 +258,6 @@ public partial class LyricsWindowStatus : ObservableObject, ICloneable
     public partial int EdgeFeatheringBottom { get; set; } = 0;
 
     [ObservableProperty]
-    public partial bool IsSpoutOutputEnabled { get; set; } = false;
-
-    [ObservableProperty]
     public partial FPS FPS { get; set; } = FPS.Hz60;
 
     [ObservableProperty]
@@ -464,7 +461,6 @@ public partial class LyricsWindowStatus : ObservableObject, ICloneable
             EdgeFeatheringBottom = EdgeFeatheringBottom,
 
 
-            IsSpoutOutputEnabled = IsSpoutOutputEnabled,
 
             FPS = FPS,
             ShowDebugOverlay = ShowDebugOverlay,

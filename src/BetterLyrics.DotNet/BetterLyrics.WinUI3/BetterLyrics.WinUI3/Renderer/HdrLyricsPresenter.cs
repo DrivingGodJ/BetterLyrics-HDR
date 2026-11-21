@@ -35,23 +35,28 @@ internal sealed class HdrLyricsPresenter : IDisposable
     private bool _failed;
     private bool _disposed;
 
+    private readonly Action _invalidate;
+
     private HdrLyricsPresenter(CanvasSwapChainPanel panel, DisplayInformation display,
-        Action<ICanvasAnimatedControl, CanvasDrawingSession, CanvasTimingInformation, float> drawScene)
+        Action<ICanvasAnimatedControl, CanvasDrawingSession, CanvasTimingInformation, float> drawScene,
+        Action invalidate)
     {
         _panel = panel;
         _dispatcher = panel.DispatcherQueue;
         _display = display;
         _drawScene = drawScene;
+        _invalidate = invalidate;
         ReadDisplayLevels();
         _display.AdvancedColorInfoChanged += OnDisplayChanged;
     }
 
     public static HdrLyricsPresenter? TryCreate(CanvasSwapChainPanel panel, WindowId windowId,
-        Action<ICanvasAnimatedControl, CanvasDrawingSession, CanvasTimingInformation, float> drawScene)
+        Action<ICanvasAnimatedControl, CanvasDrawingSession, CanvasTimingInformation, float> drawScene,
+        Action invalidate)
     {
         try
         {
-            return new HdrLyricsPresenter(panel, DisplayInformation.CreateForWindowId(windowId), drawScene);
+            return new HdrLyricsPresenter(panel, DisplayInformation.CreateForWindowId(windowId), drawScene, invalidate);
         }
         catch (Exception error) when (IsGraphicsError(error))
         {
@@ -164,6 +169,7 @@ internal sealed class HdrLyricsPresenter : IDisposable
                 _failed = false;
                 if (_levels.HighlightGain <= 1) ReleaseSurface();
             }
+            _invalidate();
         });
     }
 

@@ -98,6 +98,7 @@ public partial class SpectrumAnalyzerProvider : ISpectrumAnalyzerProvider
                 // 如果没在捕获，StartCapture() 启动时会自己分配，所以不用管
                 if (IsCapturing)
                 {
+                    _delayQueue.Clear();
                     _currentSpectrum = new float[field];
                     SmoothSpectrum = new float[field];
                 }
@@ -210,6 +211,7 @@ public partial class SpectrumAnalyzerProvider : ISpectrumAnalyzerProvider
                 _capture.StartRecording();
 
                 IsCapturing = true;
+                _logger.LogDebug("Started lyric spectrum capture.");
             }
             catch (Exception ex)
             {
@@ -242,6 +244,7 @@ public partial class SpectrumAnalyzerProvider : ISpectrumAnalyzerProvider
                 }
             }
 
+            if (IsCapturing) _logger.LogDebug("Stopped lyric spectrum capture.");
             IsCapturing = false;
         }
     }

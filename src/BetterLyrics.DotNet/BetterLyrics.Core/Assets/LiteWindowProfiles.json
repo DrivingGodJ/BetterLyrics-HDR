@@ -162,8 +162,7 @@
       "EdgeFeatheringTop": 0,
       "EdgeFeatheringRight": 0,
       "EdgeFeatheringBottom": 0,
-      "IsSpoutOutputEnabled": false,
-      "FPS": 120,
+      "FPS": 60,
       "ShowDebugOverlay": false
     },
     {
@@ -328,8 +327,7 @@
       "EdgeFeatheringTop": 0,
       "EdgeFeatheringRight": 100,
       "EdgeFeatheringBottom": 0,
-      "IsSpoutOutputEnabled": false,
-      "FPS": 120,
+      "FPS": 60,
       "ShowDebugOverlay": false
     }
   ],

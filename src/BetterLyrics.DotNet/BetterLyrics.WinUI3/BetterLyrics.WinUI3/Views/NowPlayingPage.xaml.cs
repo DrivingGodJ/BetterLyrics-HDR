@@ -587,6 +587,8 @@ public sealed partial class NowPlayingPage : BasePage,
         Bindings?.StopTracking();
     }
 
+    internal void SetWindowVisibility(bool visible) => NowPlayingCanvas?.SetWindowVisibility(visible);
+
     private void ApplyGsmtcSource(bool isBuiltInOnly)
     {
         _gsmtcService = isBuiltInOnly

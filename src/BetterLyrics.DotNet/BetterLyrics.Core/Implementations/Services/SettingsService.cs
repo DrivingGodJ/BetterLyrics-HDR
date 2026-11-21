@@ -205,7 +205,6 @@ public class SettingsService : ISettingsService
             window.IsWallpaper = false;
             window.IsWorkArea = false;
             window.WallpaperEngineBindingPath = "";
-            window.IsSpoutOutputEnabled = false;
 
             window.NowPlayingBarBackgroundStyle = preset.NowPlayingBarBackgroundStyle;
 

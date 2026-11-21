@@ -135,8 +135,7 @@ public partial class App : Application
 
     private static async Task InitAppServicesAsync()
     {
-        // 初始化语言标识符
-        await LanguageHelper.InitIdentifierAsync();
+        Ioc.Default.GetRequiredService<ILyricsWindowVisibilityService>().Initialize();
 
         var settingsService = Ioc.Default.GetRequiredService<ISettingsService>();
 

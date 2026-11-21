@@ -61,17 +61,21 @@
         </PackageReference>
         <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2957" />
         <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.6.5" />
+        <!-- Keep the WinUI runtime self-contained without the optional features BetterLyrics Lite never calls. -->
+        <PackageReference Include="Microsoft.WindowsAppSDK.AI" Version="2.6.5" ExcludeAssets="all" />
+        <PackageReference Include="Microsoft.WindowsAppSDK.ML" Version="2.6.5" ExcludeAssets="all" />
+        <PackageReference Include="Microsoft.WindowsAppSDK.Search" Version="2.6.5" ExcludeAssets="all" />
+        <PackageReference Include="Microsoft.WindowsAppSDK.Widgets" Version="2.6.5" ExcludeAssets="all" />
+        <PackageReference Include="Microsoft.Windows.AI.MachineLearning" Version="2.4.89" ExcludeAssets="all" />
         <PackageReference Include="NAudio.Wasapi" Version="3.3.0" />
         <PackageReference Include="Serilog.Extensions.Logging" Version="10.0.0" />
         <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
-        <PackageReference Include="SpoutDx.Net.Interop.MultiPlatform" Version="0.1.0" />
         <PackageReference Include="Ude.NetStandard" Version="1.2.0" />
         <PackageReference Include="Vanara.PInvoke.DwmApi" Version="5.0.8" />
         <PackageReference Include="Vanara.PInvoke.Gdi32" Version="5.0.8" />
         <PackageReference Include="Vanara.PInvoke.Shell32" Version="5.0.8" />
         <PackageReference Include="Vanara.PInvoke.User32" Version="5.0.8" />
         <PackageReference Include="Vanara.Windows.Shell" Version="5.0.8" />
-        <PackageReference Include="Vortice.Direct3D11" Version="3.8.3" />
         <PackageReference Include="WinUIEx" Version="2.9.3" />
     </ItemGroup>
     <ItemGroup>
