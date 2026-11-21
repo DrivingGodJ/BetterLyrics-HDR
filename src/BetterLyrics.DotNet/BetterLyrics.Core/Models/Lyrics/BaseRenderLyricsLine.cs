@@ -10,6 +10,82 @@ public class BaseRenderLyricsLine : BaseRenderLyrics
 {
     public BaseRenderLyricsLine(LyricsLine lyricsLine) : base(lyricsLine)
     {
+        BlurAmountTransition = new ValueTransition<double>(
+            0,
+            EasingHelper.GetInterpolatorByEasingType<double>(EasingType.Sine),
+            AnimationDuration
+        );
+        TertiaryOpacityTransition = new ValueTransition<double>(
+            0,
+            EasingHelper.GetInterpolatorByEasingType<double>(EasingType.Sine),
+            AnimationDuration
+        );
+        PlayedPrimaryOpacityTransition = new ValueTransition<double>(
+            0,
+            EasingHelper.GetInterpolatorByEasingType<double>(EasingType.Sine),
+            AnimationDuration
+        );
+        UnplayedPrimaryOpacityTransition = new ValueTransition<double>(
+            0,
+            EasingHelper.GetInterpolatorByEasingType<double>(EasingType.Sine),
+            AnimationDuration
+        );
+        SecondaryOpacityTransition = new ValueTransition<double>(
+            0,
+            EasingHelper.GetInterpolatorByEasingType<double>(EasingType.Sine),
+            AnimationDuration
+        );
+        ScaleTransition = new ValueTransition<double>(
+            1.0,
+            EasingHelper.GetInterpolatorByEasingType<double>(EasingType.Sine),
+            AnimationDuration
+        );
+        BreathingWeightTransition = new ValueTransition<double>(
+            0.0,
+            EasingHelper.GetInterpolatorByEasingType<double>(EasingType.Sine),
+            AnimationDuration
+        );
+        PrimaryXOffsetTransition = new ValueTransition<double>(
+            0,
+            EasingHelper.GetInterpolatorByEasingType<double>(EasingType.Sine),
+            AnimationDuration
+        );
+        SecondaryXOffsetTransition = new ValueTransition<double>(
+            0,
+            EasingHelper.GetInterpolatorByEasingType<double>(EasingType.Sine),
+            AnimationDuration
+        );
+        TertiaryXOffsetTransition = new ValueTransition<double>(
+            0,
+            EasingHelper.GetInterpolatorByEasingType<double>(EasingType.Sine),
+            AnimationDuration
+        );
+        OffsetTransition = new ValueTransition<double>(
+            0,
+            EasingHelper.GetInterpolatorByEasingType<double>(EasingType.Sine),
+            AnimationDuration
+        );
+        PlayedFillColorTransition = new ValueTransition<AppColor>(
+            Colors.Transparent,
+            defaultTotalDuration: 0.3f,
+            interpolator: (from, to, progress) => ColorHelper.GetInterpolatedColor(progress, from, to)
+        );
+        UnplayedFillColorTransition = new ValueTransition<AppColor>(
+            Colors.Transparent,
+            defaultTotalDuration: 0.3f,
+            interpolator: (from, to, progress) => ColorHelper.GetInterpolatedColor(progress, from, to)
+        );
+        PlayedStrokeColorTransition = new ValueTransition<AppColor>(
+            Colors.Transparent,
+            defaultTotalDuration: 0.3f,
+            interpolator: (from, to, progress) => ColorHelper.GetInterpolatedColor(progress, from, to)
+        );
+        UnplayedStrokeColorTransition = new ValueTransition<AppColor>(
+            Colors.Transparent,
+            defaultTotalDuration: 0.3f,
+            interpolator: (from, to, progress) => ColorHelper.GetInterpolatedColor(progress, from, to)
+        );
+
         StartMs = lyricsLine.StartMs;
         EndMs = lyricsLine.EndMs;
         TertiaryText = lyricsLine.TertiaryText;
