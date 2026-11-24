@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Vanara.PInvoke;
 using WinRT.Interop;
@@ -42,8 +43,8 @@ public partial class TaskbarHook : IDisposable
     private AutomationElement? _cachedTaskbar;
 
     private TaskbarPlacement _currentPlacement;
-    private bool _isDisposed;
-    private IntPtr _taskbarHwnd;
+    private volatile bool _isDisposed;
+    private int _updating;
 
     public TaskbarHook(NowPlayingWindow window, TaskbarPlacement placement, AppRect targetMonitorRect)
     {
@@ -105,8 +106,12 @@ public partial class TaskbarHook : IDisposable
             try
             {
                 // 简单访问一下属性测试对象是否存活（比如 explorer.exe 没有崩溃重启）
-                var test = _cachedTaskbar.BoundingRectangle;
-                return _cachedTaskbar;
+                var hwnd = _cachedTaskbar.Properties.NativeWindowHandle.ValueOrDefault;
+                if (hwnd != IntPtr.Zero && User32.IsWindow(hwnd) &&
+                    !_cachedTaskbar.BoundingRectangle.IsEmpty)
+                    return _cachedTaskbar;
+
+                _cachedTaskbar = null;
             }
             catch
             {
@@ -174,72 +179,72 @@ public partial class TaskbarHook : IDisposable
 
     private void StartHook()
     {
-        try
-        {
-            var taskbar = FindTargetTaskbar();
-
-            if (taskbar == null) return;
-
-            _taskbarHwnd = taskbar.Properties.NativeWindowHandle.ValueOrDefault;
-            if (_taskbarHwnd != IntPtr.Zero) AttachToTaskbar(_taskbarHwnd);
-
-            _poller.Start(async token => await Task.Run(() => RequestUpdate(), token));
-
-            RequestUpdate();
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Hook Init Failed in StartHook!");
-        }
+        _poller.Start(token => Task.Run(RequestUpdate, token));
+        RequestUpdate();
     }
 
     private void RequestUpdate()
     {
         if (_isDisposed) return;
 
-        var taskbar = FindTargetTaskbar();
-
-        if (taskbar == null) return;
-
-        _ = _positionDebouncer.RunAsync(() =>
-        {
-            _ = Task.Run(() =>
-            {
-                var voidRect = CalculateVoidRect(taskbar, _currentPlacement);
-                //Debug.WriteLine($"Calculated void rectangle: {voidRect}");
-
-                if (!_isDisposed && voidRect != Rectangle.Empty)
-                {
-                    Rectangle taskbarRect;
-                    try
-                    {
-                        taskbarRect = taskbar.BoundingRectangle;
-                        //Debug.WriteLine($"Taskbar Bounding Rectangle: {taskbarRect}");
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogWarning(ex,
-                            "Failed to get _taskbar.BoundingRectangle inside RequestUpdate. COM object might be disconnected.");
-                        return;
-                    }
-
-                    var relativeX = voidRect.Left - taskbarRect.Left;
-                    var relativeY = voidRect.Top - taskbarRect.Top;
-
-                    _appUIThreadProvider.Execute(() =>
-                    {
-                        if (!_isDisposed)
-                            User32.SetWindowPos(
-                                _targetHwnd, HWND.HWND_TOPMOST,
-                                relativeX, relativeY, voidRect.Width, voidRect.Height,
-                                User32.SetWindowPosFlags.SWP_NOACTIVATE | User32.SetWindowPosFlags.SWP_NOZORDER);
-                    });
-                }
-            });
-        }, 100);
+        _ = _positionDebouncer.RunAsync(() => Task.Run(UpdatePosition), 100);
     }
 
-    private Rectangle CalculateVoidRect(AutomationElement? taskbar, TaskbarPlacement placement)
+    private void UpdatePosition()
+    {
+        if (_isDisposed || Interlocked.Exchange(ref _updating, 1) == 1) return;
+
+        try
+        {
+            var taskbar = FindTargetTaskbar();
+            var taskbarHwnd = taskbar?.Properties.NativeWindowHandle.ValueOrDefault ?? IntPtr.Zero;
+            if (taskbarHwnd == IntPtr.Zero) return;
+
+            var placement = _currentPlacement;
+            var bounds = CalculateVoidRect(taskbar, taskbarHwnd, placement);
+            if (bounds.IsEmpty) return;
+
+            _appUIThreadProvider.Execute(() =>
+            {
+                if (!_isDisposed && placement == _currentPlacement)
+                    ApplyPosition(taskbarHwnd, bounds);
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogDebug(ex, "Taskbar layout is not available yet.");
+        }
+        finally
+        {
+            Volatile.Write(ref _updating, 0);
+        }
+    }
+
+    private void ApplyPosition(HWND taskbar, Rectangle bounds)
+    {
+        if (!User32.IsWindow(taskbar) || !User32.IsWindow(_targetHwnd)) return;
+
+        if (User32.GetAncestor(_targetHwnd, User32.GetAncestorFlag.GA_PARENT) != taskbar)
+        {
+            _targetWindow.SetTaskbarPositionReady(false);
+            _windowManagerProvider.SetIsChildWindow(_targetWindow, true);
+            User32.SetParent(_targetHwnd, taskbar);
+            if (User32.GetAncestor(_targetHwnd, User32.GetAncestorFlag.GA_PARENT) != taskbar)
+                return;
+        }
+
+        var origin = new POINT(bounds.Left, bounds.Top);
+        if (!User32.ScreenToClient(taskbar, ref origin) || !User32.GetClientRect(taskbar, out var client) ||
+            origin.X < 0 || origin.Y < 0 || origin.X + bounds.Width > client.Right ||
+            origin.Y + bounds.Height > client.Bottom)
+            return;
+
+        if (User32.SetWindowPos(_targetHwnd, HWND.NULL, origin.X, origin.Y, bounds.Width, bounds.Height,
+                User32.SetWindowPosFlags.SWP_NOACTIVATE | User32.SetWindowPosFlags.SWP_NOZORDER))
+            _targetWindow.SetTaskbarPositionReady(true);
+    }
+
+    private Rectangle CalculateVoidRect(AutomationElement? taskbar, HWND taskbarHwnd, TaskbarPlacement placement)
     {
         try
         {
@@ -335,7 +340,7 @@ public partial class TaskbarHook : IDisposable
             // 直接子元素（via Win32）
             //_logger.LogInformation("=== Enumerating child windows of taskbar via Win32 API... ===");
             // Debug.WriteLine("=== Enumerating child windows of taskbar via Win32 API... ===");
-            var subWindows = User32.EnumChildWindows(_taskbarHwnd);
+            var subWindows = User32.EnumChildWindows(taskbarHwnd);
             HashSet<HWND> currentVisibleHwnds = [];
             foreach (var hwnd in subWindows)
             {
@@ -533,13 +538,5 @@ public partial class TaskbarHook : IDisposable
             //_logger.LogError(ex, "Error calculating taskbar voids.");
             return Rectangle.Empty;
         }
-    }
-
-    private void AttachToTaskbar(IntPtr taskbarHwnd)
-    {
-        if (taskbarHwnd == IntPtr.Zero || _targetHwnd == IntPtr.Zero) return;
-
-        _windowManagerProvider.SetIsChildWindow(_targetWindow, true);
-        User32.SetParent(_targetHwnd, taskbarHwnd);
     }
 }

@@ -1323,6 +1323,24 @@
   <data name="SettingsPageAutoStart.Header" xml:space="preserve">
     <value>Auto Start</value>
   </data>
+  <data name="SettingsPageSilentStartup.Header" xml:space="preserve">
+    <value>Start silently at sign-in</value>
+  </data>
+  <data name="SettingsPageSilentStartup.Description" xml:space="preserve">
+    <value>Run in the notification area when you sign in to Windows.</value>
+  </data>
+  <data name="SettingsPageSilentStartupWindowsLink.Content" xml:space="preserve">
+    <value>Open Windows startup settings</value>
+  </data>
+  <data name="SettingsPageSilentStartupDisabledByUser" xml:space="preserve">
+    <value>Windows has disabled startup for this app. You can turn it on in Startup apps.</value>
+  </data>
+  <data name="SettingsPageSilentStartupManaged" xml:space="preserve">
+    <value>This option is managed by your Windows startup policy.</value>
+  </data>
+  <data name="SettingsPageSilentStartupUnavailable" xml:space="preserve">
+    <value>Windows startup settings are currently unavailable.</value>
+  </data>
   <data name="SettingsPageAutoWrap.Header" xml:space="preserve">
     <value>Auto Wrap</value>
   </data>

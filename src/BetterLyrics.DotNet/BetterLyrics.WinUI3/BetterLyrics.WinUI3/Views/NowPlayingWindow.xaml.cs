@@ -69,6 +69,8 @@ public sealed partial class NowPlayingWindow : BaseWindow,
     private AppColor _backdropAccentColor = Colors.Transparent;
     private OverlayInputHelper? _overlayInputHelper;
     private TaskbarHook? _taskbarHook;
+    private bool _taskbarPositionReady;
+    private bool _isWindowVisible = true;
     private WindowMessageMonitor? _wmm;
     private uint _taskbarButtonCreatedMsg;
 
@@ -85,6 +87,7 @@ public sealed partial class NowPlayingWindow : BaseWindow,
 
         LyricsWindowStatus = status;
         NowPlayingPage.LyricsWindowStatus = LyricsWindowStatus;
+        UpdateTaskbarPresentation();
 
         this.Init(title: status.Name, titleBarHeightOption: TitleBarHeightOption.Collapsed,
             backdropType: BackdropType.Transparent);
@@ -175,7 +178,8 @@ public sealed partial class NowPlayingWindow : BaseWindow,
         }
         else if (msgId == (uint)WindowMessage.WM_SHOWWINDOW)
         {
-            NowPlayingPage?.SetWindowVisibility(e.Message.WParam != 0);
+            _isWindowVisible = e.Message.WParam != 0;
+            UpdateTaskbarPresentation();
         }
         else if (msgId == (uint)WindowMessage.WM_SETTINGCHANGE)
         {
@@ -347,6 +351,8 @@ public sealed partial class NowPlayingWindow : BaseWindow,
 
     private void OnIsLockedChanged()
     {
+        UpdateTaskbarPresentation();
+
         if (LyricsWindowStatus.IsBorderlessWhenLocked)
         {
             _windowManagerProvider.SetIsBorderless(this, LyricsWindowStatus.IsLocked);
@@ -403,10 +409,25 @@ public sealed partial class NowPlayingWindow : BaseWindow,
 
     private void PinToTaskbar()
     {
+        SetTaskbarPositionReady(false);
         _taskbarHook?.Dispose();
         _taskbarHook = null;
 
         _taskbarHook = new TaskbarHook(this, LyricsWindowStatus.TaskbarPlacement, LyricsWindowStatus.MonitorBounds);
+    }
+
+    internal void SetTaskbarPositionReady(bool ready)
+    {
+        if (_taskbarPositionReady == ready) return;
+        _taskbarPositionReady = ready;
+        UpdateTaskbarPresentation();
+    }
+
+    private void UpdateTaskbarPresentation()
+    {
+        var awaitingTaskbar = LyricsWindowStatus is { IsPinToTaskbar: true, IsLocked: true } && !_taskbarPositionReady;
+        RootGrid.Opacity = awaitingTaskbar ? 0 : 1;
+        NowPlayingPage?.SetWindowVisibility(_isWindowVisible && !awaitingTaskbar);
     }
 
     /// <summary>
@@ -633,7 +654,10 @@ public sealed partial class NowPlayingWindow : BaseWindow,
     private void AppWindow_Changed(AppWindow sender, AppWindowChangedEventArgs args)
     {
         if (args.DidVisibilityChange)
-            NowPlayingPage?.SetWindowVisibility(sender.IsVisible);
+        {
+            _isWindowVisible = sender.IsVisible;
+            UpdateTaskbarPresentation();
+        }
 
         if (args.DidPositionChange || args.DidSizeChange || args.DidPresenterChange)
         {
@@ -707,13 +731,14 @@ public sealed partial class NowPlayingWindow : BaseWindow,
                 {
                 }
                 // 忽略壁纸模式+已锁定状态防止在固定到桌面的过程中由于坐标系变换导致的错误的坐标被记忆
-                else if (LyricsWindowStatus.IsWallpaper && LyricsWindowStatus.IsLocked)
+                else if ((LyricsWindowStatus.IsWallpaper || LyricsWindowStatus.IsPinToTaskbar) && LyricsWindowStatus.IsLocked)
                 {
                 }
                 else
                 {
                     _ = _windowBoundsChangeDebouncer.RunAsync(() =>
                     {
+                        if (LyricsWindowStatus.IsPinToTaskbar && LyricsWindowStatus.IsLocked) return;
                         LyricsWindowStatus.WindowBounds = new AppRect(rect.X, rect.Y, size.Width, size.Height);
                         UpdateMonitorNameAndBounds();
                     });

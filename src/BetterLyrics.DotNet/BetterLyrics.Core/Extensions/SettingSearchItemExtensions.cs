@@ -24,7 +24,7 @@ public static class SettingSearchItemExtensions
 
         // App apperance and behavior settings - Window settings
 
-        new SettingSearchItem { Uid = "SettingsPageAutoStart/Header", Section = SettingsSection.App, Subsection = AppSettingsSection.Window },
+        new SettingSearchItem { Uid = "SettingsPageSilentStartup/Header", Section = SettingsSection.LyricsWindowMgr },
         new SettingSearchItem { Uid = "SettingsPageAutoOpenSplashWindow/Header", Section = SettingsSection.App, Subsection = AppSettingsSection.Window },
         new SettingSearchItem { Uid = "SettingsPageAutoOpenMusicGalleryWindow/Header", Section = SettingsSection.App, Subsection = AppSettingsSection.Window },
         new SettingSearchItem { Uid = "SettingsPageAutoOpenLyricsWindow/Header", Section = SettingsSection.App, Subsection = AppSettingsSection.Window },

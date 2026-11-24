@@ -11,6 +11,6 @@ BetterLyrics Lite 是基于 BetterLyrics 的 Windows 歌词播放器，保留标
 - **同步歌词**跟随当前播放进度逐字高亮。开启 Windows HDR 后，可在窗口设置中启用 HDR 逐字高光和辉光。
 - **音乐报告**根据收听记录生成，可从托盘打开。
 
-启动时直接打开设为默认的歌词窗口。右键点击托盘图标即可打开设置、切换窗口或查看音乐报告。
+手动打开应用时会显示默认歌词窗口。在**设置 → 歌词窗口管理**中，可以开启**开机静默自启**，让应用在登录 Windows 后只在托盘运行。右键点击托盘图标即可打开设置、切换窗口或查看音乐报告。
 
 旧版安装包仍可在 [BetterLyrics HDR 历史版本](https://github.com/DrivingGodJ/BetterLyrics-HDR/releases/tag/v1.3.553-hdr.1)下载。BetterLyrics Lite 源自 [jayfunc/BetterLyrics](https://github.com/jayfunc/BetterLyrics)，按 [GPL-3.0](LICENSE) 发布。

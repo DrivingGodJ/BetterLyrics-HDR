@@ -1323,6 +1323,24 @@
   <data name="SettingsPageAutoStart.Header" xml:space="preserve">
     <value>自動啟動</value>
   </data>
+  <data name="SettingsPageSilentStartup.Header" xml:space="preserve">
+    <value>開機靜默自啟</value>
+  </data>
+  <data name="SettingsPageSilentStartup.Description" xml:space="preserve">
+    <value>登入 Windows 後只在系統匣執行。</value>
+  </data>
+  <data name="SettingsPageSilentStartupWindowsLink.Content" xml:space="preserve">
+    <value>開啟 Windows 啟動應用程式</value>
+  </data>
+  <data name="SettingsPageSilentStartupDisabledByUser" xml:space="preserve">
+    <value>Windows 已關閉此應用程式的自啟，請在系統的「啟動應用程式」中開啟。</value>
+  </data>
+  <data name="SettingsPageSilentStartupManaged" xml:space="preserve">
+    <value>此選項由 Windows 啟動原則管理。</value>
+  </data>
+  <data name="SettingsPageSilentStartupUnavailable" xml:space="preserve">
+    <value>暫時無法讀取 Windows 啟動設定。</value>
+  </data>
   <data name="SettingsPageAutoWrap.Header" xml:space="preserve">
     <value>自動換行</value>
   </data>

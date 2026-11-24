@@ -1323,6 +1323,24 @@
   <data name="SettingsPageAutoStart.Header" xml:space="preserve">
     <value>自动启动</value>
   </data>
+  <data name="SettingsPageSilentStartup.Header" xml:space="preserve">
+    <value>开机静默自启</value>
+  </data>
+  <data name="SettingsPageSilentStartup.Description" xml:space="preserve">
+    <value>登录 Windows 后只在系统托盘运行。</value>
+  </data>
+  <data name="SettingsPageSilentStartupWindowsLink.Content" xml:space="preserve">
+    <value>打开 Windows 启动应用</value>
+  </data>
+  <data name="SettingsPageSilentStartupDisabledByUser" xml:space="preserve">
+    <value>Windows 已关闭此应用的自启，请在系统的「启动应用」中开启。</value>
+  </data>
+  <data name="SettingsPageSilentStartupManaged" xml:space="preserve">
+    <value>此选项由 Windows 启动策略管理。</value>
+  </data>
+  <data name="SettingsPageSilentStartupUnavailable" xml:space="preserve">
+    <value>暂时无法读取 Windows 启动设置。</value>
+  </data>
   <data name="SettingsPageAutoWrap.Header" xml:space="preserve">
     <value>自动换行</value>
   </data>

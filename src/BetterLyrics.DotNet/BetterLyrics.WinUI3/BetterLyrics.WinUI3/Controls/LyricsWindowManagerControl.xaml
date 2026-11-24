@@ -22,6 +22,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
@@ -57,9 +58,28 @@
                     </Grid>
                 </Grid>
 
+                <controls:SettingsCard
+                    x:Name="SilentStartupCard"
+                    x:Uid="SettingsPageSilentStartup"
+                    Grid.Row="1"
+                    Margin="36,0,36,8"
+                    HeaderIcon="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons}, Glyph=&#xF71C;}">
+                    <StackPanel Orientation="Horizontal" Spacing="12">
+                        <HyperlinkButton
+                            x:Name="StartupSettingsLink"
+                            x:Uid="SettingsPageSilentStartupWindowsLink"
+                            Click="StartupSettingsLink_Click"
+                            Visibility="Collapsed" />
+                        <ToggleSwitch
+                            x:Name="SilentStartupToggle"
+                            IsEnabled="False"
+                            Toggled="SilentStartupToggle_Toggled" />
+                    </StackPanel>
+                </controls:SettingsCard>
+
                 <controls:SettingsExpander
                     x:Uid="SettingsPageMonitorLayout"
-                    Grid.Row="1"
+                    Grid.Row="2"
                     Margin="36,0"
                     HeaderIcon="{ui:FontIcon FontFamily={StaticResource SegoeFluentIcons},
                                              Glyph=&#xE7F4;}">
@@ -76,7 +96,7 @@
                     </controls:SettingsExpander.Items>
                 </controls:SettingsExpander>
 
-                <ScrollViewer Grid.Row="2">
+                <ScrollViewer Grid.Row="3">
                     <ListView
                         x:Name="WindowStatusListView"
                         Margin="36,16"

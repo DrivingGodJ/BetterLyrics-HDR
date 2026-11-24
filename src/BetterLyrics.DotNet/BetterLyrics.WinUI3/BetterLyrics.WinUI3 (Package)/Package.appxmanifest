@@ -4,15 +4,16 @@
         xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
         xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
         xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+        xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
         xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
         xmlns:uap5="http://schemas.microsoft.com/appx/manifest/uap/windows10/5"
         xmlns:uap18="http://schemas.microsoft.com/appx/manifest/uap/windows10/18"
-        IgnorableNamespaces="uap rescap uap18">
+        IgnorableNamespaces="uap desktop rescap uap18">
 
     <Identity
             Name="DrivingGodJ.BetterLyricsLite"
             Publisher="CN=DrivingGodJ BetterLyrics HDR"
-            Version="1.0.8.1"/>
+            Version="1.0.9.0"/>
 
     <mp:PhoneIdentity PhoneProductId="ca4a4830-fc19-40d9-b823-53e2bff3d816"
                       PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
@@ -63,6 +64,12 @@
                 <uap:SplashScreen Image="Assets\Logo.png"/>
             </uap:VisualElements>
             <Extensions>
+                <desktop:Extension
+                        Category="windows.startupTask"
+                        Executable="BetterLyrics.WinUI3.exe"
+                        EntryPoint="Windows.FullTrustApplication">
+                    <desktop:StartupTask TaskId="AutoStartup" Enabled="false" DisplayName="BetterLyrics Lite"/>
+                </desktop:Extension>
                 <uap:Extension Category="windows.protocol">
                     <uap:Protocol Name="betterlyricslite">
                         <uap:DisplayName>Open with BetterLyrics Lite</uap:DisplayName>

@@ -38,6 +38,9 @@ namespace BetterLyrics.WinUI3;
 
 public class Program
 {
+    private static readonly TaskCompletionSource<DispatcherQueue> ActivationDispatcher =
+        new(TaskCreationOptions.RunContinuationsAsynchronously);
+
     private static ILogger<Program>? _logger;
 
     private static ServiceProvider? _serviceProvider;
@@ -55,8 +58,8 @@ public class Program
         {
             Application.Start(p =>
             {
-                var context = new DispatcherQueueSynchronizationContext(
-                    DispatcherQueue.GetForCurrentThread());
+                var dispatcher = DispatcherQueue.GetForCurrentThread();
+                var context = new DispatcherQueueSynchronizationContext(dispatcher);
                 SynchronizationContext.SetSynchronizationContext(context);
 
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -72,7 +75,11 @@ public class Program
                     MetadataHelper.AppVersion, AppLogging.MinimumLevel, Environment.ProcessId);
 
                 var activationArgs = AppInstance.GetCurrent().GetActivatedEventArgs();
-                _ = new App(() => HandleActivation(activationArgs, true));
+                _ = new App(() =>
+                {
+                    HandleActivation(activationArgs, true);
+                    ActivationDispatcher.TrySetResult(dispatcher);
+                });
             });
 
             // 正常关闭（非 ExitApp 路径）时释放容器；DisposeServices 可重复调用
@@ -103,25 +110,30 @@ public class Program
         else
         {
             isRedirect = true;
-            RedirectActivationTo(args, keyInstance);
+            if (kind != ExtendedActivationKind.StartupTask)
+                RedirectActivationTo(args, keyInstance);
         }
 
         return isRedirect;
     }
 
-    private static void OnActivated(object? sender, AppActivationArguments args)
+    private static async void OnActivated(object? sender, AppActivationArguments args)
     {
-        var appUiThreadProvider = Ioc.Default.GetRequiredService<IAppUIThreadProvider>();
-        appUiThreadProvider.Execute(() =>
-        {
-            HandleActivation(args);
-        });
+        // A manual launch can arrive while the login instance is still initializing.
+        var dispatcher = await ActivationDispatcher.Task;
+        dispatcher.TryEnqueue(() => HandleActivation(args));
     }
 
     private static void HandleActivation(AppActivationArguments args, bool init = false)
     {
         var kind = args.Kind;
         _logger?.LogDebug("Activation received. Kind: {Kind}; initial: {IsInitial}.", kind, init);
+
+        if (kind == ExtendedActivationKind.StartupTask)
+        {
+            _logger?.LogInformation("Started at Windows sign-in in the notification area.");
+            return;
+        }
 
         if (kind == ExtendedActivationKind.Protocol)
         {
