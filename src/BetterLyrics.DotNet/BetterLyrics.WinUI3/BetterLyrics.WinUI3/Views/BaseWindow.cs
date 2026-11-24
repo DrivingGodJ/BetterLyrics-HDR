@@ -9,6 +9,8 @@ using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.UI.Xaml;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Vanara.PInvoke;
+using WinRT.Interop;
 
 namespace BetterLyrics.WinUI3.Views;
 
@@ -20,6 +22,7 @@ public abstract class BaseWindow : Window
     protected readonly IWindowManagerProvider _windowManagerProvider = Ioc.Default.GetRequiredService<IWindowManagerProvider>();
 
     protected virtual bool EnableAppThemeChangeSync => true;
+    protected bool ShownWithoutActivation { get; private set; }
 
     public BaseWindow()
     {
@@ -27,7 +30,19 @@ public abstract class BaseWindow : Window
         Closed += BaseWindow_Closed;
     }
 
-    private void BaseWindow_Activated(object sender, WindowActivatedEventArgs args)
+    private void BaseWindow_Activated(object sender, WindowActivatedEventArgs args) => InitializeWindow();
+
+    internal void ShowWithoutActivation()
+    {
+        ShownWithoutActivation = true;
+        InitializeWindow();
+        if (AppWindow is { } appWindow)
+            appWindow.Show(activateWindow: false);
+        else
+            User32.ShowWindow(WindowNative.GetWindowHandle(this), ShowWindowCommand.SW_SHOWNOACTIVATE);
+    }
+
+    private void InitializeWindow()
     {
         if (!_isInitialized)
         {

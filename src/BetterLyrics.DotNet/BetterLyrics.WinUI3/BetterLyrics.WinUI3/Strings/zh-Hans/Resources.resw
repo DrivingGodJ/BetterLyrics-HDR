@@ -1327,7 +1327,7 @@
     <value>开机静默自启</value>
   </data>
   <data name="SettingsPageSilentStartup.Description" xml:space="preserve">
-    <value>登录 Windows 后只在系统托盘运行。</value>
+    <value>登录 Windows 后在后台加载默认歌词窗口。</value>
   </data>
   <data name="SettingsPageSilentStartupWindowsLink.Content" xml:space="preserve">
     <value>打开 Windows 启动应用</value>

@@ -129,12 +129,6 @@ public class Program
         var kind = args.Kind;
         _logger?.LogDebug("Activation received. Kind: {Kind}; initial: {IsInitial}.", kind, init);
 
-        if (kind == ExtendedActivationKind.StartupTask)
-        {
-            _logger?.LogInformation("Started at Windows sign-in in the notification area.");
-            return;
-        }
-
         if (kind == ExtendedActivationKind.Protocol)
         {
             HandleProtocolActivation(args);
@@ -147,7 +141,10 @@ public class Program
         profile ??= profiles.FirstOrDefault(candidate => candidate.IsDefault) ?? profiles.FirstOrDefault();
         if (profile != null)
         {
-            windows.OpenOrShowWindow<NowPlayingWindow>(profile);
+            var isSignIn = kind == ExtendedActivationKind.StartupTask;
+            if (isSignIn)
+                _logger?.LogInformation("Loading default lyrics window at Windows sign-in: {Window}.", profile.Name);
+            windows.OpenOrShowWindow<NowPlayingWindow>(profile, activate: !isSignIn);
         }
     }
 

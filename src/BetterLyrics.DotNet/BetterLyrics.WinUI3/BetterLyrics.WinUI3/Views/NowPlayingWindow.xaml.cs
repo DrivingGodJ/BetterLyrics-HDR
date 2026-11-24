@@ -237,7 +237,7 @@ public sealed partial class NowPlayingWindow : BaseWindow,
             }
         }
 
-        if (!Visible) Activate();
+        if (!Visible && !ShownWithoutActivation) Activate();
 
         _lyricsWindowVisibilityService.NotifyWindowLoaded(LyricsWindowStatus);
         UpdateNowPlayingBarStatus();
@@ -456,7 +456,7 @@ public sealed partial class NowPlayingWindow : BaseWindow,
         if (Visible && status.WindowState == LyricsWindowState.Opened) return;
 
         // OpenOrShowWindow also re-registers the AppBar of a docked window.
-        _windowManagerProvider.OpenOrShowWindow<NowPlayingWindow>(status);
+        _windowManagerProvider.OpenOrShowWindow<NowPlayingWindow>(status, activate: false);
 
         if (status.IsLocked && !status.IsWallpaper &&
             (!status.IsAlwaysHideUnlockButton || status.KeepNowPlayingBarInteractiveWhenLocked))

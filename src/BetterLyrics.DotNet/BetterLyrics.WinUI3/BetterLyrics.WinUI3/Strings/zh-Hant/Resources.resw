@@ -1327,7 +1327,7 @@
     <value>開機靜默自啟</value>
   </data>
   <data name="SettingsPageSilentStartup.Description" xml:space="preserve">
-    <value>登入 Windows 後只在系統匣執行。</value>
+    <value>登入 Windows 後在背景載入預設歌詞視窗。</value>
   </data>
   <data name="SettingsPageSilentStartupWindowsLink.Content" xml:space="preserve">
     <value>開啟 Windows 啟動應用程式</value>

@@ -194,7 +194,7 @@ public sealed class LyricsWindowVisibilityService : ILyricsWindowVisibilityServi
             {
                 if (!allowCreate || !canCreate) return;
 
-                var createdWindow = _windowManagerProvider.OpenOrShowWindow<NowPlayingWindow>(status);
+                var createdWindow = _windowManagerProvider.OpenOrShowWindow<NowPlayingWindow>(status, activate: false);
                 if (!LyricsWindowVisibilityPolicy.ShouldShow(reasons))
                 {
                     createdWindow.HideFromVisibilityPolicy(reasons);

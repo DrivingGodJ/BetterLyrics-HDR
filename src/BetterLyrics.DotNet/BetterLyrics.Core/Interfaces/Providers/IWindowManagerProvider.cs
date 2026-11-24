@@ -26,7 +26,7 @@ public interface IWindowManagerProvider
     object? OpenOrShowWindow(WindowType windowType, object? windowParameter = null);
 
     T? GetWindow<T>();
-    T OpenOrShowWindow<T>(LyricsWindowStatus? status = null);
+    T OpenOrShowWindow<T>(LyricsWindowStatus? status = null, bool activate = true);
 
     List<T> GetWindows<T>();
 

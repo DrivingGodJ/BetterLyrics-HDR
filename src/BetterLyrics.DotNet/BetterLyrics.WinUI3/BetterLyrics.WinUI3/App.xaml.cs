@@ -76,7 +76,7 @@ public partial class App : Application
             var appUiThreadProvider = Ioc.Default.GetRequiredService<IAppUIThreadProvider>();
 
             // 初始化 IAppUIThreadProvider
-            m_window = windowManagerProvider.OpenOrShowWindow<SystemTrayWindow>();
+            m_window = windowManagerProvider.OpenOrShowWindow<SystemTrayWindow>(activate: false);
             appUiThreadProvider.Initialize(m_window.DispatcherQueue);
 
             var globalToastProvider = Ioc.Default.GetRequiredService<IGlobalToastProvider>();

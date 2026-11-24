@@ -289,7 +289,7 @@ public class WindowManagerProvider : IWindowManagerProvider
         return obj is Window window && User32.IsIconic(WindowNative.GetWindowHandle(window));
     }
 
-    public T OpenOrShowWindow<T>(LyricsWindowStatus? status = null)
+    public T OpenOrShowWindow<T>(LyricsWindowStatus? status = null, bool activate = true)
     {
         var window = _activeWindows.Find(w =>
             (typeof(T) != typeof(NowPlayingWindow) && w is T) ||
@@ -327,11 +327,15 @@ public class WindowManagerProvider : IWindowManagerProvider
 
             TrackWindow(window);
 
-            var castedWindow = (Window)window;
+            var castedWindow = (BaseWindow)window;
             _logger.LogInformation("Created window {WindowType}.", typeof(T).Name);
 
             // Not activate NowPlayingWindow to avoid window flashing
-            if (typeof(T) != typeof(LyricsWindowSwitchWindow) && typeof(T) != typeof(NowPlayingWindow))
+            if (!activate)
+            {
+                castedWindow.ShowWithoutActivation();
+            }
+            else if (typeof(T) != typeof(LyricsWindowSwitchWindow) && typeof(T) != typeof(NowPlayingWindow))
             {
                 castedWindow.Activate();
             }
@@ -347,14 +351,20 @@ public class WindowManagerProvider : IWindowManagerProvider
             }
 
             _logger.LogDebug("Showing existing window {WindowType}.", typeof(T).Name);
-            var castedWindow = (Window)window;
+            var castedWindow = (BaseWindow)window;
 
             // An explicit show request outranks the minimized state. Activate
             // alone does not always leave the minimized state, so restore first.
-            RestoreWindowIfMinimized(castedWindow);
-
-            castedWindow.Activate();
-            castedWindow.SetForegroundWindow();
+            if (activate)
+            {
+                RestoreWindowIfMinimized(castedWindow);
+                castedWindow.Activate();
+                castedWindow.SetForegroundWindow();
+            }
+            else
+            {
+                castedWindow.ShowWithoutActivation();
+            }
 
             // Hiding a docked window releases its work-area reservation, so the
             // AppBar has to be registered again whatever the reveal path is.

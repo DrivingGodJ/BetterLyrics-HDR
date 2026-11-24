@@ -1327,7 +1327,7 @@
     <value>Start silently at sign-in</value>
   </data>
   <data name="SettingsPageSilentStartup.Description" xml:space="preserve">
-    <value>Run in the notification area when you sign in to Windows.</value>
+    <value>Load your default lyrics window in the background when you sign in to Windows.</value>
   </data>
   <data name="SettingsPageSilentStartupWindowsLink.Content" xml:space="preserve">
     <value>Open Windows startup settings</value>
